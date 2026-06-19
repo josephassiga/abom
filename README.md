@@ -4,8 +4,6 @@
 
 [![ABOM — abom.ai](website/screenshot-hero.png)](website/index.html)
 
-[![ABOM website — full page](website/screenshot-full.png)](website/index.html)
-
 ```sh
 pip install abom-cli && abom scan .
 ```
