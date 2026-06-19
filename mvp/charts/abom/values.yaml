@@ -1,0 +1,36 @@
+# MVP stub values. The production chart enforces sovereignty defaults
+# (egressPolicy: deny-all, airgap mode, signed images only).
+
+image:
+  repository: ghcr.io/abom/abom
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+api:
+  replicas: 2
+  port: 8000
+
+worker:
+  replicas: 2
+
+postgres:
+  # In prod, use CloudNativePG / customer-managed Postgres.
+  url: "postgresql+asyncpg://abom:abom@abom-postgres:5432/abom"
+
+temporal:
+  host: "abom-temporal:7233"
+  namespace: default
+
+modelServing:
+  # vLLM on customer GPUs (KServe in prod).
+  baseUrl: "http://abom-vllm:8000/v1"
+  model: "local/qwen2.5-coder"
+
+sovereignty:
+  airgap: false           # true => no managed control channel, offline updates only
+  egressPolicy: deny-all  # NetworkPolicy posture; egress only via gated gateway
+  requireSignedImages: true
+
+audit:
+  retentionDays: 3650
+  wormCopy: false         # Phase-2: WORM object copy + periodic anchoring

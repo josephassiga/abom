@@ -1,0 +1,9 @@
+apiVersion: v2
+name: abom
+description: ABOM — production control plane for agentic AI (MVP Helm stub)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+# MVP stub. Real chart adds: Operator CRDs, Temporal subchart, vLLM/KServe
+# serving, NetworkPolicies (zero egress), Vault integration, OTel collector,
+# and an offline/air-gap values overlay.
