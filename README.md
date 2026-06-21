@@ -2,13 +2,13 @@
 
 **abom.ai** · *The open-source security standard for AI agents.*
 
-[![ABOM — abom.ai](website/screenshot-hero.png)](website/index.html)
+[![ABOM — abom.ai](website/screenshot-hero.png)](https://abom.ai)
 
 ```sh
 pip install abom-cli && abom scan .
 ```
 
-SBOMs made software supply chains accountable, and then became mandated. AI agents are next. **ABOM** is the primitive: a standard format plus the tooling to **scan**, **verify**, and **notarize** a bill of materials for agentic systems — Apache 2.0, OWASP LLM Top 10 aligned, runs entirely offline.
+Your agents ship as a black box. **ABOM develops the film.** It scans the models, prompts, tools, vector stores, and guardrails in your repo and emits a signed Agent Bill of Materials. The instant any of them is swapped, it catches the drift, re-signs, and fails the build — mapped to the EU AI Act and the OWASP Top 10 for LLM & agentic apps. Apache 2.0, runs entirely offline.
 
 ABOM extends the open **CycloneDX ML-BOM** standard to full agents and runtime provenance. We open-source the format and the generator to win the standard, and monetize verification and the neutral notary.
 
