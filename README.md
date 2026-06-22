@@ -1,4 +1,4 @@
-# ABOM - The Agent Bill of Materials
+# ABOM - Agent Bill of Materials
 
 **abom.ai** · *The open-source security standard for AI agents.*
 
