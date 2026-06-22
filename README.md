@@ -16,24 +16,7 @@ pip install abom-cli && abom scan .
 
 Your agents ship as a black box. **ABOM develops the film.** It scans the models, prompts, tools, vector stores, and guardrails in your repo and emits a signed Agent Bill of Materials. The instant any of them is swapped, it catches the drift, re-signs, and fails the build — mapped to the EU AI Act and the OWASP Top 10 for LLM & agentic apps. Apache 2.0, runs entirely offline.
 
-<!-- Before launch, replace this block with an asciinema/GIF demo — see LAUNCH.md -->
-
-```text
-$ abom scan .
-
-  ABOM · langchain-support-agent
-  data sources   1  Chroma
-  frameworks     2  LangChain, LangGraph
-  models         3  OpenAI (SDK), gpt-4o, gpt-4o-mini
-  tools          2  search_orders, issue_refund
-  prompts        1  prompts/system.txt
-  signed: ed25519 · key 80a12d1f594d5481
-  → wrote abom.json
-
-$ abom verify abom.json --policy policy.json
-  ✗ 1 finding:
-      • [medium] model_allowlist (gpt-4o): declared model not on allowlist
-```
+[![abom scan → verify](assets/demo.svg)](https://github.com/josephassiga/abom/tree/main/examples)
 
 See it run on real repos in [`examples/`](examples/) — LangChain and CrewAI, with committed signed ABOMs.
 
