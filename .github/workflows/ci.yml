@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  reference:
+    name: Reference implementation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mvp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pytest ruff
+      - name: Tamper-evidence tests
+        run: PYTHONPATH=src pytest tests/ -q
+      - name: ABOM demo (generate → verify → tamper)
+        run: python demo/demo.py
+      - name: Lint
+        run: ruff check src
+        continue-on-error: true
+
+  spec:
+    name: Spec & examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip jsonschema
+      - name: Validate examples against the ABOM schema
+        run: |
+          python - <<'PY'
+          import json, glob
+          from jsonschema import validate, Draft202012Validator
+          schema = json.load(open("spec/abom-0.1.schema.json"))
+          Draft202012Validator.check_schema(schema)
+          for path in glob.glob("spec/examples/*.json"):
+              validate(json.load(open(path)), schema)
+              print(f"OK {path}")
+          PY

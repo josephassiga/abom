@@ -2,6 +2,11 @@
 
 **abom.ai** · *The open-source security standard for AI agents.*
 
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![CI](https://github.com/josephassiga/abom/actions/workflows/ci.yml/badge.svg)](https://github.com/josephassiga/abom/actions/workflows/ci.yml)
+[![ABOM spec](https://img.shields.io/badge/ABOM%20spec-v0.1-6e56cf.svg)](spec/)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 [![ABOM — abom.ai](website/screenshot-hero.png)](https://abom.ai)
 
 ```sh
@@ -29,9 +34,12 @@ ABOM extends the open **CycloneDX ML-BOM** standard to full agents and runtime p
 
 | Path | What |
 |---|---|
-| [mvp/](mvp/) | Runnable reference implementation ([mvp/README.md](mvp/README.md), [mvp/MVP_SPEC.md](mvp/MVP_SPEC.md)) |
-| [mvp/demo/](mvp/demo/) | Self-contained demo — emit an ABOM, catch a policy violation, prove tamper-evidence |
-| [website/](website/) | The abom.ai site (also served via GitHub Pages) |
+| [spec/](spec/) | **The ABOM standard** — JSON Schema + human-readable spec + examples (extends CycloneDX ML-BOM) |
+| [mvp/](mvp/) | **Reference implementation** — the `abom` CLI & library ([demo](mvp/demo/), [spec for it](mvp/MVP_SPEC.md)) |
+| [docs/](docs/) | Project documents — strategy, architecture, market model |
+| [website/](website/) | The abom.ai site (served via GitHub Pages) |
+
+Open-source project files: [LICENSE](LICENSE) (Apache-2.0) · [CONTRIBUTING](CONTRIBUTING.md) · [GOVERNANCE](GOVERNANCE.md) · [SECURITY](SECURITY.md) · [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) · [CHANGELOG](CHANGELOG.md).
 
 ## Quick start
 
@@ -49,6 +57,13 @@ Full local stack (Postgres, Temporal, MinIO, API, worker) via `make up`; all set
 The market is racing to make agents *do more*. ABOM builds the layer that makes an agent **answerable** — *what is it made of, and what did it do?* — answered in a signed, standard, portable artifact. Underneath the software, this is a trust company, and the trust is cryptographic, not reputational.
 
 Roadmap arc: **ABOM (accountability, now) → Proof-Carrying Actions (prevention, later)** — gating an action on a machine-checkable proof before it runs. The bill of materials is the on-ramp.
+
+## Contributing
+
+ABOM is developed in the open under **Apache-2.0**. Spec proposals and code are
+both welcome — start with [CONTRIBUTING.md](CONTRIBUTING.md) and
+[GOVERNANCE.md](GOVERNANCE.md). Be kind: [Code of Conduct](CODE_OF_CONDUCT.md).
+Found a security issue? See [SECURITY.md](SECURITY.md).
 
 ---
 

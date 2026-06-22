@@ -1,0 +1,30 @@
+{
+  "abom": "0.1",
+  "extends": "CycloneDX ML-BOM",
+  "type": "CompositionManifest",
+  "agent": {
+    "name": "loan-doc-agent",
+    "version": "1.4.0",
+    "risk_class": "high (Annex III)",
+    "owner": "credit-risk"
+  },
+  "components": [
+    { "type": "model", "name": "local/qwen2.5-coder", "weights_sha256": "9f2c1a4b7d3e6082a1c5f4b9d8e7061324a5b6c7d8e9f0a1b2c3d4e5f60718293", "provenance": "local/vLLM", "egress": false },
+    { "type": "tool", "name": "http_fetch", "scope": "egress", "allowed_endpoints": ["internal-kyc.bank"] },
+    { "type": "prompt", "role": "system", "sha256": "3b1c2d3e4f5061728394a5b6c7d8e9f0a1b2c3d4e5f60718293a4b5c6d7e8f901" },
+    { "type": "dataSource", "name": "core_banking_repo", "classification": "confidential" },
+    { "type": "policy", "engine": "OPA", "sha256": "7a8b9c0d1e2f30415263748596a7b8c9d0e1f20314253647586970a1b2c3d4e5" },
+    { "type": "framework", "name": "langgraph", "version": "0.2.0" }
+  ],
+  "controls": {
+    "egress": "deny-by-default",
+    "hitl": "required-for-consequential",
+    "residency": "EU"
+  },
+  "composition_sha256": "411d72cd649caa9e0a1b2c3d4e5f60718293a4b5c6d7e8f901122334455667aa",
+  "signature": {
+    "alg": "ed25519",
+    "signer": "abom-notary",
+    "value": "MEUCIQDexample0signature0value0replace0in0production0deadbeefcafef00d"
+  }
+}

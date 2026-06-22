@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://abom.ai/spec/abom-0.1.schema.json",
+  "title": "Agent Bill of Materials (ABOM) v0.1",
+  "description": "An ABOM document is either a Composition Manifest (what an agent is) or an Action Provenance Record (what an agent did). Extends CycloneDX ML-BOM.",
+  "oneOf": [
+    { "$ref": "#/$defs/CompositionManifest" },
+    { "$ref": "#/$defs/ActionProvenanceRecord" }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Lowercase hex SHA-256 digest."
+    },
+    "CompositionManifest": {
+      "type": "object",
+      "description": "Signed inventory of everything an agent is built from.",
+      "required": ["abom", "type", "agent", "components", "composition_sha256", "signature"],
+      "properties": {
+        "abom": { "const": "0.1" },
+        "extends": { "type": "string", "examples": ["CycloneDX ML-BOM"] },
+        "type": { "const": "CompositionManifest" },
+        "agent": {
+          "type": "object",
+          "required": ["name", "version"],
+          "properties": {
+            "name": { "type": "string" },
+            "version": { "type": "string" },
+            "risk_class": { "type": "string" },
+            "owner": { "type": "string" },
+            "purpose": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "components": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Component" }
+        },
+        "controls": {
+          "type": "object",
+          "description": "Declared controls for the agent.",
+          "properties": {
+            "egress": { "type": "string", "examples": ["deny-by-default"] },
+            "hitl": { "type": "string", "examples": ["required-for-consequential"] },
+            "residency": { "type": "string", "examples": ["EU"] }
+          },
+          "additionalProperties": true
+        },
+        "composition_sha256": { "$ref": "#/$defs/sha256" },
+        "signature": { "$ref": "#/$defs/Signature" }
+      },
+      "additionalProperties": false
+    },
+    "Component": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["model", "tool", "prompt", "dataSource", "policy", "framework", "mcpServer"]
+        },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "sha256": { "type": "string" },
+        "weights_sha256": { "type": "string" },
+        "provenance": { "type": "string" },
+        "egress": { "type": "boolean" },
+        "scope": { "type": "string" },
+        "allowed_endpoints": { "type": "array", "items": { "type": "string" } },
+        "role": { "type": "string" },
+        "classification": { "type": "string" },
+        "engine": { "type": "string" },
+        "endpoints": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "Signature": {
+      "type": "object",
+      "required": ["alg", "value"],
+      "properties": {
+        "alg": { "type": "string", "examples": ["ed25519", "hmac-sha256 (MVP; prod=ed25519)"] },
+        "value": { "type": "string" },
+        "signer": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "ActionProvenanceRecord": {
+      "type": "object",
+      "description": "One hash-chained record of a consequential action an agent took.",
+      "required": ["run_id", "seq", "event_type", "data", "prev_hash", "hash", "created_at"],
+      "properties": {
+        "run_id": { "type": "string", "description": "Agent reference, e.g. name@version." },
+        "seq": { "type": "integer", "minimum": 0 },
+        "event_type": { "const": "ActionProvenance" },
+        "actor": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "prev_hash": {
+          "type": "string",
+          "description": "Hash of the previous record, or \"GENESIS\" for the first.",
+          "pattern": "^(GENESIS|[a-f0-9]{64})$"
+        },
+        "hash": { "$ref": "#/$defs/sha256" },
+        "data": {
+          "type": "object",
+          "required": ["composition_sha256", "decision"],
+          "properties": {
+            "composition_sha256": { "$ref": "#/$defs/sha256" },
+            "decision": { "type": "string" },
+            "inputs": { "type": "array", "items": { "type": "object" } },
+            "model_calls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "model": { "type": "string" },
+                  "tokens": { "type": "integer" },
+                  "output_sha256": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "tools_invoked": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "endpoint": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "data_touched": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "classification": { "type": "string" },
+                  "egress": { "type": "boolean" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "policy_decisions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rule": { "type": "string" },
+                  "result": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            },
+            "approval": {
+              "type": ["object", "null"],
+              "properties": {
+                "by": { "type": "string" },
+                "decision": { "type": "string", "enum": ["approved", "rejected"] }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
