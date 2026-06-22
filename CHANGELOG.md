@@ -4,7 +4,13 @@ All notable changes to ABOM are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project aims to
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from 1.0.
 
-## [Unreleased]
+## [0.1.1]
+
+### Changed
+- Support **Python 3.10** — added a `tomli` fallback for `tomllib` and lowered
+  `requires-python` to `>=3.10`, so `pip install abom-cli` works without Python 3.11+.
+
+## [0.1.0]
 
 ### Added
 - **`abom` CLI** (`abom-cli` on PyPI):

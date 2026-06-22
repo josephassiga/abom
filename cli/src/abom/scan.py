@@ -10,8 +10,12 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import tomllib
 from pathlib import Path
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 # --- known signals -----------------------------------------------------------
 FRAMEWORKS = {

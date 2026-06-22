@@ -1,3 +1,3 @@
-"""ABOM — production control plane for agentic AI (Step-1 MVP scaffold)."""
+"""ABOM — the Agent Bill of Materials. Scan, sign, and verify AI agents."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

@@ -1,9 +1,9 @@
 [project]
 name = "abom-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = "ABOM — the Agent Bill of Materials. Scan, sign, and verify what your AI agents are made of."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = "Apache-2.0"
 authors = [{ name = "ABOM Contributors" }]
 keywords = ["agent", "ai", "sbom", "ml-bom", "ai-security", "provenance", "cyclonedx", "supply-chain", "llm"]
@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "typer>=0.12",
     "cryptography>=42.0",
+    "tomli>=2.0 ; python_version < '3.11'",
 ]
 
 [project.urls]
@@ -58,4 +59,4 @@ pythonpath = ["src"]
 
 [tool.ruff]
 line-length = 110
-target-version = "py311"
+target-version = "py310"
