@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="terminal" baseProfile="full" viewBox="0 0 783 489" width="783" version="1.1">
+    <defs>
+        <termtosvg:template_settings xmlns:termtosvg="https://github.com/nbedos/termtosvg">
+            <termtosvg:screen_geometry columns="92" rows="24"/>
+            <termtosvg:animation type="css"/>
+        </termtosvg:template_settings>
+        <style type="text/css" id="generated-style"><![CDATA[#screen {
+                font-family: 'DejaVu Sans Mono', monospace;
+                font-style: normal;
+                font-size: 14px;
+            }
+
+        text {
+            dominant-baseline: text-before-edge;
+            white-space: pre;
+        }
+    
+            :root {
+                --animation-duration: 5675ms;
+            }
+
+            @keyframes roll {
+                0.000%{transform:translateY(0px)}
+12.670%{transform:translateY(-442px)}
+12.705%{transform:translateY(-884px)}
+27.048%{transform:translateY(-1326px)}
+39.718%{transform:translateY(-1768px)}
+42.590%{transform:translateY(-2210px)}
+67.595%{transform:translateY(-2652px)}
+80.282%{transform:translateY(-3094px)}
+82.379%{transform:translateY(-3536px)}
+100.000%{transform:translateY(-3536px)}
+            }
+
+            #screen_view {
+                animation-duration: 5675ms;
+                animation-iteration-count:infinite;
+                animation-name:roll;
+                animation-timing-function: steps(1,end);
+                animation-fill-mode: forwards;
+            }
+        ]]></style>
+        <style type="text/css" id="user-style">
+            /* The colors defined below are the default 16 colors used for rendering text of the terminal. Adjust
+               them as needed.
+               gjm8 color theme (source: https://terminal.sexy/) */
+            .foreground {fill: #f8f8f2}
+            .background {fill: #272822}
+            .color0 {fill: #272822}
+            .color1 {fill: #f92672}
+            .color2 {fill: #a6e22e}
+            .color3 {fill: #f4bf75}
+            .color4 {fill: #66d9ef}
+            .color5 {fill: #ae81ff}
+            .color6 {fill: #a1efe4}
+            .color7 {fill: #f8f8f2}
+            .color8 {fill: #75715e}
+            .color9 {fill: #fd971f}
+            .color10 {fill: #383830}
+            .color11 {fill: #49483e}
+            .color12 {fill: #a59f85}
+            .color13 {fill: #f5f4f1}
+            .color14 {fill: #cc6633}
+            .color15 {fill: #f9f8f5}
+        </style>
+    </defs>
+    <rect id="terminalui" class="background" width="100%" height="100%" ry="4.5826941"/>
+    <circle cx="24" cy="23" r="7" class="color1"/>
+    <circle cx="44" cy="23" r="7" class="color3"/>
+    <circle cx="64" cy="23" r="7" class="color2"/>
+    <svg id="screen" width="736" height="408" x="23" y="50" viewBox="0 0 736 408" preserveAspectRatio="xMidYMin slice"><rect class="background" height="100%" width="100%" x="0" y="0"/><defs><g id="g1"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="160" class="foreground">pip install abom-cli</text><text x="176" textLength="8" class="background"> </text></g><g id="g2"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="160" class="foreground">pip install abom-cli</text></g><g id="g3"><text x="0" textLength="8" class="background"> </text></g><g id="g4"><text x="0" textLength="296" class="foreground">Successfully installed abom-cli-0.1.0</text></g><g id="g5"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="88" class="foreground">abom scan .</text><text x="104" textLength="8" class="background"> </text></g><g id="g6"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="88" class="foreground">abom scan .</text></g><g id="g7"><text x="0" textLength="320" font-weight="bold" class="color14">  ABOM &#183; langchain-support-agent @ 0.0.0</text></g><g id="g8"><text x="0" textLength="280" class="foreground">  data sources            1  Chroma</text></g><g id="g9"><text x="0" textLength="392" class="foreground">  frameworks              2  LangChain, LangGraph</text></g><g id="g10"><text x="0" textLength="496" class="foreground">  models                  3  OpenAI (SDK), gpt-4o, gpt-4o-mini</text></g><g id="g11"><text x="0" textLength="448" class="foreground">  tools                   2  search_orders, issue_refund</text></g><g id="g12"><text x="0" textLength="376" class="foreground">  prompts                 1  prompts/system.txt</text></g><g id="g13"><text x="0" textLength="320" class="color2">  signed: ed25519 &#183; key 26eb693a3591f137</text></g><g id="g14"><text x="0" textLength="312" class="foreground">  composition_sha256: 8ed8c9ef086ad7a7&#8230;</text></g><g id="g15"><text x="0" textLength="232" class="color6">  &#8594; wrote /tmp/demo-abom.json</text></g><g id="g16"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="336" class="foreground">abom verify abom.json --policy policy.json</text><text x="352" textLength="8" class="background"> </text></g><g id="g17"><text x="0" textLength="16" class="color6">$ </text><text x="16" textLength="336" class="foreground">abom verify abom.json --policy policy.json</text></g><g id="g18"><text x="0" textLength="136" font-weight="bold" class="color9">  &#10007; 1 finding(s):</text></g><g id="g19"><text x="0" textLength="656" class="foreground">      &#8226; [medium] model_allowlist (gpt-4o): declared model not on allowlist: gpt-4o</text></g></defs><g id="screen_view"><g><rect x="176" y="0" width="8" height="17" class="foreground"/><use xlink:href="#g1" y="0"/></g><g><use xlink:href="#g2" y="442"/><rect x="0" y="459" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="459"/></g><g><use xlink:href="#g2" y="884"/><use xlink:href="#g4" y="901"/><rect x="0" y="935" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="935"/></g><g><use xlink:href="#g2" y="1326"/><use xlink:href="#g4" y="1343"/><rect x="104" y="1377" width="8" height="17" class="foreground"/><use xlink:href="#g5" y="1377"/></g><g><use xlink:href="#g2" y="1768"/><use xlink:href="#g4" y="1785"/><use xlink:href="#g6" y="1819"/><rect x="0" y="1836" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="1836"/></g><g><use xlink:href="#g2" y="2210"/><use xlink:href="#g4" y="2227"/><use xlink:href="#g6" y="2261"/><use xlink:href="#g7" y="2295"/><use xlink:href="#g8" y="2312"/><use xlink:href="#g9" y="2329"/><use xlink:href="#g10" y="2346"/><use xlink:href="#g11" y="2363"/><use xlink:href="#g12" y="2380"/><use xlink:href="#g13" y="2397"/><use xlink:href="#g14" y="2414"/><use xlink:href="#g15" y="2431"/><rect x="0" y="2465" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="2465"/></g><g><use xlink:href="#g2" y="2652"/><use xlink:href="#g4" y="2669"/><use xlink:href="#g6" y="2703"/><use xlink:href="#g7" y="2737"/><use xlink:href="#g8" y="2754"/><use xlink:href="#g9" y="2771"/><use xlink:href="#g10" y="2788"/><use xlink:href="#g11" y="2805"/><use xlink:href="#g12" y="2822"/><use xlink:href="#g13" y="2839"/><use xlink:href="#g14" y="2856"/><use xlink:href="#g15" y="2873"/><rect x="352" y="2907" width="8" height="17" class="foreground"/><use xlink:href="#g16" y="2907"/></g><g><use xlink:href="#g2" y="3094"/><use xlink:href="#g4" y="3111"/><use xlink:href="#g6" y="3145"/><use xlink:href="#g7" y="3179"/><use xlink:href="#g8" y="3196"/><use xlink:href="#g9" y="3213"/><use xlink:href="#g10" y="3230"/><use xlink:href="#g11" y="3247"/><use xlink:href="#g12" y="3264"/><use xlink:href="#g13" y="3281"/><use xlink:href="#g14" y="3298"/><use xlink:href="#g15" y="3315"/><use xlink:href="#g17" y="3349"/><rect x="0" y="3366" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="3366"/></g><g><use xlink:href="#g2" y="3536"/><use xlink:href="#g4" y="3553"/><use xlink:href="#g6" y="3587"/><use xlink:href="#g7" y="3621"/><use xlink:href="#g8" y="3638"/><use xlink:href="#g9" y="3655"/><use xlink:href="#g10" y="3672"/><use xlink:href="#g11" y="3689"/><use xlink:href="#g12" y="3706"/><use xlink:href="#g13" y="3723"/><use xlink:href="#g14" y="3740"/><use xlink:href="#g15" y="3757"/><use xlink:href="#g17" y="3791"/><use xlink:href="#g18" y="3825"/><use xlink:href="#g19" y="3842"/><rect x="0" y="3876" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="3876"/></g></g></svg>
+</svg>
