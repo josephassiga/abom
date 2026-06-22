@@ -1,4 +1,4 @@
-# ABOM — The Agent Bill of Materials
+# ABOM - The Agent Bill of Materials
 
 **abom.ai** · *The open-source security standard for AI agents.*
 
@@ -35,7 +35,7 @@ ABOM extends the open **CycloneDX ML-BOM** standard to full agents and runtime p
 | Path | What |
 |---|---|
 | [spec/](spec/) | **The ABOM standard** — JSON Schema + human-readable spec + examples (extends CycloneDX ML-BOM) |
-| [mvp/](mvp/) | **Reference implementation** — the `abom` CLI & library ([demo](mvp/demo/), [spec for it](mvp/MVP_SPEC.md)) |
+| [cli/](cli/) | **Reference implementation** — the `abom` CLI & library ([demo](cli/demo/), [spec for it](cli/MVP_SPEC.md)) |
 | [docs/](docs/) | Project documents — strategy, architecture, market model |
 | [website/](website/) | The abom.ai site (served via GitHub Pages) |
 
@@ -45,12 +45,12 @@ Open-source project files: [LICENSE](LICENSE) (Apache-2.0) · [CONTRIBUTING](CON
 
 ```bash
 # the demo that proves the core — no infrastructure required
-cd mvp && make demo
+cd cli && make demo
 ```
 
 Expected: a run emits a signed ABOM (Composition Manifest + hash-chained Action Provenance), **abom-verify** catches a real policy violation that a naked run hides, and tampering with any record is detected — `✓ DEMO ASSERTIONS PASSED`.
 
-Full local stack (Postgres, Temporal, MinIO, API, worker) via `make up`; all settings use the `ABOM_` env prefix (see [mvp/.env.example](mvp/.env.example)).
+Full local stack (Postgres, Temporal, MinIO, API, worker) via `make up`; all settings use the `ABOM_` env prefix (see [cli/.env.example](cli/.env.example)).
 
 ## The bet
 

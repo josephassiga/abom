@@ -26,7 +26,7 @@ release. Pin a released version for production use.
 
 ## Scope
 
-In scope: the ABOM spec, the reference CLI/library (`mvp/src/abom/`), and the
+In scope: the ABOM spec, the reference CLI/library (`cli/src/abom/`), and the
 signing / hash-chain / verification logic. The signing in the current reference
 implementation uses an HMAC stand-in clearly marked in the code; production
 deployments should use detached ed25519 / Sigstore signing.

@@ -9,14 +9,14 @@ docs, and the examples are all welcome.
 - **The spec** ([`spec/`](spec/)) — propose fields, examples, or clarifications to
   the ABOM format. Spec changes are the highest-impact contributions; see
   [GOVERNANCE.md](GOVERNANCE.md) for how the format evolves.
-- **The reference implementation** ([`mvp/`](mvp/)) — the `abom` CLI and library
+- **The reference implementation** ([`cli/`](cli/)) — the `abom` CLI and library
   (`bom.py`, `audit.py`, `cli.py`, `policy.py`).
 - **Docs & examples** — getting-started guides, integrations, sample ABOMs.
 
 ## Dev setup
 
 ```bash
-cd mvp
+cd cli
 pip install -e ".[dev]"      # FastAPI, Temporal, SQLAlchemy, pytest, ruff, …
 
 # fast checks — no infrastructure needed
@@ -53,7 +53,7 @@ If you change the ABOM format, update **all** of:
 - `spec/abom-<version>.schema.json`
 - `spec/README.md` (the human-readable spec)
 - `spec/examples/` (keep the examples valid against the schema)
-- the reference implementation in `mvp/src/abom/bom.py`
+- the reference implementation in `cli/src/abom/bom.py`
 
 ## Code of conduct
 

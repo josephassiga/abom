@@ -8,7 +8,7 @@ quietly scrubbed.
 ## Run it
 
 ```bash
-cd mvp
+cd cli
 python3 demo/demo.py        # or: make demo
 ```
 

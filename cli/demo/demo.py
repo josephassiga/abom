@@ -16,7 +16,7 @@ The agent's test gate is a real subprocess (sample_repo/tests.py). The model is 
 deterministic mock — what this demo proves is ABOM (composition + provenance +
 verify + tamper-evidence), not model quality.
 
-Run:  python3 demo/demo.py        (from the mvp/ directory)
+Run:  python3 demo/demo.py        (from the cli/ directory)
 """
 from __future__ import annotations
 

@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://abom:abom@localhost:5432/abom"
     temporal_host: str = "localhost:7233"
     temporal_namespace: str = "default"
-    task_queue: str = "abom-mvp"
+    task_queue: str = "abom-cli"
 
     s3_endpoint: str = "http://localhost:9000"
     s3_access_key: str = "minioadmin"

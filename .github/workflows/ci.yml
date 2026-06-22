@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: mvp
+        working-directory: cli
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

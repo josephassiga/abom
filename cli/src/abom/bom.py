@@ -19,7 +19,7 @@ import hmac
 from .audit import GENESIS, canonical_json, make_record, verify_chain
 
 ABOM_VERSION = "0.1"
-_DEMO_KEY = b"abom-mvp-demo-key"  # MVP stand-in only; prod = ed25519 key in Vault/KMS
+_DEMO_KEY = b"abom-cli-demo-key"  # MVP stand-in only; prod = ed25519 key in Vault/KMS
 
 
 def _sha256(obj) -> str:

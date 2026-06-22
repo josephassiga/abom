@@ -1,5 +1,5 @@
 [project]
-name = "abom-mvp"
+name = "abom-cli"
 version = "0.1.0"
 description = "ABOM — production control plane for agentic AI (Step-1 MVP scaffold)"
 requires-python = ">=3.12"
