@@ -1,72 +1,129 @@
-"""Thin CLI over the Control API (Typer).
+"""abom — the Agent Bill of Materials CLI.
 
-Examples:
-  abom project-create --name demo --repo /path/to/repo --test "pytest -q"
-  abom run --project <id> --intent "Add input validation to /login"
-  abom status <run_id>
-  abom audit-verify <run_id>
+    abom scan .                 # detect components, emit a signed ABOM
+    abom verify abom.json       # check signature (and policy, if given)
+    abom keygen                 # show the local ed25519 signing key
+    abom version
+
+Exit code is non-zero when verification finds violations, so it drops into CI.
 """
 from __future__ import annotations
 
-import os
+import json
+from pathlib import Path
 
-import httpx
 import typer
 
-app = typer.Typer(help="ABOM control-plane CLI (MVP)")
+from . import __version__, bom, scan as scanner, sign
 
-API = os.environ.get("ABOM_API_URL", "http://localhost:8000")
-TOKEN = os.environ.get("ABOM_TOKEN", "dev-token")
-H = {"Authorization": f"Bearer {TOKEN}"}
+app = typer.Typer(
+    add_completion=False,
+    no_args_is_help=True,
+    help="ABOM — know what your AI agents are made of, and prove it.",
+)
 
-
-def _client() -> httpx.Client:
-    return httpx.Client(base_url=API, headers=H, timeout=30)
-
-
-@app.command("project-create")
-def project_create(name: str, repo: str, test: str = "pytest -q"):
-    with _client() as c:
-        r = c.post("/v1/projects", json={"name": name, "repo_url": repo, "test_command": test})
-        r.raise_for_status()
-        typer.echo(r.json()["id"])
+TYPE_LABEL = {
+    "model": "models", "tool": "tools", "prompt": "prompts", "dataSource": "data sources",
+    "policy": "policies / guardrails", "framework": "frameworks", "mcpServer": "MCP servers",
+}
 
 
 @app.command()
-def run(project: str, intent: str, max_iterations: int = 4):
-    with _client() as c:
-        r = c.post("/v1/runs", json={"project_id": project, "intent": intent,
-                                     "max_iterations": max_iterations})
-        r.raise_for_status()
-        typer.echo(r.json()["id"])
+def scan(
+    path: str = typer.Argument(".", help="Repository or directory to scan."),
+    output: str = typer.Option("abom.json", "-o", "--output", help="Output file ('-' for stdout)."),
+    sign_manifest: bool = typer.Option(True, "--sign/--no-sign", help="ed25519-sign the manifest."),
+    name: str = typer.Option(None, "--name", help="Override the detected agent name."),
+    version: str = typer.Option(None, "--agent-version", help="Override the detected agent version."),
+):
+    """Scan a repo and emit a signed ABOM Composition Manifest."""
+    root = Path(path)
+    if not root.exists():
+        typer.secho(f"path not found: {path}", fg="red", err=True)
+        raise typer.Exit(2)
+
+    result = scanner.scan(root)
+    if name:
+        result["agent"]["name"] = name
+    if version:
+        result["agent"]["version"] = version
+    manifest = bom.build_composition(
+        result["agent"], result["components"], result["controls"], sign=sign_manifest
+    )
+
+    text = json.dumps(manifest, indent=2)
+    if output == "-":
+        typer.echo(text)
+    else:
+        Path(output).write_text(text)
+
+    a = manifest["agent"]
+    typer.secho(f"\n  ABOM · {a['name']} @ {a['version']}", fg="cyan", bold=True)
+    by_type: dict[str, list] = {}
+    for c in manifest["components"]:
+        by_type.setdefault(c["type"], []).append(c.get("name", "?"))
+    if not by_type:
+        typer.secho("  no agent components detected (is this an agent repo?)", fg="yellow")
+    for t, names in by_type.items():
+        typer.echo(f"  {TYPE_LABEL.get(t, t):22} {len(names):>2}  " + ", ".join(names[:6])
+                   + (" …" if len(names) > 6 else ""))
+    sig = manifest.get("signature", {})
+    if sig:
+        typer.secho(f"  signed: {sig.get('alg')} · key {sig.get('key_id', '?')}", fg="green")
+    typer.echo(f"  composition_sha256: {manifest['composition_sha256'][:16]}…")
+    if output != "-":
+        typer.secho(f"  → wrote {output}\n", fg="cyan")
 
 
 @app.command()
-def status(run_id: str):
-    with _client() as c:
-        r = c.get(f"/v1/runs/{run_id}")
-        r.raise_for_status()
-        data = r.json()
-        typer.echo(f"{data['status']:<18} tokens={data['prompt_tokens']}+{data['completion_tokens']}")
+def verify(
+    abom_file: str = typer.Argument("abom.json", help="ABOM file to verify."),
+    policy_file: str = typer.Option(None, "--policy", "-p", help="Policy JSON to enforce."),
+):
+    """Verify an ABOM's signature, and (with --policy) its compliance."""
+    try:
+        doc = json.loads(Path(abom_file).read_text())
+    except Exception as exc:
+        typer.secho(f"could not read {abom_file}: {exc}", fg="red", err=True)
+        raise typer.Exit(2)
+    if doc.get("type") != "CompositionManifest":
+        typer.secho("not a Composition Manifest (verify expects `abom scan` output)", fg="red", err=True)
+        raise typer.Exit(2)
+
+    policy = json.loads(Path(policy_file).read_text()) if policy_file else None
+    result = bom.verify_abom(doc, [], policy)
+
+    if result["ok"]:
+        typer.secho(f"\n  ✓ VALID — signature OK, {result['components']} components"
+                    + (", policy clean" if policy else "") + "\n", fg="green", bold=True)
+        raise typer.Exit(0)
+
+    typer.secho(f"\n  ✗ {len(result['findings'])} finding(s):", fg="red", bold=True)
+    for f in result["findings"]:
+        loc = f.get("component") or (f"seq {f['seq']}" if "seq" in f else "-")
+        typer.echo(f"      • [{f['severity']}] {f['rule']} ({loc}): {f['detail']}")
+    typer.echo("")
+    raise typer.Exit(1)
 
 
 @app.command()
-def steps(run_id: str):
-    with _client() as c:
-        r = c.get(f"/v1/runs/{run_id}/steps")
-        r.raise_for_status()
-        for s in r.json():
-            typer.echo(f"{s['seq']:>3}  {s['type']}")
+def keygen(show_private: bool = typer.Option(False, "--show-private", help="Print the private key path.")):
+    """Show (or create) the local ed25519 signing key."""
+    key = sign.load_or_create_key()
+    pub_b64 = sign._pub_b64(key.public_key())
+    path = sign.default_key_path()
+    typer.secho("  ABOM signing key", fg="cyan", bold=True)
+    typer.echo(f"  key_id:     {sign.key_id(pub_b64)}")
+    typer.echo(f"  public_key: {pub_b64}")
+    if show_private:
+        typer.echo(f"  private:    {path}")
+    typer.secho(f"  stored at {path} (override with ABOM_KEY)", fg="bright_black")
 
 
-@app.command("audit-verify")
-def audit_verify(run_id: str):
-    with _client() as c:
-        r = c.get("/v1/audit/verify", params={"run_id": run_id})
-        r.raise_for_status()
-        data = r.json()
-        ok = "VALID" if data["valid"] else f"BROKEN at seq {data['broken_seq']} ({data['reason']})"
-        typer.echo(f"audit chain: {ok}  ({data['event_count']} events)")
+@app.command()
+def version():
+    """Print the abom and ABOM-spec versions."""
+    typer.echo(f"abom {__version__} · ABOM spec v{bom.ABOM_VERSION}")
 
 
 if __name__ == "__main__":

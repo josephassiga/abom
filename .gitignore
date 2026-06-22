@@ -3,3 +3,12 @@ __pycache__/
 .env
 cli/demo/out/
 .DS_Store
+
+# build artifacts
+dist/
+build/
+*.egg-info/
+.abom/
+
+# abom scan output
+abom.json

@@ -1,0 +1,7 @@
+langchain>=0.2
+langgraph
+openai>=1.0
+anthropic
+chromadb
+guardrails-ai
+mcp

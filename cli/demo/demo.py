@@ -150,12 +150,12 @@ def main() -> int:
     violating = violating_chain(comp_hash)
 
     print("▶ COMPLIANT run — approved model, no bad egress, action approved")
-    v_ok = bom.verify_abom(manifest, compliant)
+    v_ok = bom.verify_abom(manifest, compliant, bom.DEFAULT_POLICY)
     show_verify("compliant", v_ok)
     print()
 
     print("▶ VIOLATING run — shadow model, confidential egress, no approval")
-    v_bad = bom.verify_abom(manifest, violating)
+    v_bad = bom.verify_abom(manifest, violating, bom.DEFAULT_POLICY)
     show_verify("violating", v_bad)
     print()
 
@@ -170,7 +170,7 @@ def main() -> int:
     tampered = json.loads(json.dumps(violating))
     tampered[1]["data"]["data_touched"] = []          # erase the confidential egress
     tampered[1]["data"]["decision"] = "submit memo"   # relabel the action
-    v_tampered = bom.verify_abom(manifest, tampered)
+    v_tampered = bom.verify_abom(manifest, tampered, bom.DEFAULT_POLICY)
     broke = any(f["rule"] == "chain_integrity" for f in v_tampered["findings"])
     print(f"  scrubbing the record → chain integrity: "
           f"{'BROKEN (detected)' if broke else 'intact (!?)'}")

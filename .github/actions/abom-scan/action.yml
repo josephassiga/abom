@@ -1,0 +1,46 @@
+name: "ABOM Scan"
+description: "Generate and verify an Agent Bill of Materials (ABOM) for your repository."
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  path:
+    description: "Directory to scan."
+    default: "."
+  policy:
+    description: "Path to a policy JSON to enforce (optional)."
+    default: ""
+  output:
+    description: "Where to write the ABOM."
+    default: "abom.json"
+  fail-on-findings:
+    description: "Fail the job if verification finds violations."
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install abom-cli
+      shell: bash
+      run: |
+        pip install abom-cli \
+          || pip install "git+https://github.com/josephassiga/abom.git#subdirectory=cli"
+    - name: Scan
+      shell: bash
+      run: abom scan "${{ inputs.path }}" -o "${{ inputs.output }}"
+    - name: Verify
+      shell: bash
+      run: |
+        ARGS=""
+        [ -n "${{ inputs.policy }}" ] && ARGS="--policy ${{ inputs.policy }}"
+        if [ "${{ inputs.fail-on-findings }}" = "true" ]; then
+          abom verify "${{ inputs.output }}" $ARGS
+        else
+          abom verify "${{ inputs.output }}" $ARGS || true
+        fi
+    - name: Upload ABOM
+      uses: actions/upload-artifact@v4
+      with:
+        name: abom
+        path: ${{ inputs.output }}

@@ -20,9 +20,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install --upgrade pip pytest ruff
-      - name: Tamper-evidence tests
-        run: PYTHONPATH=src pytest tests/ -q
+      - run: python -m pip install --upgrade pip && pip install -e ".[dev]"
+      - name: Tests (tamper-evidence + scanner + signing)
+        run: pytest tests/ -q
+      - name: abom scan + verify (smoke)
+        run: |
+          abom scan tests/fixtures/sample-agent -o /tmp/abom.json
+          abom verify /tmp/abom.json
+          abom version
       - name: ABOM demo (generate → verify → tamper)
         run: python demo/demo.py
       - name: Lint
