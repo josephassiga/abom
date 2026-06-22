@@ -10,5 +10,6 @@ build/
 *.egg-info/
 .abom/
 
-# abom scan output
-abom.json
+# abom scan output (but keep the committed examples/ ABOMs)
+/abom.json
+cli/abom.json

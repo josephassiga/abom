@@ -1,0 +1,61 @@
+{
+  "abom": "0.1",
+  "extends": "CycloneDX ML-BOM",
+  "type": "CompositionManifest",
+  "agent": {
+    "name": "crewai-research-crew",
+    "version": "0.0.0"
+  },
+  "components": [
+    {
+      "type": "model",
+      "name": "Anthropic (SDK)",
+      "provider": "Anthropic",
+      "egress": true,
+      "detected_from": "dependency:anthropic"
+    },
+    {
+      "type": "framework",
+      "name": "CrewAI",
+      "detected_from": "dependency:crewai"
+    },
+    {
+      "type": "model",
+      "name": "OpenAI (SDK)",
+      "provider": "OpenAI",
+      "egress": true,
+      "detected_from": "dependency:openai"
+    },
+    {
+      "type": "tool",
+      "name": "kb_lookup",
+      "detected_from": "file:crew.py"
+    },
+    {
+      "type": "model",
+      "name": "claude-3-5-sonnet-20241022",
+      "provenance": "referenced in source",
+      "egress": true,
+      "detected_from": "source"
+    },
+    {
+      "type": "model",
+      "name": "gpt-4o-mini",
+      "provenance": "referenced in source",
+      "egress": true,
+      "detected_from": "source"
+    }
+  ],
+  "controls": {
+    "scan": "static",
+    "scanned_path": "crewai-research-crew",
+    "egress": "unknown (static scan)"
+  },
+  "composition_sha256": "f63acddd5e9054f6cb83870080eded460daf484854ff653da4e68256bb0facdc",
+  "signature": {
+    "alg": "ed25519",
+    "public_key": "n64X/Sw2FcgaGWCslPrejohyyGu34ipSVk704j/up+A=",
+    "key_id": "80a12d1f594d5481",
+    "value": "A2UkHUPkQ+12201M1JDYAFpV23c39EO+Z7cN4AyWBlLDCvz+BTLXF6P3R2Ldlhu3a5WO5BlJhMYdaJV5MXV/DQ=="
+  }
+}

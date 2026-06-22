@@ -1,0 +1,9 @@
+{
+  "allowed_models": [
+    "gpt-4o-mini",
+    "OpenAI (SDK)",
+    "Anthropic (SDK)",
+    "claude-3-5-sonnet-20241022"
+  ],
+  "no_egress_classifications": ["confidential", "restricted"]
+}

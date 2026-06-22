@@ -1,0 +1,76 @@
+{
+  "abom": "0.1",
+  "extends": "CycloneDX ML-BOM",
+  "type": "CompositionManifest",
+  "agent": {
+    "name": "langchain-support-agent",
+    "version": "0.0.0"
+  },
+  "components": [
+    {
+      "type": "dataSource",
+      "kind": "vector-store",
+      "name": "Chroma",
+      "detected_from": "dependency:chromadb"
+    },
+    {
+      "type": "framework",
+      "name": "LangChain",
+      "detected_from": "dependency:langchain"
+    },
+    {
+      "type": "framework",
+      "name": "LangGraph",
+      "detected_from": "dependency:langgraph"
+    },
+    {
+      "type": "model",
+      "name": "OpenAI (SDK)",
+      "provider": "OpenAI",
+      "egress": true,
+      "detected_from": "dependency:openai"
+    },
+    {
+      "type": "tool",
+      "name": "search_orders",
+      "detected_from": "file:agent.py"
+    },
+    {
+      "type": "tool",
+      "name": "issue_refund",
+      "detected_from": "file:agent.py"
+    },
+    {
+      "type": "prompt",
+      "name": "prompts/system.txt",
+      "sha256": "5a712311c05daf54e5f6c006ec175651e4b94eb69be6fce3206be5fcf8d673ea",
+      "detected_from": "file:prompts/system.txt"
+    },
+    {
+      "type": "model",
+      "name": "gpt-4o",
+      "provenance": "referenced in source",
+      "egress": true,
+      "detected_from": "source"
+    },
+    {
+      "type": "model",
+      "name": "gpt-4o-mini",
+      "provenance": "referenced in source",
+      "egress": true,
+      "detected_from": "source"
+    }
+  ],
+  "controls": {
+    "scan": "static",
+    "scanned_path": "langchain-support-agent",
+    "egress": "unknown (static scan)"
+  },
+  "composition_sha256": "8ed8c9ef086ad7a7b78053a44bddfd689cad6d66d11caa4fe9e5a7bd92bb5a19",
+  "signature": {
+    "alg": "ed25519",
+    "public_key": "n64X/Sw2FcgaGWCslPrejohyyGu34ipSVk704j/up+A=",
+    "key_id": "80a12d1f594d5481",
+    "value": "ogHpw592X65KAK9bhPrIgVZPJ6UkYq/542ekbYgBgz46tbThC+7IgdB9Wk5jbyTieS6BQqa2MOC6LOF7esKlCA=="
+  }
+}

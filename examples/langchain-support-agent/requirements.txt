@@ -1,0 +1,7 @@
+langchain>=0.3
+langchain-openai>=0.2
+langchain-community>=0.3
+langgraph>=0.2
+openai>=1.40
+chromadb>=0.5
+tavily-python>=0.5
