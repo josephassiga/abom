@@ -49,6 +49,8 @@ Open-source project files: [LICENSE](LICENSE) (Apache-2.0) · [CONTRIBUTING](CON
 
 ## Usage
 
+Requires **Python 3.10+**.
+
 ```bash
 pip install abom-cli
 
