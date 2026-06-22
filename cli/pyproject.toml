@@ -1,6 +1,6 @@
 [project]
 name = "abom-cli"
-version = "0.1.1"
+version = "0.1.2"
 description = "ABOM — the Agent Bill of Materials. Scan, sign, and verify what your AI agents are made of."
 readme = "README.md"
 requires-python = ">=3.10"

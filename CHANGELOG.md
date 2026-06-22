@@ -4,7 +4,7 @@ All notable changes to ABOM are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project aims to
 follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from 1.0.
 
-## [0.1.1]
+## [0.1.2]
 
 ### Added
 - **Verbose logging** — `-v` (info), `-vv` (debug), `-q`/`--quiet` (errors only),
@@ -12,6 +12,8 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from 1.0.
   Logs go to **stderr** (the ABOM stays clean on stdout) and show what's parsed,
   detected, signed, and checked. JSON events carry structured fields
   (`event`, `comp_type`, `rule`, `severity`, …).
+
+## [0.1.1]
 
 ### Changed
 - Support **Python 3.10** — added a `tomli` fallback for `tomllib` and lowered
