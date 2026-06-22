@@ -1,5 +1,5 @@
 __pycache__/
 *.pyc
 .env
-mvp/demo/out/
+cli/demo/out/
 .DS_Store
