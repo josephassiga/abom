@@ -14,7 +14,7 @@ from pathlib import Path
 
 import typer
 
-from . import __version__, bom, scan as scanner, sign
+from . import __version__, bom, log, scan as scanner, sign
 
 app = typer.Typer(
     add_completion=False,
@@ -35,8 +35,11 @@ def scan(
     sign_manifest: bool = typer.Option(True, "--sign/--no-sign", help="ed25519-sign the manifest."),
     name: str = typer.Option(None, "--name", help="Override the detected agent name."),
     version: str = typer.Option(None, "--agent-version", help="Override the detected agent version."),
+    verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
+    quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
 ):
     """Scan a repo and emit a signed ABOM Composition Manifest."""
+    log.setup(verbose, quiet)
     root = Path(path)
     if not root.exists():
         typer.secho(f"path not found: {path}", fg="red", err=True)
@@ -79,8 +82,11 @@ def scan(
 def verify(
     abom_file: str = typer.Argument("abom.json", help="ABOM file to verify."),
     policy_file: str = typer.Option(None, "--policy", "-p", help="Policy JSON to enforce."),
+    verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
+    quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
 ):
     """Verify an ABOM's signature, and (with --policy) its compliance."""
+    log.setup(verbose, quiet)
     try:
         doc = json.loads(Path(abom_file).read_text())
     except Exception as exc:
@@ -107,8 +113,13 @@ def verify(
 
 
 @app.command()
-def keygen(show_private: bool = typer.Option(False, "--show-private", help="Print the private key path.")):
+def keygen(
+    show_private: bool = typer.Option(False, "--show-private", help="Print the private key path."),
+    verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
+    quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
+):
     """Show (or create) the local ed25519 signing key."""
+    log.setup(verbose, quiet)
     key = sign.load_or_create_key()
     pub_b64 = sign._pub_b64(key.public_key())
     path = sign.default_key_path()

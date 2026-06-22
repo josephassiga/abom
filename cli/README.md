@@ -19,6 +19,8 @@ abom verify abom.json --policy policy.json   # + enforce a policy (exit 1 on vio
 | `abom keygen` | Show (or create) the local ed25519 signing key (`~/.abom/signing_key.pem`, override with `ABOM_KEY`). |
 | `abom version` | Print the tool and spec versions. |
 
+All commands accept **`-v`** (info) / **`-vv`** (debug) / **`-q`** (errors only) — logs go to stderr, so the ABOM on stdout stays clean.
+
 ### Example
 
 ```

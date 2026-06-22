@@ -14,11 +14,13 @@ from __future__ import annotations
 
 import dataclasses
 import hashlib
+import logging
 
 from . import sign as _sign
 from .audit import GENESIS, canonical_json, make_record, verify_chain
 
 ABOM_VERSION = "0.1"
+log = logging.getLogger("abom.bom")
 
 
 def _sha256(obj) -> str:
@@ -44,6 +46,8 @@ def build_composition(agent: dict, components: list[dict], controls: dict,
         "agent": agent, "components": components, "controls": controls,
     }
     body["composition_sha256"] = _sha256(body)
+    log.debug("composition built: %d components, sha256=%s…",
+              len(components), body["composition_sha256"][:16])
     return _sign.sign_obj(body, key) if sign else body
 
 
@@ -143,5 +147,9 @@ def verify_abom(composition: dict, chain: list | None = None, policy: dict | Non
                 findings.append({"rule": "approval_coverage", "seq": seq, "severity": "high",
                                  "detail": "consequential action without approval"})
 
+    log.info("verify: %d finding(s) over %d components / %d action(s)",
+             len(findings), len(composition.get("components", [])), len(chain))
+    for f in findings:
+        log.debug("finding: [%s] %s — %s", f.get("severity"), f.get("rule"), f.get("detail"))
     return {"ok": len(findings) == 0, "findings": findings,
             "actions": len(chain), "components": len(composition.get("components", []))}

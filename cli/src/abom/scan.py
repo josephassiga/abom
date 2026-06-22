@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 from pathlib import Path
 
@@ -16,6 +17,8 @@ try:
     import tomllib  # Python 3.11+
 except ModuleNotFoundError:  # Python 3.10
     import tomli as tomllib
+
+log = logging.getLogger("abom.scan")
 
 # --- known signals -----------------------------------------------------------
 FRAMEWORKS = {
@@ -144,7 +147,10 @@ def _agent_meta(root: Path) -> dict:
 
 def scan(root: Path) -> dict:
     root = Path(root)
+    log.info("scanning %s", root.resolve())
     deps = parse_dependencies(root)
+    log.info("parsed %d dependencies", len(deps))
+    log.debug("dependencies: %s", ", ".join(sorted(deps)) or "(none)")
     components: list[dict] = []
     seen: set[tuple] = set()
 
@@ -153,6 +159,8 @@ def scan(root: Path) -> dict:
         if key not in seen:
             seen.add(key)
             components.append(comp)
+            log.debug("+ %-10s %-28s [%s]", comp["type"], comp.get("name", "?"),
+                      comp.get("detected_from", "?"))
 
     # 1. from dependencies
     for d in sorted(deps):
@@ -203,6 +211,7 @@ def scan(root: Path) -> dict:
         add({"type": "model", "name": name, "provenance": "referenced in source",
              "egress": provider == "external", "detected_from": "source"})
 
+    log.info("detected %d components", len(components))
     return {
         "agent": _agent_meta(root),
         "components": components,

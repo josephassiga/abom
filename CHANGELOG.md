@@ -6,6 +6,11 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from 1.0.
 
 ## [0.1.1]
 
+### Added
+- **Verbose logging** — `-v` (info), `-vv` (debug), and `-q`/`--quiet` (errors only)
+  on `scan`, `verify`, and `keygen`. Logs go to **stderr** (the ABOM stays clean on
+  stdout) and show what's parsed, detected, signed, and checked.
+
 ### Changed
 - Support **Python 3.10** — added a `tomli` fallback for `tomllib` and lowered
   `requires-python` to `>=3.10`, so `pip install abom-cli` works without Python 3.11+.
