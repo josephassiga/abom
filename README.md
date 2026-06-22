@@ -16,6 +16,27 @@ pip install abom-cli && abom scan .
 
 Your agents ship as a black box. **ABOM develops the film.** It scans the models, prompts, tools, vector stores, and guardrails in your repo and emits a signed Agent Bill of Materials. The instant any of them is swapped, it catches the drift, re-signs, and fails the build — mapped to the EU AI Act and the OWASP Top 10 for LLM & agentic apps. Apache 2.0, runs entirely offline.
 
+<!-- Before launch, replace this block with an asciinema/GIF demo — see LAUNCH.md -->
+
+```text
+$ abom scan .
+
+  ABOM · langchain-support-agent
+  data sources   1  Chroma
+  frameworks     2  LangChain, LangGraph
+  models         3  OpenAI (SDK), gpt-4o, gpt-4o-mini
+  tools          2  search_orders, issue_refund
+  prompts        1  prompts/system.txt
+  signed: ed25519 · key 80a12d1f594d5481
+  → wrote abom.json
+
+$ abom verify abom.json --policy policy.json
+  ✗ 1 finding:
+      • [medium] model_allowlist (gpt-4o): declared model not on allowlist
+```
+
+See it run on real repos in [`examples/`](examples/) — LangChain and CrewAI, with committed signed ABOMs.
+
 ABOM extends the open **CycloneDX ML-BOM** standard to full agents and runtime provenance. We open-source the format and the generator to win the standard, and monetize verification and the neutral notary.
 
 ## The two artifacts
@@ -37,21 +58,41 @@ ABOM extends the open **CycloneDX ML-BOM** standard to full agents and runtime p
 |---|---|
 | [spec/](spec/) | **The ABOM standard** — JSON Schema + human-readable spec + examples (extends CycloneDX ML-BOM) |
 | [cli/](cli/) | **Reference implementation** — the `abom` CLI & library ([demo](cli/demo/), [spec for it](cli/MVP_SPEC.md)) |
+| [examples/](examples/) | `abom scan` on real LangChain & CrewAI repos, with committed signed ABOMs |
 | [docs/](docs/) | Project documents — strategy, architecture, market model |
 | [website/](website/) | The abom.ai site (served via GitHub Pages) |
 
 Open-source project files: [LICENSE](LICENSE) (Apache-2.0) · [CONTRIBUTING](CONTRIBUTING.md) · [GOVERNANCE](GOVERNANCE.md) · [SECURITY](SECURITY.md) · [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) · [CHANGELOG](CHANGELOG.md).
 
-## Quick start
+## Usage
 
 ```bash
-# the demo that proves the core — no infrastructure required
-cd cli && make demo
+pip install abom-cli
+
+abom scan .                                   # → abom.json (signed with ed25519)
+abom verify abom.json                         # check the signature
+abom verify abom.json --policy policy.json    # enforce a policy (exit 1 on violations)
 ```
 
-Expected: a run emits a signed ABOM (Composition Manifest + hash-chained Action Provenance), **abom-verify** catches a real policy violation that a naked run hides, and tampering with any record is detected — `✓ DEMO ASSERTIONS PASSED`.
+`abom scan` detects models, prompts, tools, MCP servers, frameworks, vector
+stores, and guardrails from your dependencies and source — each with a
+`detected_from` — and emits a [spec-valid](spec/) Composition Manifest.
 
-Full local stack (Postgres, Temporal, MinIO, API, worker) via `make up`; all settings use the `ABOM_` env prefix (see [cli/.env.example](cli/.env.example)).
+### In CI (GitHub Action)
+
+```yaml
+- uses: josephassiga/abom/.github/actions/abom-scan@main
+  with:
+    path: .
+    # policy: .abom/policy.json    # optional — fail the build on violations
+```
+
+### From source
+
+```bash
+cd cli && pip install -e ".[dev]"
+make demo            # generate → verify → tamper-evidence walkthrough (no infra)
+```
 
 ## The bet
 
