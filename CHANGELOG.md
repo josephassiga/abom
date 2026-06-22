@@ -7,9 +7,11 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from 1.0.
 ## [0.1.1]
 
 ### Added
-- **Verbose logging** — `-v` (info), `-vv` (debug), and `-q`/`--quiet` (errors only)
-  on `scan`, `verify`, and `keygen`. Logs go to **stderr** (the ABOM stays clean on
-  stdout) and show what's parsed, detected, signed, and checked.
+- **Verbose logging** — `-v` (info), `-vv` (debug), `-q`/`--quiet` (errors only),
+  and `--json-logs` (structured NDJSON for CI) on `scan`, `verify`, and `keygen`.
+  Logs go to **stderr** (the ABOM stays clean on stdout) and show what's parsed,
+  detected, signed, and checked. JSON events carry structured fields
+  (`event`, `comp_type`, `rule`, `severity`, …).
 
 ### Changed
 - Support **Python 3.10** — added a `tomli` fallback for `tomllib` and lowered

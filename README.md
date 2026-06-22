@@ -59,6 +59,7 @@ abom verify abom.json                         # check the signature
 abom verify abom.json --policy policy.json    # enforce a policy (exit 1 on violations)
 
 abom scan . -v                                # info logs to stderr (-vv for debug, -q for quiet)
+abom scan . -vv --json-logs                   # structured NDJSON logs (for CI)
 ```
 
 `abom scan` detects models, prompts, tools, MCP servers, frameworks, vector

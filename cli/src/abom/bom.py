@@ -148,8 +148,12 @@ def verify_abom(composition: dict, chain: list | None = None, policy: dict | Non
                                  "detail": "consequential action without approval"})
 
     log.info("verify: %d finding(s) over %d components / %d action(s)",
-             len(findings), len(composition.get("components", [])), len(chain))
+             len(findings), len(composition.get("components", [])), len(chain),
+             extra={"event": "verify_done", "findings": len(findings),
+                    "components": len(composition.get("components", [])), "actions": len(chain)})
     for f in findings:
-        log.debug("finding: [%s] %s — %s", f.get("severity"), f.get("rule"), f.get("detail"))
+        log.debug("finding: [%s] %s — %s", f.get("severity"), f.get("rule"), f.get("detail"),
+                  extra={"event": "finding", "rule": f.get("rule"),
+                         "severity": f.get("severity"), "detail": f.get("detail")})
     return {"ok": len(findings) == 0, "findings": findings,
             "actions": len(chain), "components": len(composition.get("components", []))}

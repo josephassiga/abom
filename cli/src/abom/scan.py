@@ -160,7 +160,9 @@ def scan(root: Path) -> dict:
             seen.add(key)
             components.append(comp)
             log.debug("+ %-10s %-28s [%s]", comp["type"], comp.get("name", "?"),
-                      comp.get("detected_from", "?"))
+                      comp.get("detected_from", "?"),
+                      extra={"event": "component", "comp_type": comp["type"],
+                             "comp_name": comp.get("name"), "source": comp.get("detected_from")})
 
     # 1. from dependencies
     for d in sorted(deps):
@@ -211,7 +213,8 @@ def scan(root: Path) -> dict:
         add({"type": "model", "name": name, "provenance": "referenced in source",
              "egress": provider == "external", "detected_from": "source"})
 
-    log.info("detected %d components", len(components))
+    log.info("detected %d components", len(components),
+             extra={"event": "scan_done", "components": len(components)})
     return {
         "agent": _agent_meta(root),
         "components": components,

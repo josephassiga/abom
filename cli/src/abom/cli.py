@@ -37,9 +37,10 @@ def scan(
     version: str = typer.Option(None, "--agent-version", help="Override the detected agent version."),
     verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
     quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
+    json_logs: bool = typer.Option(False, "--json-logs", help="Structured NDJSON logs to stderr (CI)."),
 ):
     """Scan a repo and emit a signed ABOM Composition Manifest."""
-    log.setup(verbose, quiet)
+    log.setup(verbose, quiet, json_logs)
     root = Path(path)
     if not root.exists():
         typer.secho(f"path not found: {path}", fg="red", err=True)
@@ -84,9 +85,10 @@ def verify(
     policy_file: str = typer.Option(None, "--policy", "-p", help="Policy JSON to enforce."),
     verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
     quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
+    json_logs: bool = typer.Option(False, "--json-logs", help="Structured NDJSON logs to stderr (CI)."),
 ):
     """Verify an ABOM's signature, and (with --policy) its compliance."""
-    log.setup(verbose, quiet)
+    log.setup(verbose, quiet, json_logs)
     try:
         doc = json.loads(Path(abom_file).read_text())
     except Exception as exc:
@@ -117,9 +119,10 @@ def keygen(
     show_private: bool = typer.Option(False, "--show-private", help="Print the private key path."),
     verbose: int = typer.Option(0, "-v", "--verbose", count=True, help="-v info, -vv debug (to stderr)."),
     quiet: bool = typer.Option(False, "-q", "--quiet", help="Errors only."),
+    json_logs: bool = typer.Option(False, "--json-logs", help="Structured NDJSON logs to stderr (CI)."),
 ):
     """Show (or create) the local ed25519 signing key."""
-    log.setup(verbose, quiet)
+    log.setup(verbose, quiet, json_logs)
     key = sign.load_or_create_key()
     pub_b64 = sign._pub_b64(key.public_key())
     path = sign.default_key_path()
