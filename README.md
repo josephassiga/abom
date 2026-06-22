@@ -2,6 +2,7 @@
 
 **abom.ai** · *The open-source security standard for AI agents.*
 
+[![PyPI](https://img.shields.io/pypi/v/abom-cli.svg)](https://pypi.org/project/abom-cli/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/josephassiga/abom/actions/workflows/ci.yml/badge.svg)](https://github.com/josephassiga/abom/actions/workflows/ci.yml)
 [![ABOM spec](https://img.shields.io/badge/ABOM%20spec-v0.1-6e56cf.svg)](spec/)

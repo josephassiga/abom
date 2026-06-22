@@ -17,10 +17,11 @@ docs, and the examples are all welcome.
 
 ```bash
 cd cli
-pip install -e ".[dev]"      # FastAPI, Temporal, SQLAlchemy, pytest, ruff, …
+pip install -e ".[dev]"      # lean: typer, cryptography + pytest, ruff, jsonschema
 
 # fast checks — no infrastructure needed
-PYTHONPATH=src pytest tests/ -q     # tamper-evidence unit tests
+pytest tests/ -q                    # audit chain, scanner, signing
+abom scan tests/fixtures/sample-agent && abom verify abom.json
 python demo/demo.py                 # generate → verify → tamper-evidence demo
 ruff check src                      # lint
 ```
