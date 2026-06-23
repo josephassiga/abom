@@ -1,4 +1,4 @@
-# abom.ai — website
+# abom.ai - website
 
 This repository holds the public **abom.ai** website only. It is served via
 GitHub Pages from [`website/`](website/) (see
