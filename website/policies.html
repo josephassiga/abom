@@ -43,6 +43,8 @@
   .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
   .btn.sm{padding:7px 14px;font-size:13px;border-radius:8px}
   .btn.dark{background:var(--teal);color:#fff}
+  .btn.subtle{background:#E8F2F1;color:var(--teal);border:1px solid var(--line)}
+  .btn.subtle:hover{background:#dceceb;box-shadow:none;transform:none}
   @media(max-width:760px){.navlinks a:not(.btn){display:none}}
 
   header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:64px 0 50px}
@@ -55,31 +57,45 @@
   .disclaimer{background:#FBF1D6;border:1px solid #E8D7A0;border-radius:var(--r);padding:16px 18px;margin:22px 0;font-size:14px;color:#5b4a16}
   .disclaimer b{color:#a87a00}
 
-  .secthead{margin:30px 0 8px}
+  .secthead{margin:30px 0 16px}
   .secthead h2{font-size:22px}
   .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
 
-  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);margin:18px 0;overflow:hidden}
-  .pcard .top{padding:20px 22px;display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid var(--line)}
-  .pcard .ic{flex:none;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  /* tile grid */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
+  .pcard .top{padding:20px 22px 6px;display:flex;align-items:flex-start;gap:14px}
+  .pcard .ic{flex:none;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center}
   .pcard .ic.fin{background:rgba(31,163,122,.13)}
   .pcard .ic.man{background:rgba(124,108,214,.13)}
   .pcard .ic.hea{background:rgba(229,96,77,.12)}
   .pcard .hd{flex:1;min-width:0}
-  .pcard h3{font-size:19px;margin-bottom:3px}
-  .pcard .file{font-size:12.5px;color:var(--slate)}
+  .pcard h3{font-size:18px;margin-bottom:3px}
+  .pcard .file{font-size:12px;color:var(--slate)}
   .pcard .file .mono{color:var(--teal)}
-  .pcard .desc{padding:16px 22px 4px;color:var(--slate);font-size:14.5px}
+  .pcard .desc{padding:8px 22px 0;color:var(--slate);font-size:14px;line-height:1.55}
   .pcard .desc b{color:var(--ink)}
 
-  .maps{display:flex;flex-wrap:wrap;gap:7px;padding:12px 22px 18px}
-  .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px}
+  /* metadata rows (Regulations / Egress / Approval / Models) */
+  .meta{padding:14px 22px 4px;font-size:13px;border-top:1px solid var(--line);margin-top:14px}
+  .meta .row{margin-bottom:7px;color:var(--slate)}
+  .meta .row:last-child{margin-bottom:0}
+  .meta .row b{color:var(--ink);font-weight:700}
+  .maps{display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle}
+  .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 
-  .code{background:var(--navy);overflow:hidden;border-top:1px solid #0a2a40}
+  .pcard .actions{padding:16px 22px;margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .pcard .actions .btn{flex:0 0 auto}
+
+  /* collapsible JSON */
+  .code{background:var(--navy);overflow:hidden;border-top:1px solid #0a2a40;display:none}
+  .code.open{display:block}
   .code .bar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:#0a2a40;border-bottom:1px solid #0e3550}
   .code .bar .ttl{color:#9fc2cc;font-size:12.5px;font-family:ui-monospace,monospace;flex:1}
   .code .acts{display:flex;gap:8px}
-  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre;margin:0}
+  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.65;color:#cfe8ec;white-space:pre;margin:0;max-height:420px}
   .code pre .k{color:var(--mint)}.code pre .s{color:#9ad7c8}.code pre .n{color:#E0A100}.code pre .b{color:#7fb0ff}
   .btn.copy{background:rgba(255,255,255,.1);color:#dff3ef;border:1px solid rgba(255,255,255,.18)}
   .btn.copy:hover{background:rgba(255,255,255,.18);box-shadow:none;transform:none}
@@ -132,6 +148,8 @@
     <p>Same schema (<span class="mono">abom-policy-0.1</span>), three different postures. Note how the strictness escalates: finance permits two internal endpoints; manufacturing locks egress to its PLM/MES; healthcare denies all external egress and requires approval on <i>every</i> consequential action.</p>
   </div>
 
+  <div class="grid">
+
   <!-- FINANCE -->
   <article class="pcard">
     <div class="top">
@@ -142,13 +160,19 @@
         <h3>Finance</h3>
         <div class="file"><span class="mono">finance.json</span> · name: <span class="mono">finance-baseline</span></div>
       </div>
-      <a class="btn dark sm" id="dl-finance">Download</a>
     </div>
     <p class="desc">Strict egress and approval posture for agents on financial data and systems. <b>Cardholder and customer-financial data must never leave the boundary</b>, model access is allowlisted, and any write to the ledger or payments path needs human approval.</p>
-    <div class="maps">
-      <span class="reg">SOX</span><span class="reg">GLBA</span><span class="reg">PCI-DSS</span><span class="reg">DORA</span>
+    <div class="meta">
+      <div class="row"><b>Regulations:</b> <span class="maps"><span class="reg">SOX</span><span class="reg">GLBA</span><span class="reg">PCI-DSS</span><span class="reg">DORA</span></span></div>
+      <div class="row"><b>Egress:</b> deny-by-default · 2 internal endpoints (KYC, ledger)</div>
+      <div class="row"><b>Approval:</b> required for consequential actions</div>
+      <div class="row"><b>Models:</b> 2 allowlisted</div>
     </div>
-    <div class="code">
+    <div class="actions">
+      <button class="btn dark sm toggle" data-key="finance">View policy</button>
+      <button class="btn subtle sm" id="dl-finance">Download</button>
+    </div>
+    <div class="code" id="code-finance">
       <div class="bar"><span class="ttl">finance.json</span><div class="acts"><button class="btn copy sm" id="cp-finance">Copy</button></div></div>
 <pre id="src-finance">{
   <span class="k">"name"</span>: <span class="s">"finance-baseline"</span>,
@@ -175,13 +199,19 @@
         <h3>Manufacturing</h3>
         <div class="file"><span class="mono">manufacturing.json</span> · name: <span class="mono">manufacturing-baseline</span></div>
       </div>
-      <a class="btn dark sm" id="dl-manufacturing">Download</a>
     </div>
     <p class="desc">IP- and supply-chain-focused posture for agents across design, MES, and OT-adjacent systems. <b>Trade-secret and export-controlled data must never egress</b>, and writes to CAD, BOM, or PLC configuration are gated on human approval.</p>
-    <div class="maps">
-      <span class="reg">Trade-secret / IP</span><span class="reg">Export control</span><span class="reg">Supply-chain integrity</span>
+    <div class="meta">
+      <div class="row"><b>Regulations:</b> <span class="maps"><span class="reg">Trade-secret / IP</span><span class="reg">Export control</span><span class="reg">Supply-chain integrity</span></span></div>
+      <div class="row"><b>Egress:</b> deny-by-default · 2 internal endpoints (PLM, MES)</div>
+      <div class="row"><b>Approval:</b> required for consequential actions</div>
+      <div class="row"><b>Models:</b> 1 allowlisted (local only)</div>
     </div>
-    <div class="code">
+    <div class="actions">
+      <button class="btn dark sm toggle" data-key="manufacturing">View policy</button>
+      <button class="btn subtle sm" id="dl-manufacturing">Download</button>
+    </div>
+    <div class="code" id="code-manufacturing">
       <div class="bar"><span class="ttl">manufacturing.json</span><div class="acts"><button class="btn copy sm" id="cp-manufacturing">Copy</button></div></div>
 <pre id="src-manufacturing">{
   <span class="k">"name"</span>: <span class="s">"manufacturing-baseline"</span>,
@@ -208,13 +238,19 @@
         <h3>Healthcare</h3>
         <div class="file"><span class="mono">healthcare.json</span> · name: <span class="mono">healthcare-baseline</span></div>
       </div>
-      <a class="btn dark sm" id="dl-healthcare">Download</a>
     </div>
     <p class="desc">The strictest of the three. For agents that may touch protected health information: <b>no PHI/PII leaves the boundary, no external endpoints at all</b>, and <b>every</b> consequential action — any write to an EHR, patient, or orders path — requires human approval.</p>
-    <div class="maps">
-      <span class="reg">HIPAA</span><span class="reg">PHI minimum-necessary</span><span class="reg">No external egress</span>
+    <div class="meta">
+      <div class="row"><b>Regulations:</b> <span class="maps"><span class="reg">HIPAA</span><span class="reg">PHI minimum-necessary</span></span></div>
+      <div class="row"><b>Egress:</b> deny-all · no external endpoints</div>
+      <div class="row"><b>Approval:</b> required for <i>every</i> consequential action</div>
+      <div class="row"><b>Models:</b> 1 allowlisted (local only)</div>
     </div>
-    <div class="code">
+    <div class="actions">
+      <button class="btn dark sm toggle" data-key="healthcare">View policy</button>
+      <button class="btn subtle sm" id="dl-healthcare">Download</button>
+    </div>
+    <div class="code" id="code-healthcare">
       <div class="bar"><span class="ttl">healthcare.json</span><div class="acts"><button class="btn copy sm" id="cp-healthcare">Copy</button></div></div>
 <pre id="src-healthcare">{
   <span class="k">"name"</span>: <span class="s">"healthcare-baseline"</span>,
@@ -230,6 +266,8 @@
 }</pre>
     </div>
   </article>
+
+  </div><!-- /grid -->
 
   <div class="usage">
     <h3>Use a policy</h3>
@@ -270,6 +308,16 @@
       navigator.clipboard.writeText(text('src-'+key)).then(function(){
         var old = cp.textContent; cp.textContent = 'Copied'; setTimeout(function(){ cp.textContent = old; }, 1400);
       });
+    });
+  });
+
+  // show/hide the policy JSON
+  document.querySelectorAll('.toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var key = btn.dataset.key;
+      var code = document.getElementById('code-'+key);
+      var open = code.classList.toggle('open');
+      btn.textContent = open ? 'Hide policy' : 'View policy';
     });
   });
 })();
