@@ -124,10 +124,20 @@
     <h2>Install</h2>
     <p class="lead">ABOM is an open-source CLI on PyPI. Requires <b>Python 3.10+</b>.</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
-<pre><span class="p">pip install abom-cli</span>          <span class="c"># the scanner, gate &amp; verifier</span>
-<span class="p">pip install 'abom-cli[mcp]'</span>   <span class="c"># add this to scan live MCP endpoints</span>
+<pre><span class="p">pip install -U abom-cli</span>
+...
+<span class="o">Successfully installed abom-cli-0.1.10</span></pre></div>
+    <p>Confirm it's working — every command opens with the ABOM banner:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom version</span>
 
-abom version                  <span class="c"># → abom 0.1.x · ABOM spec v0.1</span></pre></div>
+   <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
+   <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.10</span>
+   <span class="p">   ╰─╯</span>
+  <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
+
+abom 0.1.10 · ABOM spec v0.1</pre></div>
     <div class="note"><b>Tip:</b> if you installed with <span class="mono">pipx</span>, add the MCP support with <span class="mono">pipx inject abom-cli httpx</span>. See <a href="#troubleshooting">troubleshooting</a> if a command can't find a module.</div>
   </section>
 
@@ -136,21 +146,82 @@ abom version                  <span class="c"># → abom 0.1.x · ABOM spec v0.1
     <div class="n">2</div>
     <h2>Scan a local agent <span class="tag">what it's made of</span></h2>
     <p class="lead">Point <span class="mono">abom scan</span> at any agent project. It detects the models, tools, prompts, data sources, frameworks and MCP servers it's built from — each with the exact <span class="mono">DETECTED&nbsp;FROM</span> reference — and emits a signed manifest.</p>
+    <p>Here's a minimal example agent — a few dependencies, some source, and a system prompt:</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
-<pre>abom scan .                        <span class="c"># → abom.json (ed25519-signed)</span>
+<pre><span class="p">tree abom-demo</span>
+abom-demo
+├── agent.py
+├── prompts
+│   └── system.txt
+└── requirements.txt
 
-  ABOM · my-agent @ 1.0.0  —  6 components
-  ┌───┬───────────┬───────────────┬──────────┬──────────────────────┐
-  │ # │ TYPE      │ NAME          │ VERSION  │ DETECTED FROM        │
-  ├───┼───────────┼───────────────┼──────────┼──────────────────────┤
-  │ 1 │ model     │ OpenAI (SDK)  │ 1.51.0   │ dependency:openai    │
-  │ 2 │ framework │ LangChain     │ >=0.2.16 │ dependency:langchain │
-  │ 3 │ tool      │ lookup_order  │ —        │ file:agent.py:14     │
-  └───┴───────────┴───────────────┴──────────┴──────────────────────┘
-  signed: ed25519 · key 7f7aa8d6…</pre></div>
+2 directories, 3 files</pre></div>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>requirements.txt</span></div>
+<pre>langchain==0.2.16
+langgraph&gt;=0.2.0
+openai==1.51.0
+anthropic
+chromadb~=0.4.22
+guardrails-ai</pre></div>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
+<pre><span class="c">"""A tiny customer-support agent."""</span>
+<span class="p">from</span> langchain.chat_models <span class="p">import</span> init_chat_model
+
+SMART_MODEL = <span class="o">"gpt-4o"</span>
+FAST_MODEL = <span class="o">"claude-3-5-sonnet-20241022"</span>
+
+
+<span class="p">def</span> lookup_order(order_id: str) -&gt; dict:
+    <span class="c">"""Look up an order by id."""</span>
+    <span class="p">return</span> {<span class="o">"id"</span>: order_id, <span class="o">"status"</span>: <span class="o">"shipped"</span>}
+
+
+<span class="p">def</span> issue_refund(order_id: str, amount: float) -&gt; dict:
+    <span class="c">"""Refund an order."""</span>
+    <span class="p">return</span> {<span class="o">"id"</span>: order_id, <span class="o">"refunded"</span>: amount}</pre></div>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>prompts/system.txt</span></div>
+<pre>You are a helpful customer-support agent. Only answer order questions.</pre></div>
+    <p>Scan it:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom scan .</span>
+
+   <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
+   <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.10</span>
+   <span class="p">   ╰─╯</span>
+  <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
+
+
+  ABOM · abom-demo @ 0.0.0  —  9 components
+  ┌───┬─────────────┬────────────────────────────┬──────────┬──────────────────────────┐
+  │ # │ TYPE        │ NAME                       │ VERSION  │ DETECTED FROM            │
+  ├───┼─────────────┼────────────────────────────┼──────────┼──────────────────────────┤
+  │ 1 │ model       │ Anthropic (SDK)            │ —        │ dependency:anthropic     │
+  │ 2 │ model       │ OpenAI (SDK)               │ 1.51.0   │ dependency:openai        │
+  │ 3 │ model       │ claude-3-5-sonnet-20241022 │ —        │ file:agent.py:5          │
+  │ 4 │ model       │ gpt-4o                     │ —        │ file:agent.py:4          │
+  │ 5 │ framework   │ LangChain                  │ 0.2.16   │ dependency:langchain     │
+  │ 6 │ framework   │ LangGraph                  │ &gt;=0.2.0  │ dependency:langgraph     │
+  │ 7 │ data source │ Chroma                     │ ~=0.4.22 │ dependency:chromadb      │
+  │ 8 │ policy      │ Guardrails AI              │ —        │ dependency:guardrails-ai │
+  │ 9 │ prompt      │ prompts/system.txt         │ —        │ file:prompts/system.txt  │
+  └───┴─────────────┴────────────────────────────┴──────────┴──────────────────────────┘
+
+  signed: ed25519 · key 7f7aa8d6efabb18f
+  composition_sha256: c780ddca2eb619e0…
+  → wrote abom.json</pre></div>
     <p>Verify the signature any time — it's self-contained, so anyone you hand the file to can check it:</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
-<pre>abom verify abom.json              <span class="c"># → ✓ VALID — signature OK</span></pre></div>
+<pre><span class="p">abom verify abom.json</span>
+
+   <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
+   <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.10</span>
+   <span class="p">   ╰─╯</span>
+  <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
+
+
+  <span class="allow">✓ VALID — signature OK, 9 components</span></pre></div>
   </section>
 
   <!-- STEP 3 -->
@@ -158,10 +229,44 @@ abom version                  <span class="c"># → abom 0.1.x · ABOM spec v0.1
     <div class="n">3</div>
     <h2>Block an unauthorized action <span class="tag">what it's allowed to do</span></h2>
     <p class="lead">The gate enforces the signed manifest at the tool boundary, <b>deny-by-default</b>. A tool that isn't declared is blocked <b>before it runs</b> — not logged after.</p>
-    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · CLI</span></div>
-<pre>abom gate abom.json --tool lookup_order    <span class="c"># → </span><span class="allow">ALLOW</span><span class="c"> (exit 0)</span>
-abom gate abom.json --tool wire_transfer   <span class="c"># → </span><span class="deny">DENY</span><span class="c">  (exit 1)</span>
-                                           <span class="c">#   tool_not_in_manifest</span></pre></div>
+    <p>Start from a manifest that declares which tools the agent may use:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>gate.json</span></div>
+<pre>{
+  <span class="o">"abom"</span>: <span class="o">"0.1"</span>,
+  <span class="o">"type"</span>: <span class="o">"CompositionManifest"</span>,
+  <span class="o">"agent"</span>: { <span class="o">"name"</span>: <span class="o">"support-agent"</span>, <span class="o">"version"</span>: <span class="o">"1.0.0"</span> },
+  <span class="o">"components"</span>: [
+    { <span class="o">"type"</span>: <span class="o">"tool"</span>, <span class="o">"name"</span>: <span class="o">"lookup_order"</span> },
+    { <span class="o">"type"</span>: <span class="o">"tool"</span>, <span class="o">"name"</span>: <span class="o">"http_fetch"</span>, <span class="o">"scope"</span>: <span class="o">"egress"</span>,
+      <span class="o">"allowed_endpoints"</span>: [<span class="o">"api.internal.shop"</span>] }
+  ]
+}</pre></div>
+    <p>A declared tool is <span class="allow">allowed</span> (exit&nbsp;0):</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom gate gate.json --tool lookup_order</span>
+
+   <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
+   <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.10</span>
+   <span class="p">   ╰─╯</span>
+  <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
+
+  <span class="allow">ALLOW  lookup_order</span>
+  action is within the signed envelope
+  notarized · log root d4806211478cc5fcb081fe9c… · signed key 7f7aa8d6efabb18f</pre></div>
+    <p>An undeclared tool — say a prompt injection trying to call <span class="mono">wire_transfer</span> — is <span class="deny">denied</span> (exit&nbsp;1, so it fails a CI build):</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom gate gate.json --tool wire_transfer</span>
+
+   <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
+   <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.10</span>
+   <span class="p">   ╰─╯</span>
+  <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
+
+  <span class="deny">DENY   wire_transfer  (tool_not_in_manifest)</span>
+  tool 'wire_transfer' is not in the signed Composition Manifest (declared: ['http_fetch', 'lookup_order'])
+  notarized · log root d749e5cc0ad8cff29b9917ae… · signed key 7f7aa8d6efabb18f</pre></div>
     <p>Or wrap a tool in your agent code — a prompt injection that calls an undeclared tool raises <span class="mono">ActionDenied</span> before the body executes:</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
 <pre><span class="p">from</span> abom <span class="p">import</span> Gate, ActionDenied
@@ -189,19 +294,114 @@ gate = Gate(signed_manifest)
       <div class="gc"><div class="mono">scan --url</div><h3>A GitHub repo</h3><p>Clones, scans, and cleans up. Never runs the code.</p></div>
       <div class="gc"><div class="mono">scan --mcp</div><h3>A live endpoint</h3><p>Enumerates a running agent's declared capabilities.</p></div>
     </div>
+    <p>Scan a public GitHub repo directly — here, the real <a href="https://github.com/assafelovic/gpt-researcher">GPT&nbsp;Researcher</a> agent. ABOM clones it, scans it, and shows the exact <span class="mono">file:line</span> each model was found at:</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · a public repo</span></div>
-<pre>abom scan --url https://github.com/assafelovic/gpt-researcher
+<pre><span class="p">abom scan --url https://github.com/assafelovic/gpt-researcher</span>
 
   ABOM · gpt-researcher @ 0.14.7  —  25 components
-  <span class="c"># models, frameworks, tools, MCP server — versioned, signed</span></pre></div>
+  ┌────┬────────────┬────────────────────────┬──────────┬─────────────────────────────────────────────────────────────────┐
+  │ #  │ TYPE       │ NAME                   │ VERSION  │ DETECTED FROM                                                   │
+  ├────┼────────────┼────────────────────────┼──────────┼─────────────────────────────────────────────────────────────────┤
+  │ 1  │ model      │ ChatGPT                │ —        │ file:evals/hallucination_eval/results/aggregate_results.json:17 │
+  │ 3  │ model      │ Hugging Face (SDK)     │ &gt;=0.32.0 │ dependency:huggingface-hub                                      │
+  │ 6  │ model      │ Ollama (SDK)           │ &gt;=0.4.8  │ dependency:ollama                                               │
+  │ 7  │ model      │ OpenAI (SDK)           │ &gt;=1.3.3  │ dependency:openai                                               │
+  │ 13 │ model      │ gpt-4o                 │ —        │ file:multi_agents_ag2/task.json:12                              │
+  │ 14 │ model      │ gpt-4o-mini            │ —        │ file:gpt_researcher/config/config.py:220                        │
+  │ 19 │ framework  │ Google GenAI           │ &gt;=1.0.0  │ dependency:google-genai                                         │
+  │ 20 │ framework  │ LangChain              │ &gt;=1.0.0  │ dependency:langchain                                            │
+  │ 21 │ framework  │ LangGraph              │ &gt;=0.2.76 │ dependency:langgraph                                            │
+  │ 22 │ framework  │ Model Context Protocol │ &gt;=1.9.1  │ dependency:mcp                                                  │
+  │ 23 │ tool       │ custom_tool            │ —        │ file:gpt_researcher/utils/tools.py                              │
+  │ 24 │ tool       │ search_tool            │ —        │ file:gpt_researcher/utils/tools.py                              │
+  │ 25 │ MCP server │ gpt-researcher         │ —        │ file:.mcp.json                                                  │
+  └────┴────────────┴────────────────────────┴──────────┴─────────────────────────────────────────────────────────────────┘
+  <span class="c"># 25 components total — trimmed to 13 rows here</span>
+
+  composition_sha256: 255bc40431675931…
+  → wrote ./gptr.json</pre></div>
+    <p>Or scan a <b>live deployed agent</b> over MCP — ABOM connects, runs the handshake, and reads the capabilities the server itself declares (it never invokes a tool):</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · a live MCP server</span></div>
-<pre>abom scan --mcp https://mcp.deepwiki.com/mcp
+<pre><span class="p">abom scan --mcp https://mcp.deepwiki.com/mcp</span>
 
   ABOM · DeepWiki @ 2.14.3  —  4 components
-  │ tool       │ ask_question        │ mcp:https://mcp.deepwiki.com/mcp │
-  │ tool       │ read_wiki_contents  │ mcp:https://mcp.deepwiki.com/mcp │
-  │ MCP server │ DeepWiki            │ mcp:https://mcp.deepwiki.com/mcp │</pre></div>
-    <div class="note"><b>Auth-gated servers</b> (like GitHub's <span class="mono">https://api.githubcopilot.com/mcp/</span>) work too — pass a token with <span class="mono">--token &lt;PAT&gt;</span> or the <span class="mono">ABOM_MCP_TOKEN</span> env var. ABOM only reads the declared capabilities; it never invokes a tool.</div>
+  ┌───┬────────────┬─────────────────────┬─────────┬──────────────────────────────────┐
+  │ # │ TYPE       │ NAME                │ VERSION │ DETECTED FROM                    │
+  ├───┼────────────┼─────────────────────┼─────────┼──────────────────────────────────┤
+  │ 1 │ tool       │ ask_question        │ —       │ mcp:https://mcp.deepwiki.com/mcp │
+  │ 2 │ tool       │ read_wiki_contents  │ —       │ mcp:https://mcp.deepwiki.com/mcp │
+  │ 3 │ tool       │ read_wiki_structure │ —       │ mcp:https://mcp.deepwiki.com/mcp │
+  │ 4 │ MCP server │ DeepWiki            │ 2.14.3  │ mcp:https://mcp.deepwiki.com/mcp │
+  └───┴────────────┴─────────────────────┴─────────┴──────────────────────────────────┘
+
+  signed: ed25519 · key 7f7aa8d6efabb18f
+  composition_sha256: bb85b78a15d2eb91…</pre></div>
+    <p><b>Auth-gated servers work too.</b> Point it at GitHub's production MCP server with a token (<span class="mono">--token &lt;PAT&gt;</span>, or the <span class="mono">ABOM_MCP_TOKEN</span> env var) and you get a signed inventory of its <b>entire capability surface</b> — including the consequential ones a security team cares about, like <span class="mono">delete_file</span> and <span class="mono">merge_pull_request</span>:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · GitHub's MCP server (auth-gated)</span></div>
+<pre><span class="p">export ABOM_MCP_TOKEN=github_pat_…</span>
+<span class="p">abom scan --mcp https://api.githubcopilot.com/mcp/</span>
+
+  ABOM · github-mcp-server @ github-mcp-server/remote-3249da0b62a1a670d81b660ad408f1d4810eacdc  —  51 components
+  ┌────┬─────────────┬───────────────────────────────────┬───────────────────────────────────────────────────────────────────┬────────────────────────────────────────┐
+  │ #  │ TYPE        │ NAME                              │ VERSION                                                           │ DETECTED FROM                          │
+  ├────┼─────────────┼───────────────────────────────────┼───────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ 1  │ tool        │ add_comment_to_pending_review     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 2  │ tool        │ add_issue_comment                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 3  │ tool        │ add_reply_to_pull_request_comment │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 4  │ tool        │ create_branch                     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 5  │ tool        │ create_or_update_file             │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 6  │ tool        │ create_pull_request               │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 7  │ tool        │ create_repository                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 8  │ tool        │ delete_file                       │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 9  │ tool        │ fork_repository                   │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 10 │ tool        │ get_commit                        │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 11 │ tool        │ get_file_contents                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 12 │ tool        │ get_label                         │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 13 │ tool        │ get_latest_release                │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 14 │ tool        │ get_me                            │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 15 │ tool        │ get_release_by_tag                │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 16 │ tool        │ get_tag                           │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 17 │ tool        │ get_team_members                  │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 18 │ tool        │ get_teams                         │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 19 │ tool        │ issue_read                        │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 20 │ tool        │ issue_write                       │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 21 │ tool        │ list_branches                     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 22 │ tool        │ list_commits                      │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 23 │ tool        │ list_issue_fields                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 24 │ tool        │ list_issue_types                  │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 25 │ tool        │ list_issues                       │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 26 │ tool        │ list_pull_requests                │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 27 │ tool        │ list_releases                     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 28 │ tool        │ list_repository_collaborators     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 29 │ tool        │ list_tags                         │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 30 │ tool        │ merge_pull_request                │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 31 │ tool        │ pull_request_read                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 32 │ tool        │ pull_request_review_write         │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 33 │ tool        │ push_files                        │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 34 │ tool        │ request_copilot_review            │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 35 │ tool        │ run_secret_scanning               │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 36 │ tool        │ search_code                       │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 37 │ tool        │ search_commits                    │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 38 │ tool        │ search_issues                     │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 39 │ tool        │ search_pull_requests              │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 40 │ tool        │ search_repositories               │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 41 │ tool        │ search_users                      │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 42 │ tool        │ sub_issue_write                   │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 43 │ tool        │ update_pull_request               │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 44 │ tool        │ update_pull_request_branch        │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 45 │ MCP server  │ github-mcp-server                 │ github-mcp-server/remote-3249da0b62a1a670d81b660ad408f1d4810eacdc │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 46 │ data source │ get_me_ui                         │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 47 │ data source │ issue_write_ui                    │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 48 │ data source │ pr_edit_ui                        │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 49 │ data source │ pr_write_ui                       │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 50 │ prompt      │ AssignCodingAgent                 │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  │ 51 │ prompt      │ issue_to_fix_workflow             │ —                                                                 │ mcp:https://api.githubcopilot.com/mcp/ │
+  └────┴─────────────┴───────────────────────────────────┴───────────────────────────────────────────────────────────────────┴────────────────────────────────────────┘
+
+  signed: ed25519 · key 7f7aa8d6efabb18f
+  composition_sha256: 770a91fc2bc1cd11…
+  → wrote github-mcp.json</pre></div>
+    <div class="note">ABOM only reads the <b>declared</b> capabilities over the protocol — it never invokes a tool.</div>
   </section>
 
   <!-- STEP 5 -->
