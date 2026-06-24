@@ -61,10 +61,10 @@
   .secthead h2{font-size:22px}
   .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
 
-  /* tile grid — each tile sizes to its own content (no forced equal height,
-     so a shorter tile never gets empty filler space). The modal popup means
-     tiles never change size, so this stays tidy. */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
+  /* tile grid — equal-height tiles per row. The description flex-grows to
+     absorb any height difference, so the metadata block and the View-policy
+     button stay anchored at the same bottom line across a row. */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:stretch}
   @media(max-width:760px){.grid{grid-template-columns:1fr}}
 
   .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
@@ -77,7 +77,7 @@
   .pcard h3{font-size:18px;margin-bottom:3px}
   .pcard .file{font-size:12px;color:var(--slate)}
   .pcard .file .mono{color:var(--teal)}
-  .pcard .desc{padding:8px 22px 0;color:var(--slate);font-size:14px;line-height:1.55}
+  .pcard .desc{padding:8px 22px 0;color:var(--slate);font-size:14px;line-height:1.55;flex:1 0 auto}
   .pcard .desc b{color:var(--ink)}
 
   /* metadata rows (Regulations / Egress / Approval / Models) — flex:1 so the
