@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spec & Reference — ABOM · Agent Bill of Materials</title>
+<meta name="description" content="The ABOM v0.1 reference: the two document types (Composition Manifest, Action Provenance Record), every field and the data that goes in it, the seven component types, and the enforcement-policy schema the gate and verifier enforce.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/spec.html">
+<meta property="og:title" content="ABOM Spec & Reference">
+<meta property="og:description" content="Every ABOM field, document type, component type, and the enforcement-policy schema — in one place.">
+<meta property="og:url" content="https://abom.ai/spec.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:920px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;gap:24px;align-items:center}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .navlinks a.active{color:#fff}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  @media(max-width:760px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:64px 0 50px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(32px,5.5vw,46px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(16px,2.2vw,18px);color:var(--ice);max-width:680px;margin:18px 0 0}
+  .hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+  .hero .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:var(--ice);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:30px}
+  .hero .chip b{color:var(--mint)}
+
+  main{padding:8px 0 60px}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 8px}
+  .toc a{font-size:13px;font-weight:600;color:var(--teal);background:#E8F2F1;border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+  .toc a:hover{text-decoration:none;background:#dceceb}
+
+  .sec{padding:34px 0;border-bottom:1px solid var(--line)}
+  .sec:last-of-type{border-bottom:none}
+  .sec .eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+  .sec h2{font-size:clamp(22px,3.4vw,30px);margin-bottom:10px}
+  .sec h3{font-size:18px;margin:24px 0 8px}
+  .sec p{color:var(--slate);font-size:15.5px;margin:10px 0}
+  .sec p b{color:var(--ink)}
+  .lead{font-size:16.5px;color:var(--ink)!important}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+  .artifact{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow-sm)}
+  .artifact h3{margin:0 0 4px;font-size:18px}
+  .artifact .ask{color:var(--teal);font-weight:700;font-size:14px;margin-bottom:10px}
+  .artifact ul{list-style:none;margin:8px 0 0}
+  .artifact li{position:relative;padding-left:22px;margin-bottom:7px;font-size:14px;color:var(--ink)}
+  .artifact li:before{content:"";position:absolute;left:0;top:7px;width:13px;height:13px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/9px no-repeat}
+
+  .code{background:var(--navy);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid #0a2a40;margin:16px 0}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:11px 15px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .code .bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .bar .r{background:#ff5f57}.bar .y{background:#febc2e}.bar .g{background:#28c840}
+  .code .bar span{margin-left:8px;color:#6f93a6;font-size:12.5px;font-family:ui-monospace,monospace}
+  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre}
+  .code pre .c{color:#5e8597}.code pre .k{color:var(--mint)}.code pre .s{color:#9ad7c8}.code pre .n{color:#E0A100}
+
+  .note{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+  .note b{color:var(--teal)}
+  .note.warn{background:#FBF1D6;border-color:#E8D7A0}.note.warn b{color:#a87a00}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:6px}
+  .tag.req{background:rgba(229,96,77,.13);color:var(--coral)}
+  .tag.opt{background:rgba(90,118,130,.14);color:var(--slate)}
+  .tag.built{background:rgba(31,163,122,.13);color:var(--built)}
+
+  .tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .tbl th{background:var(--navy);color:#fff;text-align:left;padding:10px 14px;font-size:12.5px}
+  .tbl td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+  .tbl td:first-child{font-weight:700;white-space:nowrap}
+  .tbl td .mono{color:var(--teal)}
+  .tbl .ty{color:var(--violet);font-weight:600;font-size:12.5px}
+  .tbl tr:hover td{background:#fafdfd}
+
+  .deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}
+  .ct{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow-sm)}
+  .ct .nm{font-weight:800;font-size:14px;color:var(--ink);font-family:"SF Mono",ui-monospace,monospace}
+  .ct p{font-size:12.5px;color:var(--slate);margin:5px 0 0}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+  footer .dis{color:#7796a4;max-width:680px;margin:14px auto 0;font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="spec.html" class="active">Spec</a>
+      <a href="policies.html">Policies</a>
+      <a href="policy-builder.html">Policy builder</a>
+      <a href="get-started.html">Get started</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Spec &amp; reference · v0.1 (draft)</div>
+    <h1>What's in an ABOM, field by field.</h1>
+    <p>An ABOM document is one of two things: a <b>Composition Manifest</b> (what an agent <i>is</i>) or an <b>Action Provenance Record</b> (what an agent <i>did</i>). This page documents every field, the kind of data that goes in it, the seven component types, and the enforcement-policy schema the gate and verifier act on.</p>
+    <div class="chips">
+      <span class="chip"><b>●</b> JSON Schema · Draft 2020-12</span>
+      <span class="chip"><b>●</b> ed25519-signed</span>
+      <span class="chip"><b>●</b> Inspired by CycloneDX ML-BOM</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="toc">
+    <a href="#artifacts">Two document types</a>
+    <a href="#manifest">Composition Manifest</a>
+    <a href="#components">Component types</a>
+    <a href="#provenance">Action Provenance</a>
+    <a href="#signature">Signature</a>
+    <a href="#policy">Enforcement policy</a>
+  </div>
+
+  <!-- ARTIFACTS -->
+  <section class="sec" id="artifacts">
+    <div class="eyebrow">The model</div>
+    <h2>Two document types</h2>
+    <p class="lead">Everything in ABOM is one of two artifacts. They are linked: every Action Provenance Record carries the <span class="mono">composition_sha256</span> of the manifest the agent ran under, so a runtime action can always be traced back to the exact, signed thing it ran from.</p>
+    <div class="two">
+      <div class="artifact">
+        <h3>Composition Manifest</h3>
+        <div class="ask">What is this agent made of?</div>
+        <p style="margin:0 0 8px;color:var(--slate);font-size:14px">A signed inventory produced at build / deploy time.</p>
+        <ul>
+          <li>The agent's identity, owner, and risk class</li>
+          <li>Every component: models, tools, prompts, data, policies…</li>
+          <li>Declared controls (egress, human-in-the-loop, residency)</li>
+          <li>A <span class="mono">composition_sha256</span> + ed25519 signature</li>
+        </ul>
+      </div>
+      <div class="artifact">
+        <h3>Action Provenance Record</h3>
+        <div class="ask">What did this agent do?</div>
+        <p style="margin:0 0 8px;color:var(--slate);font-size:14px">One hash-chained record per consequential action, at runtime.</p>
+        <ul>
+          <li>The decision taken and the inputs it acted on</li>
+          <li>Model calls, tools invoked, data touched</li>
+          <li>Policy decisions and human approvals</li>
+          <li>A <span class="mono">prev_hash</span> → <span class="mono">hash</span> chain back to GENESIS</li>
+        </ul>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr><th style="width:34%">Top-level field</th><th style="width:18%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>abom</td><td class="ty">const "0.1"</td><td>The spec version. Bumps on breaking changes — never silent.</td></tr>
+        <tr><td>type</td><td class="ty">enum</td><td><span class="mono">"CompositionManifest"</span> or, for provenance, an <span class="mono">event_type</span> of <span class="mono">"ActionProvenance"</span>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- MANIFEST -->
+  <section class="sec" id="manifest">
+    <div class="eyebrow">Artifact 1</div>
+    <h2>Composition Manifest</h2>
+    <p class="lead">A signed inventory of everything an agent is built from.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>composition-manifest.json</span></div>
+<pre>{
+  <span class="k">"abom"</span>: <span class="s">"0.1"</span>,
+  <span class="k">"type"</span>: <span class="s">"CompositionManifest"</span>,
+  <span class="k">"agent"</span>: { <span class="k">"name"</span>: <span class="s">"loan-doc-agent"</span>, <span class="k">"version"</span>: <span class="s">"1.4.0"</span>, <span class="k">"risk_class"</span>: <span class="s">"high (Annex III)"</span> },
+  <span class="k">"components"</span>: [
+    { <span class="k">"type"</span>: <span class="s">"model"</span>, <span class="k">"name"</span>: <span class="s">"local/qwen2.5-coder"</span>, <span class="k">"weights_sha256"</span>: <span class="s">"…"</span>, <span class="k">"egress"</span>: false },
+    { <span class="k">"type"</span>: <span class="s">"tool"</span>, <span class="k">"name"</span>: <span class="s">"http_fetch"</span>, <span class="k">"scope"</span>: <span class="s">"egress"</span>, <span class="k">"allowed_endpoints"</span>: [<span class="s">"internal-kyc.bank"</span>] },
+    { <span class="k">"type"</span>: <span class="s">"prompt"</span>, <span class="k">"role"</span>: <span class="s">"system"</span>, <span class="k">"sha256"</span>: <span class="s">"…"</span> },
+    { <span class="k">"type"</span>: <span class="s">"dataSource"</span>, <span class="k">"name"</span>: <span class="s">"core_banking_repo"</span>, <span class="k">"classification"</span>: <span class="s">"confidential"</span> },
+    { <span class="k">"type"</span>: <span class="s">"policy"</span>, <span class="k">"engine"</span>: <span class="s">"OPA"</span>, <span class="k">"sha256"</span>: <span class="s">"…"</span> }
+  ],
+  <span class="k">"controls"</span>: { <span class="k">"egress"</span>: <span class="s">"deny-by-default"</span>, <span class="k">"hitl"</span>: <span class="s">"required-for-consequential"</span>, <span class="k">"residency"</span>: <span class="s">"EU"</span> },
+  <span class="k">"composition_sha256"</span>: <span class="s">"…"</span>,
+  <span class="k">"signature"</span>: { <span class="k">"alg"</span>: <span class="s">"ed25519"</span>, <span class="k">"value"</span>: <span class="s">"…"</span> }
+}</pre></div>
+
+    <h3>agent <span class="tag req">required</span></h3>
+    <p>Identity and governance metadata for the agent the manifest describes.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:28%">Field</th><th style="width:16%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>name <span class="tag req">req</span></td><td class="ty">string</td><td>The agent's identifier, e.g. <span class="mono">loan-doc-agent</span>.</td></tr>
+        <tr><td>version <span class="tag req">req</span></td><td class="ty">string</td><td>Semantic or build version, e.g. <span class="mono">1.4.0</span>. Forms the <span class="mono">name@version</span> run reference.</td></tr>
+        <tr><td>risk_class <span class="tag opt">opt</span></td><td class="ty">string</td><td>Risk tier, free-form. Often maps to a regulation, e.g. <span class="mono">high (Annex III)</span> for the EU AI Act.</td></tr>
+        <tr><td>owner <span class="tag opt">opt</span></td><td class="ty">string</td><td>Accountable team or person, e.g. <span class="mono">risk-eng@bank</span>.</td></tr>
+        <tr><td>purpose <span class="tag opt">opt</span></td><td class="ty">string</td><td>One line on what the agent is for.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>controls <span class="tag opt">optional</span></h3>
+    <p>Declared, human-readable posture for the agent. These are <i>declarations</i> in the manifest; the machine-enforced version lives in the <a href="#policy">enforcement policy</a>.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:28%">Field</th><th style="width:16%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>egress</td><td class="ty">string</td><td>e.g. <span class="mono">deny-by-default</span> — the agent's network posture.</td></tr>
+        <tr><td>hitl</td><td class="ty">string</td><td>Human-in-the-loop stance, e.g. <span class="mono">required-for-consequential</span>.</td></tr>
+        <tr><td>residency</td><td class="ty">string</td><td>Where data must stay, e.g. <span class="mono">EU</span>.</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13.5px"><span class="mono">controls</span> accepts additional keys — it's an open object for posture you want recorded.</p>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="sec" id="components">
+    <div class="eyebrow">Inside the manifest</div>
+    <h2>Component types</h2>
+    <p class="lead">Each entry in <span class="mono">components[]</span> has a <span class="mono">type</span> and type-specific fields. There are seven types:</p>
+    <div class="deck">
+      <div class="ct"><div class="nm">model</div><p>An LLM or ML model the agent calls.</p></div>
+      <div class="ct"><div class="nm">tool</div><p>A function or API the agent can invoke.</p></div>
+      <div class="ct"><div class="nm">prompt</div><p>A system / template prompt.</p></div>
+      <div class="ct"><div class="nm">dataSource</div><p>A dataset, repo, or store it reads.</p></div>
+      <div class="ct"><div class="nm">policy</div><p>A policy bundle the agent ships with.</p></div>
+      <div class="ct"><div class="nm">framework</div><p>The agent framework / runtime.</p></div>
+      <div class="ct"><div class="nm">mcpServer</div><p>A connected MCP server.</p></div>
+    </div>
+    <p>Only <span class="mono">type</span> is required. The other fields are populated where they apply to that type — a model carries <span class="mono">weights_sha256</span>, an egress tool carries <span class="mono">allowed_endpoints</span>, an MCP server carries <span class="mono">endpoints</span>, and so on. The object is open, so a scanner can record extra detail without breaking the schema.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:26%">Field</th><th style="width:16%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>type <span class="tag req">req</span></td><td class="ty">enum</td><td>One of the seven types above.</td></tr>
+        <tr><td>name</td><td class="ty">string</td><td>Component identifier — match what <span class="mono">abom scan</span> records.</td></tr>
+        <tr><td>version</td><td class="ty">string</td><td>Component version, where applicable.</td></tr>
+        <tr><td>sha256</td><td class="ty">string</td><td>Digest of the component's bytes (prompt text, policy bundle…).</td></tr>
+        <tr><td>weights_sha256</td><td class="ty">string</td><td><b>model</b> — digest of the model weights, pinning the exact model.</td></tr>
+        <tr><td>provenance</td><td class="ty">string</td><td>Where the component came from (registry, repo, vendor).</td></tr>
+        <tr><td>egress</td><td class="ty">boolean</td><td>Whether the component can send data out of the boundary.</td></tr>
+        <tr><td>scope</td><td class="ty">string</td><td><b>tool</b> — e.g. <span class="mono">egress</span>, <span class="mono">read</span>.</td></tr>
+        <tr><td>allowed_endpoints</td><td class="ty">string[]</td><td><b>tool</b> — the endpoints an egress tool is permitted to reach.</td></tr>
+        <tr><td>role</td><td class="ty">string</td><td><b>prompt</b> — e.g. <span class="mono">system</span>, <span class="mono">user</span>.</td></tr>
+        <tr><td>classification</td><td class="ty">string</td><td><b>dataSource</b> — data sensitivity, e.g. <span class="mono">confidential</span>.</td></tr>
+        <tr><td>engine</td><td class="ty">string</td><td><b>policy</b> — the policy engine, e.g. <span class="mono">OPA</span>.</td></tr>
+        <tr><td>endpoints</td><td class="ty">string[]</td><td><b>mcpServer</b> — the MCP endpoints exposed.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PROVENANCE -->
+  <section class="sec" id="provenance">
+    <div class="eyebrow">Artifact 2</div>
+    <h2>Action Provenance Record</h2>
+    <p class="lead">One hash-chained record of a consequential action the agent took. Each record's <span class="mono">prev_hash</span> points at the previous record's <span class="mono">hash</span>, forming a tamper-evident chain back to <span class="mono">"GENESIS"</span>.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:26%">Field</th><th style="width:16%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>run_id <span class="tag req">req</span></td><td class="ty">string</td><td>Agent reference, e.g. <span class="mono">loan-doc-agent@1.4.0</span>.</td></tr>
+        <tr><td>seq <span class="tag req">req</span></td><td class="ty">integer ≥ 0</td><td>Monotonic position of this record in the chain.</td></tr>
+        <tr><td>event_type <span class="tag req">req</span></td><td class="ty">const</td><td>Always <span class="mono">"ActionProvenance"</span>.</td></tr>
+        <tr><td>actor <span class="tag opt">opt</span></td><td class="ty">string</td><td>Who/what produced the record.</td></tr>
+        <tr><td>created_at <span class="tag req">req</span></td><td class="ty">date-time</td><td>RFC 3339 timestamp.</td></tr>
+        <tr><td>prev_hash <span class="tag req">req</span></td><td class="ty">string</td><td>Previous record's <span class="mono">hash</span>, or <span class="mono">"GENESIS"</span> for the first.</td></tr>
+        <tr><td>hash <span class="tag req">req</span></td><td class="ty">sha256</td><td>This record's digest — the chain link.</td></tr>
+        <tr><td>data <span class="tag req">req</span></td><td class="ty">object</td><td>The action payload (below).</td></tr>
+      </tbody>
+    </table>
+    <h3>data — the action payload</h3>
+    <p>What the agent actually did on this step. <span class="mono">composition_sha256</span> and <span class="mono">decision</span> are required; the rest are recorded where relevant.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:30%">Field</th><th style="width:14%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>composition_sha256 <span class="tag req">req</span></td><td class="ty">sha256</td><td>The manifest this action ran under — the join key. A mismatch is a <span class="mono">composition_match</span> finding.</td></tr>
+        <tr><td>decision <span class="tag req">req</span></td><td class="ty">string</td><td>What the agent decided to do.</td></tr>
+        <tr><td>inputs</td><td class="ty">object[]</td><td>The inputs the decision acted on.</td></tr>
+        <tr><td>model_calls</td><td class="ty">object[]</td><td>Each: <span class="mono">model</span>, <span class="mono">tokens</span>, <span class="mono">output_sha256</span>. Checked against the allowlist + manifest.</td></tr>
+        <tr><td>tools_invoked</td><td class="ty">object[]</td><td>Each: <span class="mono">name</span>, <span class="mono">endpoint</span>. Endpoints checked against the egress allowlist.</td></tr>
+        <tr><td>data_touched</td><td class="ty">object[]</td><td>Each: <span class="mono">classification</span>, <span class="mono">egress</span>. Egress of restricted data is a residency finding.</td></tr>
+        <tr><td>policy_decisions</td><td class="ty">object[]</td><td>Each: <span class="mono">rule</span>, <span class="mono">result</span>. A <span class="mono">result: "required"</span> demands an approval.</td></tr>
+        <tr><td>approval</td><td class="ty">object | null</td><td><span class="mono">by</span> + <span class="mono">decision</span> (<span class="mono">approved</span>/<span class="mono">rejected</span>). Missing approval on a required action is an <span class="mono">approval_coverage</span> finding.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SIGNATURE -->
+  <section class="sec" id="signature">
+    <div class="eyebrow">Trust</div>
+    <h2>Signature</h2>
+    <p class="lead">The manifest is signed with a detached ed25519 signature over its canonical JSON form. This is what makes the trust <i>cryptographic, not reputational</i> — anyone with the public key can verify the document hasn't changed.</p>
+    <table class="tbl">
+      <thead><tr><th style="width:26%">Field</th><th style="width:16%">Type</th><th>What goes here</th></tr></thead>
+      <tbody>
+        <tr><td>alg <span class="tag req">req</span></td><td class="ty">string</td><td><span class="mono">ed25519</span> in production. (An <span class="mono">hmac-sha256</span> stand-in exists for the MVP only.)</td></tr>
+        <tr><td>value <span class="tag req">req</span></td><td class="ty">string</td><td>Base64 detached signature over the canonical body.</td></tr>
+        <tr><td>signer <span class="tag opt">opt</span></td><td class="ty">string</td><td>Key identifier / signer reference.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- POLICY -->
+  <section class="sec" id="policy">
+    <div class="eyebrow">Enforcement</div>
+    <h2>The enforcement policy</h2>
+    <div class="note warn"><b>Two different things called "policy".</b> Don't confuse them:
+      <br>· <b>policy <span class="mono">component</span></b> — an entry inside a manifest's <span class="mono">components[]</span> (<span class="mono">{ "type": "policy", "engine": "OPA" }</span>). It declares <i>that the agent ships with a policy bundle</i>.
+      <br>· <b>enforcement <span class="mono">policy document</span></b> — a separate JSON file (below) that the <b>gate</b> evaluates before an action runs, and that <span class="mono">abom verify</span> audits after the fact. This is the one you author and hand to <span class="mono">--policy</span>.
+    </div>
+    <p>The enforcement policy has its own schema, <span class="mono">abom-policy-0.1.schema.json</span>. Every field maps to a concrete check. Allowlists are <b>deny-by-default where set</b>: omit a field to leave it unconstrained, set it to <span class="mono">[]</span> to deny all.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>policy.json</span></div>
+<pre>{
+  <span class="k">"name"</span>: <span class="s">"finance-baseline"</span>,
+  <span class="k">"allowed_models"</span>: [<span class="s">"local/qwen2.5-coder"</span>],
+  <span class="k">"allowed_egress_endpoints"</span>: [<span class="s">"internal-kyc.bank"</span>],
+  <span class="k">"no_egress_classifications"</span>: [<span class="s">"confidential"</span>, <span class="s">"restricted"</span>],
+  <span class="k">"require_approval_when"</span>: <span class="s">"consequential"</span>
+}</pre></div>
+    <table class="tbl">
+      <thead><tr><th style="width:32%">Field</th><th style="width:14%">Type</th><th>What it enforces</th></tr></thead>
+      <tbody>
+        <tr><td>name</td><td class="ty">string</td><td>Policy identifier, surfaced in findings and decision cards.</td></tr>
+        <tr><td>allowed_models</td><td class="ty">string[]</td><td><b>model_allowlist</b> — declared and runtime models must be on the list; a runtime model absent from the manifest is <span class="mono">composition_drift</span>.</td></tr>
+        <tr><td>allowed_egress_endpoints</td><td class="ty">string[]</td><td><b>egress_allowlist</b> — tool endpoints not on the list are flagged.</td></tr>
+        <tr><td>no_egress_classifications</td><td class="ty">string[]</td><td><b>residency</b> — these classifications must never egress.</td></tr>
+        <tr><td>egress_allowed</td><td class="ty">boolean</td><td>Runtime gate: hard deny-by-default for outbound egress when false.</td></tr>
+        <tr><td>consequential_actions</td><td class="ty">string[]</td><td>Rules that mark an action consequential: <span class="mono">writes_outside_workspace</span>, <span class="mono">touches_paths:&lt;glob&gt;</span>.</td></tr>
+        <tr><td>approval_required_for_consequential</td><td class="ty">boolean</td><td>Runtime gate: consequential actions need human approval.</td></tr>
+        <tr><td>require_approval_when</td><td class="ty">enum</td><td>Audit-time counterpart: <span class="mono">consequential</span> / <span class="mono">never</span> / <span class="mono">always</span> → <span class="mono">approval_coverage</span>.</td></tr>
+        <tr><td>max_iterations_cap</td><td class="ty">integer</td><td>Runtime safety cap on the agent's reasoning loop.</td></tr>
+      </tbody>
+    </table>
+    <p>Ready-made policies for finance, manufacturing, and healthcare live on the <a href="policies.html">policy hub</a>. Build and validate your own with the <a href="policy-builder.html">policy builder</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The component model is aligned with CycloneDX naming; ABOM does not claim CycloneDX conformance. This page documents the draft schema and may change between versions.</p>
+  </div>
+</footer>
+
+</body>
+</html>

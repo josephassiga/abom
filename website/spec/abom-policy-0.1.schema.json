@@ -1,0 +1,118 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://abom.ai/spec/abom-policy-0.1.schema.json",
+	"title": "ABOM Enforcement Policy v0.1",
+	"description": "A declarative policy that ABOM enforces against an agent. The same policy document is consumed in two places: (1) the runtime gate / orchestrator, which decides ALLOW/DENY for a proposed action before it runs, and (2) `abom verify`, which audits a signed Composition Manifest and its Action Provenance chain after the fact. Every field below maps to a concrete check in the reference CLI (cli/src/abom/bom.py for verify; cli/src/abom/policy.py and gate.py for runtime). Inspired by CycloneDX and OPA/Rego concepts; not a CycloneDX artifact. Fields are deny-by-default where an allowlist is set: an absent allowlist means “unconstrained”, an empty allowlist means “deny all”.",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"policy": {
+			"const": "0.1",
+			"description": "Policy schema version. Present on first-class policy documents."
+		},
+		"name": {
+			"type": "string",
+			"description": "Human-readable policy identifier, e.g. \"finance-baseline\" or \"default\". Surfaced in findings and decision cards.",
+			"examples": [
+				"default",
+				"finance-baseline",
+				"eu-residency"
+			]
+		},
+		"description": {
+			"type": "string",
+			"description": "Free-text summary of what this policy is for and which obligations it gestures at. Not enforced — documentation only."
+		},
+		"allowed_models": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"description": "Allowlist of model identifiers the agent may declare and call. Enforced by the `model_allowlist` rule at two layers: (a) every component of type \"model\" in the Composition Manifest must be on this list, and (b) every model named in a runtime `model_calls` entry must be on this list. A value NOT on the list yields a finding; a runtime model absent from the signed manifest additionally yields `composition_drift`. Omit the field entirely to leave models unconstrained. Identifiers should match exactly what `abom scan` records (e.g. \"OpenAI (SDK)\", \"claude-3-5-sonnet-20241022\", \"local/qwen2.5-coder\").",
+			"examples": [
+				[
+					"local/qwen2.5-coder"
+				],
+				[
+					"claude-3-5-sonnet-20241022",
+					"Anthropic (SDK)"
+				]
+			]
+		},
+		"allowed_egress_endpoints": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"description": "Allowlist of network endpoints the agent's tools may reach. Enforced by the `egress_allowlist` rule: any `tools_invoked[].endpoint` in the provenance chain that is non-empty and not on this list yields a finding. Omit to leave egress endpoints unconstrained; set to [] to deny all egress endpoints. Match the endpoint strings exactly as recorded at runtime.",
+			"examples": [
+				[
+					"internal-kyc.bank"
+				],
+				[
+					"api.internal.example.com",
+					"vault.internal"
+				]
+			]
+		},
+		"no_egress_classifications": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"description": "Data classifications that must never leave the boundary. Enforced by the `residency` rule: any `data_touched` entry with `egress: true` AND a `classification` in this set yields a high-severity finding. Classifications are free-form strings agreed between the agent owner and policy author; common values are \"confidential\" and \"restricted\".",
+			"examples": [
+				[
+					"confidential",
+					"restricted"
+				],
+				[
+					"pii",
+					"phi",
+					"restricted"
+				]
+			]
+		},
+		"egress_allowed": {
+			"type": "boolean",
+			"description": "Runtime gate toggle (cli/src/abom/policy.py): when false, the orchestrator treats outbound network egress as denied by default. Coarser than `allowed_egress_endpoints` (which is an audit-time allowlist); use `egress_allowed: false` for a hard deny-by-default at runtime and `allowed_egress_endpoints` to audit which specific endpoints were reached.",
+			"default": false
+		},
+		"consequential_actions": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"description": "Rules that mark a proposed action as “consequential” (i.e. requiring approval when `approval_required_for_consequential` is true). Two rule forms are recognized by the runtime: the literal token \"writes_outside_workspace\", and \"touches_paths:<glob>\" which matches changed file paths against an fnmatch glob.",
+			"examples": [
+				[
+					"writes_outside_workspace",
+					"touches_paths:**/auth/**"
+				]
+			]
+		},
+		"approval_required_for_consequential": {
+			"type": "boolean",
+			"description": "Runtime gate toggle: when true, any action classified consequential by `consequential_actions` requires human approval before it proceeds.",
+			"default": true
+		},
+		"require_approval_when": {
+			"type": "string",
+			"enum": [
+				"consequential",
+				"never",
+				"always"
+			],
+			"description": "Audit-time counterpart to `approval_required_for_consequential`, used by `abom verify`. When an action's `policy_decisions` include a result of \"required\", the provenance must carry an `approval` with `decision: \"approved\"`; otherwise the `approval_coverage` rule yields a finding. \"consequential\" is the reference default.",
+			"default": "consequential"
+		},
+		"max_iterations_cap": {
+			"type": "integer",
+			"minimum": 1,
+			"description": "Runtime safety cap on the agent's reasoning/tool-call loop. The orchestrator refuses to exceed this many iterations regardless of other policy.",
+			"examples": [
+				8
+			]
+		}
+	}
+}

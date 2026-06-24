@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Policy Builder — ABOM · Generate &amp; validate an enforcement policy</title>
+<meta name="description" content="Build a valid ABOM enforcement policy from a form, or paste your own and validate it against the abom-policy-0.1 schema — entirely in your browser. Copy or download the result, then enforce it with the gate and abom verify.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/policy-builder.html">
+<meta property="og:title" content="ABOM Policy Builder">
+<meta property="og:description" content="Generate and validate an ABOM enforcement policy in the browser — against the canonical schema.">
+<meta property="og:url" content="https://abom.ai/policy-builder.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:1000px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;gap:24px;align-items:center}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .navlinks a.active{color:#fff}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s;cursor:pointer;border:none;font-family:inherit}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  .btn.sm{padding:7px 14px;font-size:13px;border-radius:8px}
+  .btn.dark{background:var(--teal);color:#fff}
+  .btn.subtle{background:#E8F2F1;color:var(--teal);border:1px solid var(--line)}
+  .btn.subtle:hover{background:#dceceb;box-shadow:none;transform:none}
+  @media(max-width:760px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:54px 0 44px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(30px,5vw,42px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(15px,2.1vw,17px);color:var(--ice);max-width:680px;margin:16px 0 0}
+
+  main{padding:22px 0 60px}
+
+  .tabs{display:flex;gap:8px;margin:6px 0 18px;border-bottom:1px solid var(--line)}
+  .tab{padding:11px 18px;font-weight:700;font-size:14.5px;color:var(--slate);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+  .tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+
+  .panel{display:none}
+  .panel.active{display:block}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:860px){.cols{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:20px 22px}
+  .card h2{font-size:18px;margin-bottom:4px}
+  .card .sub{color:var(--slate);font-size:13.5px;margin-bottom:14px}
+
+  .field{margin-bottom:15px}
+  .field label{display:block;font-weight:700;font-size:13px;margin-bottom:5px;color:var(--ink)}
+  .field .hint{font-weight:400;color:var(--slate);font-size:12px}
+  .field input[type=text],.field input[type=number],.field textarea,.field select{
+    width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;background:#fff;color:var(--ink)}
+  .field textarea{font-family:"SF Mono",ui-monospace,monospace;font-size:12.5px;resize:vertical;min-height:62px}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--seafoam);box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+  .row{display:flex;gap:12px}.row>*{flex:1}
+  .check{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer}
+  .check input{width:16px;height:16px;accent-color:var(--teal)}
+
+  .out{background:var(--navy);border-radius:12px;overflow:hidden;border:1px solid #0a2a40}
+  .out .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .out .bar .ttl{color:#9fc2cc;font-size:12px;font-family:ui-monospace,monospace;flex:1}
+  .out pre{padding:14px 16px;overflow:auto;max-height:420px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65;color:#cfe8ec;white-space:pre;margin:0}
+  .btn.copy{background:rgba(255,255,255,.1);color:#dff3ef;border:1px solid rgba(255,255,255,.18)}
+  .btn.copy:hover{background:rgba(255,255,255,.18);box-shadow:none;transform:none}
+
+  textarea.paste{width:100%;min-height:300px;border:1px solid var(--line);border-radius:12px;padding:14px;font-family:"SF Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.6;background:#fff;color:var(--ink);resize:vertical}
+  textarea.paste:focus{outline:none;border-color:var(--seafoam);box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+
+  .result{border-radius:12px;padding:14px 16px;margin-top:14px;font-size:14px;font-weight:600;display:none}
+  .result.show{display:block}
+  .result.ok{background:rgba(31,163,122,.10);border:1px solid rgba(31,163,122,.3);color:var(--built)}
+  .result.bad{background:rgba(229,96,77,.08);border:1px solid rgba(229,96,77,.3);color:#b8412f}
+  .result ul{margin:8px 0 0;padding-left:18px;font-weight:400;font-size:13px}
+  .result li{margin:3px 0}
+  .result .mono{font-weight:600}
+
+  .schemainfo{font-size:12px;color:var(--slate);margin:10px 0 0}
+  .schemainfo .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--built);margin-right:5px;vertical-align:middle}
+  .schemainfo .dot.local{background:var(--amber)}
+
+  .note{background:#FBF1D6;border:1px solid #E8D7A0;border-radius:var(--r);padding:14px 18px;margin:20px 0;font-size:13.5px;color:#5b4a16}
+  .note b{color:#a87a00}
+  .barbtns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+  footer .dis{color:#7796a4;max-width:680px;margin:14px auto 0;font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="spec.html">Spec</a>
+      <a href="policies.html">Policies</a>
+      <a href="policy-builder.html" class="active">Policy builder</a>
+      <a href="get-started.html">Get started</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Policy builder</div>
+    <h1>Generate or validate a policy — in your browser.</h1>
+    <p>Build a valid ABOM enforcement policy from a form, or paste your own and check it against the canonical <span class="mono">abom-policy-0.1</span> schema. Nothing leaves your browser.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="tabs">
+    <button class="tab active" data-tab="generate">Generate</button>
+    <button class="tab" data-tab="validate">Validate</button>
+  </div>
+
+  <!-- GENERATE -->
+  <section class="panel active" id="panel-generate">
+    <div class="cols">
+      <div class="card">
+        <h2>Build a policy</h2>
+        <p class="sub">Fill in what you want to enforce. The JSON updates live and stays schema-valid.</p>
+
+        <div class="field">
+          <label>name <span class="hint">— identifier shown in findings</span></label>
+          <input type="text" id="f-name" value="my-agent-policy">
+        </div>
+        <div class="field">
+          <label>description <span class="hint">— optional, documentation only</span></label>
+          <textarea id="f-description" placeholder="What this policy is for…"></textarea>
+        </div>
+        <div class="field">
+          <label>allowed_models <span class="hint">— one per line; empty = unconstrained</span></label>
+          <textarea id="f-models" placeholder="local/qwen2.5-coder&#10;claude-3-5-sonnet-20241022">local/qwen2.5-coder</textarea>
+        </div>
+        <div class="field">
+          <label>allowed_egress_endpoints <span class="hint">— one per line; empty list = deny all</span></label>
+          <textarea id="f-endpoints" placeholder="internal-api.example.com"></textarea>
+          <label class="check" style="margin-top:7px"><input type="checkbox" id="f-endpoints-omit" checked> omit field (leave egress endpoints unconstrained)</label>
+        </div>
+        <div class="field">
+          <label>no_egress_classifications <span class="hint">— must never leave the boundary</span></label>
+          <textarea id="f-classes" placeholder="confidential&#10;restricted">confidential&#10;restricted</textarea>
+        </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" id="f-egress-allowed"> egress_allowed <span class="hint" style="margin-left:4px">— allow outbound egress at runtime (default: denied)</span></label>
+        </div>
+        <div class="field">
+          <label>consequential_actions <span class="hint">— one rule per line</span></label>
+          <textarea id="f-conseq" placeholder="writes_outside_workspace&#10;touches_paths:**/auth/**">writes_outside_workspace</textarea>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>require_approval_when</label>
+            <select id="f-approve-when">
+              <option value="consequential" selected>consequential</option>
+              <option value="always">always</option>
+              <option value="never">never</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>max_iterations_cap <span class="hint">— blank = none</span></label>
+            <input type="number" id="f-maxiter" min="1" value="8">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label class="check"><input type="checkbox" id="f-approve-conseq" checked> approval_required_for_consequential</label>
+        </div>
+      </div>
+
+      <div>
+        <div class="barbtns">
+          <button class="btn dark sm" id="g-download">Download policy.json</button>
+          <button class="btn subtle sm" id="g-copy">Copy</button>
+        </div>
+        <div class="out">
+          <div class="bar"><span class="ttl">policy.json</span></div>
+          <pre id="g-output">{}</pre>
+        </div>
+        <div class="result" id="g-result"></div>
+        <p class="schemainfo"><span class="dot" id="g-schema-dot"></span><span id="g-schema-src">loading schema…</span></p>
+        <div class="note" style="margin-top:16px"><b>Heads up:</b> this builds an unsigned <i>policy</i>. It is not a signed ABOM manifest — manifests are produced and ed25519-signed by the CLI (<span class="mono">abom scan</span> / <span class="mono">abom sign</span>). Use this policy with <span class="mono">abom verify --policy</span> and the <span class="mono">abom gate</span>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALIDATE -->
+  <section class="panel" id="panel-validate">
+    <div class="cols">
+      <div class="card">
+        <h2>Validate a policy</h2>
+        <p class="sub">Paste an ABOM enforcement policy (or load a file). It's checked against <span class="mono">abom-policy-0.1.schema.json</span> — the same schema the CLI uses.</p>
+        <div class="barbtns">
+          <button class="btn dark sm" id="v-run">Validate</button>
+          <label class="btn subtle sm" style="cursor:pointer">Load file…<input type="file" id="v-file" accept=".json,application/json" style="display:none"></label>
+          <button class="btn subtle sm" id="v-sample">Load a sample</button>
+          <button class="btn subtle sm" id="v-clear">Clear</button>
+        </div>
+        <textarea class="paste" id="v-input" placeholder='{ "name": "my-policy", "allowed_models": ["local/qwen2.5-coder"] }'></textarea>
+      </div>
+      <div>
+        <div class="result" id="v-result" style="margin-top:0"></div>
+        <p class="schemainfo" style="margin-top:14px"><span class="dot" id="v-schema-dot"></span><span id="v-schema-src">loading schema…</span></p>
+        <div class="note" style="margin-top:16px">The validator checks structure against the schema (field names, types, enums, no unknown keys). It does <b>not</b> evaluate runtime behavior — for that, run <span class="mono">abom verify abom.json --policy your.json</span>. See the <a href="spec.html#policy">field reference</a>.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. Validation runs entirely client-side against the bundled v0.1 policy schema; it does not transmit your policy anywhere.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // --- Canonical schema, bundled (kept byte-identical to spec/abom-policy-0.1.schema.json).
+  //     We also try to fetch the live schema so the page tracks the source of truth.
+  var BUNDLED_SCHEMA = {
+    "$id":"https://abom.ai/spec/abom-policy-0.1.schema.json",
+    "title":"ABOM Enforcement Policy v0.1",
+    "type":"object","additionalProperties":false,
+    "properties":{
+      "policy":{"const":"0.1"},
+      "name":{"type":"string"},
+      "description":{"type":"string"},
+      "allowed_models":{"type":"array","items":{"type":"string"}},
+      "allowed_egress_endpoints":{"type":"array","items":{"type":"string"}},
+      "no_egress_classifications":{"type":"array","items":{"type":"string"}},
+      "egress_allowed":{"type":"boolean"},
+      "consequential_actions":{"type":"array","items":{"type":"string"}},
+      "approval_required_for_consequential":{"type":"boolean"},
+      "require_approval_when":{"type":"string","enum":["consequential","never","always"]},
+      "max_iterations_cap":{"type":"integer","minimum":1}
+    }
+  };
+  var SCHEMA = BUNDLED_SCHEMA, SCHEMA_SOURCE = "bundled v0.1 schema";
+
+  // Try the live schema (same-origin or abom.ai). Falls back silently to bundled.
+  function tryFetchSchema(){
+    var urls = ["spec/abom-policy-0.1.schema.json","https://abom.ai/spec/abom-policy-0.1.schema.json"];
+    var i = 0;
+    function next(){
+      if(i>=urls.length){ markSchema(false); return; }
+      var u = urls[i++];
+      fetch(u).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+        .then(function(j){ if(j && j.properties){ SCHEMA=j; SCHEMA_SOURCE="live: "+u; markSchema(true);} else next(); })
+        .catch(next);
+    }
+    next();
+  }
+  function markSchema(live){
+    [["g-schema-dot","g-schema-src"],["v-schema-dot","v-schema-src"]].forEach(function(p){
+      var dot=document.getElementById(p[0]), src=document.getElementById(p[1]);
+      if(dot) dot.className = "dot" + (live?"":" local");
+      if(src) src.textContent = "Schema: " + SCHEMA_SOURCE;
+    });
+    // re-validate the live generator output against the now-loaded schema so its
+    // label matches the active source (the first pass ran before the async fetch).
+    if(typeof refreshGenerator === "function") refreshGenerator();
+  }
+
+  // --- Minimal JSON-Schema validator covering exactly what this schema uses.
+  function validate(data, schema, path){
+    path = path || "$";
+    var errs = [];
+    if(schema.type){
+      var t = schema.type, ok;
+      if(t==="object") ok = data!==null && typeof data==="object" && !Array.isArray(data);
+      else if(t==="array") ok = Array.isArray(data);
+      else if(t==="integer") ok = typeof data==="number" && Number.isInteger(data);
+      else if(t==="string") ok = typeof data==="string";
+      else if(t==="boolean") ok = typeof data==="boolean";
+      else ok = true;
+      if(!ok){ errs.push(path+": expected "+t); return errs; }
+    }
+    if(schema.const!==undefined && data!==schema.const) errs.push(path+': must equal "'+schema.const+'"');
+    if(schema.enum && schema.enum.indexOf(data)===-1) errs.push(path+": must be one of "+schema.enum.map(function(e){return '"'+e+'"';}).join(", "));
+    if(typeof data==="number" && schema.minimum!==undefined && data<schema.minimum) errs.push(path+": must be >= "+schema.minimum);
+    if(schema.type==="object" && data && typeof data==="object" && !Array.isArray(data)){
+      var props = schema.properties||{};
+      Object.keys(data).forEach(function(k){
+        if(props[k]) errs = errs.concat(validate(data[k], props[k], path+"."+k));
+        else if(schema.additionalProperties===false) errs.push(path+": unknown field \""+k+"\"");
+      });
+    }
+    if(schema.type==="array" && Array.isArray(data) && schema.items){
+      data.forEach(function(it,idx){ errs = errs.concat(validate(it, schema.items, path+"["+idx+"]")); });
+    }
+    return errs;
+  }
+
+  function showResult(el, ok, title, errs){
+    el.className = "result show " + (ok?"ok":"bad");
+    var html = (ok?"✓ ":"✗ ") + title;
+    if(errs && errs.length){
+      html += "<ul>" + errs.map(function(e){ return "<li><span class='mono'>"+e.replace(/</g,"&lt;")+"</span></li>"; }).join("") + "</ul>";
+    }
+    el.innerHTML = html;
+  }
+
+  // ---------- Tabs ----------
+  document.querySelectorAll(".tab").forEach(function(tab){
+    tab.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");});
+      document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active");});
+      tab.classList.add("active");
+      document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  // ---------- Generator ----------
+  function lines(id){ return document.getElementById(id).value.split("\n").map(function(s){return s.trim();}).filter(Boolean); }
+  function val(id){ return document.getElementById(id).value.trim(); }
+  function checked(id){ return document.getElementById(id).checked; }
+
+  function buildPolicy(){
+    var p = {};
+    if(val("f-name")) p.name = val("f-name");
+    if(val("f-description")) p.description = val("f-description");
+    var models = lines("f-models"); if(models.length) p.allowed_models = models;
+    if(!checked("f-endpoints-omit")) p.allowed_egress_endpoints = lines("f-endpoints");
+    var classes = lines("f-classes"); if(classes.length) p.no_egress_classifications = classes;
+    if(checked("f-egress-allowed")) p.egress_allowed = true;
+    var conseq = lines("f-conseq"); if(conseq.length) p.consequential_actions = conseq;
+    p.approval_required_for_consequential = checked("f-approve-conseq");
+    p.require_approval_when = val("f-approve-when");
+    var mi = val("f-maxiter"); if(mi!=="") p.max_iterations_cap = parseInt(mi,10);
+    return p;
+  }
+
+  function refreshGenerator(){
+    var p = buildPolicy();
+    var json = JSON.stringify(p, null, 2);
+    document.getElementById("g-output").textContent = json;
+    var errs = validate(p, SCHEMA);
+    showResult(document.getElementById("g-result"), errs.length===0,
+      errs.length===0 ? "Valid against "+SCHEMA_SOURCE : (errs.length+" issue(s)"), errs);
+  }
+
+  ["f-name","f-description","f-models","f-endpoints","f-classes","f-conseq","f-maxiter","f-approve-when"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", refreshGenerator);
+  });
+  ["f-endpoints-omit","f-egress-allowed","f-approve-conseq"].forEach(function(id){
+    document.getElementById(id).addEventListener("change", refreshGenerator);
+  });
+
+  function downloadJSON(name, content){
+    var blob = new Blob([content], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href=url; a.download=name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  document.getElementById("g-download").addEventListener("click", function(){
+    downloadJSON("policy.json", document.getElementById("g-output").textContent);
+  });
+  document.getElementById("g-copy").addEventListener("click", function(){
+    var b=this; navigator.clipboard.writeText(document.getElementById("g-output").textContent).then(function(){
+      var o=b.textContent; b.textContent="Copied"; setTimeout(function(){b.textContent=o;},1400);
+    });
+  });
+
+  // ---------- Validator ----------
+  var SAMPLE = '{\n  "name": "finance-baseline",\n  "allowed_models": ["local/qwen2.5-coder", "claude-3-5-sonnet-20241022"],\n  "allowed_egress_endpoints": ["internal-kyc.bank", "ledger.internal"],\n  "no_egress_classifications": ["pci", "pii", "confidential", "restricted"],\n  "egress_allowed": false,\n  "consequential_actions": ["writes_outside_workspace", "touches_paths:**/ledger/**"],\n  "approval_required_for_consequential": true,\n  "require_approval_when": "consequential",\n  "max_iterations_cap": 6\n}';
+
+  function runValidate(){
+    var raw = document.getElementById("v-input").value;
+    var res = document.getElementById("v-result");
+    if(!raw.trim()){ showResult(res, false, "Nothing to validate — paste a policy first.", []); return; }
+    var data;
+    try { data = JSON.parse(raw); }
+    catch(e){ showResult(res, false, "Invalid JSON: "+e.message, []); return; }
+    var errs = validate(data, SCHEMA);
+    showResult(res, errs.length===0,
+      errs.length===0 ? "Valid policy — passes "+SCHEMA_SOURCE : (errs.length+" schema issue(s)"), errs);
+  }
+  document.getElementById("v-run").addEventListener("click", runValidate);
+  document.getElementById("v-sample").addEventListener("click", function(){ document.getElementById("v-input").value=SAMPLE; runValidate(); });
+  document.getElementById("v-clear").addEventListener("click", function(){ document.getElementById("v-input").value=""; document.getElementById("v-result").className="result"; });
+  document.getElementById("v-file").addEventListener("change", function(e){
+    var f=e.target.files[0]; if(!f) return;
+    var rd=new FileReader(); rd.onload=function(){ document.getElementById("v-input").value=rd.result; runValidate(); }; rd.readAsText(f);
+  });
+
+  // init
+  tryFetchSchema();
+  refreshGenerator();
+})();
+</script>
+
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ABOM — Agent Bill of Materials · Know what your AI agents are made of, and prove it</title>
-<meta name="description" content="ABOM is a signed, tamper-evident way to declare what an AI agent is made of, enforce what it's allowed to do at runtime, and prove to an auditor what it actually did. Open source, built on CycloneDX. Apache 2.0.">
+<meta name="description" content="ABOM is a signed, tamper-evident way to declare what an AI agent is made of, enforce what it's allowed to do at runtime, and prove to an auditor what it actually did. Open source, inspired by CycloneDX. Apache 2.0.">
 <meta name="theme-color" content="#0B1F33">
 <link rel="canonical" href="https://abom.ai/overview.html">
 <meta property="og:type" content="website">
@@ -246,8 +246,9 @@
     </a>
     <div class="navlinks">
       <a href="#what">What it is</a>
-      <a href="#gate">The gate</a>
-      <a href="#status">Status</a>
+      <a href="spec.html">Spec</a>
+      <a href="policies.html">Policies</a>
+      <a href="policy-builder.html">Policy builder</a>
       <a href="get-started.html">Get started</a>
       <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
     </div>
@@ -259,7 +260,7 @@
   <div class="wrap">
     <div class="pill-row">
       <span class="chip"><b>●</b> Open source · Apache-2.0</span>
-      <span class="chip"><b>●</b> Extends CycloneDX ML-BOM</span>
+      <span class="chip"><b>●</b> Inspired by CycloneDX ML-BOM</span>
       <span class="chip"><b>●</b> Runs in your boundary</span>
     </div>
     <h1>Know what your AI agents are made of <span class="hl">and prove what they did.</span></h1>
@@ -541,8 +542,8 @@ GET /v1/registry/events
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">Standard-first</div>
-      <h2>Extends CycloneDX — it doesn't fork it</h2>
-      <p class="lede">ABOM rides the dominant, ECMA-standardized SBOM format rather than competing with it. CycloneDX answers <i>"what is it made of."</i> ABOM adds the runtime enforcement and provenance layer it doesn't model.</p>
+      <h2>Inspired by CycloneDX — not a fork of it</h2>
+      <p class="lede">ABOM borrows the component model of the dominant, ECMA-standardized SBOM format rather than competing with it. CycloneDX answers <i>"what is it made of."</i> ABOM extends the idea into the agent runtime, adding the enforcement and provenance layer CycloneDX doesn't model.</p>
     </div>
     <div class="compare">
       <div class="cdx">
@@ -566,7 +567,7 @@ GET /v1/registry/events
         </ul>
       </div>
     </div>
-    <p style="font-size:13px;color:var(--slate);margin-top:16px;font-style:italic">The <span class="mono">"extends": "CycloneDX ML-BOM"</span> lineage is declared on every document today; a native CycloneDX import/export is on the roadmap.</p>
+    <p style="font-size:13px;color:var(--slate);margin-top:16px;font-style:italic">ABOM's component model is aligned with CycloneDX naming today; native CycloneDX import/export is on the roadmap. ABOM does not claim CycloneDX conformance.</p>
   </div>
 </section>
 
@@ -621,7 +622,7 @@ GET /v1/registry/events
       <h2 style="color:#fff">Standard · Signed · Neutral · Yours</h2>
     </div>
     <div class="pillars">
-      <div class="pillar"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#02C39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><h3>Standard</h3><p>Extends CycloneDX, open. Define the format, become infrastructure.</p></div>
+      <div class="pillar"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#02C39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div><h3>Standard</h3><p>Inspired by CycloneDX, open. Define the format, become infrastructure.</p></div>
       <div class="pillar"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#02C39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Signed</h3><p>Tamper-evident, regulator-grade. Cryptographic, not reputational.</p></div>
       <div class="pillar"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#02C39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 7h14M5 7l-3 6h6zM19 7l-3 6h6z"/></svg></div><h3>Neutral</h3><p>Any model, any framework — we sell neither. Only an independent can be the bill-of-materials layer.</p></div>
       <div class="pillar"><div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#02C39A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>Yours</h3><p>Runs inside your boundary; nothing leaves. Air-gap capable, sovereign by default.</p></div>
@@ -652,14 +653,16 @@ GET /v1/registry/events
       <p class="muted">The open-source security standard for AI agents. A signed, tamper-evident record of what every agent is, is allowed to do, and did.</p>
     </div>
     <div class="links">
+      <a href="spec.html">Spec</a>
+      <a href="policies.html">Policies</a>
+      <a href="policy-builder.html">Policy builder</a>
       <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
       <a href="https://pypi.org/project/abom-cli/">PyPI</a>
       <a href="https://cyclonedx.org/capabilities/mlbom/">CycloneDX ML-BOM</a>
-      <a href="#status">Build status</a>
     </div>
   </div>
   <div class="wrap">
-    <p class="disclaimer">ABOM v0.1 (draft) · Apache-2.0 · extends CycloneDX ML-BOM. A company in formation — this site is informational, not investment or legal advice; regulatory positioning should be validated with qualified counsel.</p>
+    <p class="disclaimer">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. A company in formation — this site is informational, not investment or legal advice; regulatory positioning should be validated with qualified counsel.</p>
   </div>
 </footer>
 

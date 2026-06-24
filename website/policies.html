@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Policy Hub — ABOM · Default policies for finance, manufacturing, healthcare</title>
+<meta name="description" content="Ready-made, schema-valid ABOM enforcement policies for regulated sectors — finance, manufacturing, healthcare. Illustrative baselines you can download, adapt, and enforce with the gate and abom verify.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/policies.html">
+<meta property="og:title" content="ABOM Policy Hub">
+<meta property="og:description" content="Default ABOM enforcement policies for finance, manufacturing, and healthcare — schema-valid baselines to download and adapt.">
+<meta property="og:url" content="https://abom.ai/policies.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:920px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;gap:24px;align-items:center}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .navlinks a.active{color:#fff}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s;cursor:pointer;border:none}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  .btn.sm{padding:7px 14px;font-size:13px;border-radius:8px}
+  .btn.dark{background:var(--teal);color:#fff}
+  @media(max-width:760px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:64px 0 50px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(32px,5.5vw,46px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(16px,2.2vw,18px);color:var(--ice);max-width:680px;margin:18px 0 0}
+
+  main{padding:18px 0 60px}
+
+  .disclaimer{background:#FBF1D6;border:1px solid #E8D7A0;border-radius:var(--r);padding:16px 18px;margin:22px 0;font-size:14px;color:#5b4a16}
+  .disclaimer b{color:#a87a00}
+
+  .secthead{margin:30px 0 8px}
+  .secthead h2{font-size:22px}
+  .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
+
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);margin:18px 0;overflow:hidden}
+  .pcard .top{padding:20px 22px;display:flex;align-items:flex-start;gap:16px;border-bottom:1px solid var(--line)}
+  .pcard .ic{flex:none;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .pcard .ic.fin{background:rgba(31,163,122,.13)}
+  .pcard .ic.man{background:rgba(124,108,214,.13)}
+  .pcard .ic.hea{background:rgba(229,96,77,.12)}
+  .pcard .hd{flex:1;min-width:0}
+  .pcard h3{font-size:19px;margin-bottom:3px}
+  .pcard .file{font-size:12.5px;color:var(--slate)}
+  .pcard .file .mono{color:var(--teal)}
+  .pcard .desc{padding:16px 22px 4px;color:var(--slate);font-size:14.5px}
+  .pcard .desc b{color:var(--ink)}
+
+  .maps{display:flex;flex-wrap:wrap;gap:7px;padding:12px 22px 18px}
+  .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px}
+
+  .code{background:var(--navy);overflow:hidden;border-top:1px solid #0a2a40}
+  .code .bar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .code .bar .ttl{color:#9fc2cc;font-size:12.5px;font-family:ui-monospace,monospace;flex:1}
+  .code .acts{display:flex;gap:8px}
+  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre;margin:0}
+  .code pre .k{color:var(--mint)}.code pre .s{color:#9ad7c8}.code pre .n{color:#E0A100}.code pre .b{color:#7fb0ff}
+  .btn.copy{background:rgba(255,255,255,.1);color:#dff3ef;border:1px solid rgba(255,255,255,.18)}
+  .btn.copy:hover{background:rgba(255,255,255,.18);box-shadow:none;transform:none}
+
+  .usage{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:28px 0 0}
+  .usage h3{font-size:16px;margin-bottom:10px}
+  .usage pre{background:var(--navy);color:#cfe8ec;border-radius:10px;padding:13px 16px;overflow-x:auto;font-family:"SF Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.7}
+  .usage pre .p{color:var(--mint)}.usage pre .c{color:#5e8597}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+  footer .dis{color:#7796a4;max-width:680px;margin:14px auto 0;font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="spec.html">Spec</a>
+      <a href="policies.html" class="active">Policies</a>
+      <a href="policy-builder.html">Policy builder</a>
+      <a href="get-started.html">Get started</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Policy hub</div>
+    <h1>Default policies for regulated sectors.</h1>
+    <p>Ready-made, schema-valid ABOM enforcement policies you can download, adapt, and enforce — at runtime with the gate, and after the fact with <span class="mono">abom verify</span>. Each is a starting point shaped by a sector's typical obligations.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="disclaimer">
+    <b>These are illustrative baselines, not certified controls.</b> Each policy <i>gestures at</i> the kinds of obligations a sector faces — it is not a compliance attestation, legal advice, or a guarantee of conformance with any regulation. The regulation tags below indicate intent, not coverage. Validate any policy with your own compliance, security, and legal teams before relying on it.
+  </div>
+
+  <div class="secthead">
+    <h2>Three baselines</h2>
+    <p>Same schema (<span class="mono">abom-policy-0.1</span>), three different postures. Note how the strictness escalates: finance permits two internal endpoints; manufacturing locks egress to its PLM/MES; healthcare denies all external egress and requires approval on <i>every</i> consequential action.</p>
+  </div>
+
+  <!-- FINANCE -->
+  <article class="pcard">
+    <div class="top">
+      <div class="ic fin">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1FA37A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="hd">
+        <h3>Finance</h3>
+        <div class="file"><span class="mono">finance.json</span> · name: <span class="mono">finance-baseline</span></div>
+      </div>
+      <a class="btn dark sm" id="dl-finance">Download</a>
+    </div>
+    <p class="desc">Strict egress and approval posture for agents on financial data and systems. <b>Cardholder and customer-financial data must never leave the boundary</b>, model access is allowlisted, and any write to the ledger or payments path needs human approval.</p>
+    <div class="maps">
+      <span class="reg">SOX</span><span class="reg">GLBA</span><span class="reg">PCI-DSS</span><span class="reg">DORA</span>
+    </div>
+    <div class="code">
+      <div class="bar"><span class="ttl">finance.json</span><div class="acts"><button class="btn copy sm" id="cp-finance">Copy</button></div></div>
+<pre id="src-finance">{
+  <span class="k">"name"</span>: <span class="s">"finance-baseline"</span>,
+  <span class="k">"description"</span>: <span class="s">"Illustrative baseline for agents operating on financial data and systems. Gestures at SOX (change/approval evidence), GLBA (customer financial data confidentiality), PCI-DSS (cardholder data must not egress), and DORA (operational resilience, human oversight of consequential actions). NOT a certified control set — a starting template to adapt with qualified counsel."</span>,
+  <span class="k">"allowed_models"</span>: [<span class="s">"local/qwen2.5-coder"</span>, <span class="s">"claude-3-5-sonnet-20241022"</span>],
+  <span class="k">"allowed_egress_endpoints"</span>: [<span class="s">"internal-kyc.bank"</span>, <span class="s">"ledger.internal"</span>],
+  <span class="k">"no_egress_classifications"</span>: [<span class="s">"pci"</span>, <span class="s">"pii"</span>, <span class="s">"confidential"</span>, <span class="s">"restricted"</span>],
+  <span class="k">"egress_allowed"</span>: <span class="b">false</span>,
+  <span class="k">"consequential_actions"</span>: [<span class="s">"writes_outside_workspace"</span>, <span class="s">"touches_paths:**/ledger/**"</span>, <span class="s">"touches_paths:**/payments/**"</span>],
+  <span class="k">"approval_required_for_consequential"</span>: <span class="b">true</span>,
+  <span class="k">"require_approval_when"</span>: <span class="s">"consequential"</span>,
+  <span class="k">"max_iterations_cap"</span>: <span class="n">6</span>
+}</pre>
+    </div>
+  </article>
+
+  <!-- MANUFACTURING -->
+  <article class="pcard">
+    <div class="top">
+      <div class="ic man">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7C6CD6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V8l6 4V8l6 4V8l4 3v9"/></svg>
+      </div>
+      <div class="hd">
+        <h3>Manufacturing</h3>
+        <div class="file"><span class="mono">manufacturing.json</span> · name: <span class="mono">manufacturing-baseline</span></div>
+      </div>
+      <a class="btn dark sm" id="dl-manufacturing">Download</a>
+    </div>
+    <p class="desc">IP- and supply-chain-focused posture for agents across design, MES, and OT-adjacent systems. <b>Trade-secret and export-controlled data must never egress</b>, and writes to CAD, BOM, or PLC configuration are gated on human approval.</p>
+    <div class="maps">
+      <span class="reg">Trade-secret / IP</span><span class="reg">Export control</span><span class="reg">Supply-chain integrity</span>
+    </div>
+    <div class="code">
+      <div class="bar"><span class="ttl">manufacturing.json</span><div class="acts"><button class="btn copy sm" id="cp-manufacturing">Copy</button></div></div>
+<pre id="src-manufacturing">{
+  <span class="k">"name"</span>: <span class="s">"manufacturing-baseline"</span>,
+  <span class="k">"description"</span>: <span class="s">"Illustrative baseline for agents operating across design, supply-chain, and OT/ICS-adjacent systems. Gestures at trade-secret / IP protection, export-control data residency, and supply-chain integrity (no unreviewed writes to BOM, CAD, or PLC configuration). NOT a certified control set — a starting template to adapt with qualified counsel."</span>,
+  <span class="k">"allowed_models"</span>: [<span class="s">"local/qwen2.5-coder"</span>],
+  <span class="k">"allowed_egress_endpoints"</span>: [<span class="s">"plm.internal"</span>, <span class="s">"mes.internal"</span>],
+  <span class="k">"no_egress_classifications"</span>: [<span class="s">"trade-secret"</span>, <span class="s">"export-controlled"</span>, <span class="s">"confidential"</span>],
+  <span class="k">"egress_allowed"</span>: <span class="b">false</span>,
+  <span class="k">"consequential_actions"</span>: [<span class="s">"writes_outside_workspace"</span>, <span class="s">"touches_paths:**/cad/**"</span>, <span class="s">"touches_paths:**/bom/**"</span>, <span class="s">"touches_paths:**/plc/**"</span>],
+  <span class="k">"approval_required_for_consequential"</span>: <span class="b">true</span>,
+  <span class="k">"require_approval_when"</span>: <span class="s">"consequential"</span>,
+  <span class="k">"max_iterations_cap"</span>: <span class="n">8</span>
+}</pre>
+    </div>
+  </article>
+
+  <!-- HEALTHCARE -->
+  <article class="pcard">
+    <div class="top">
+      <div class="ic hea">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E5604D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="hd">
+        <h3>Healthcare</h3>
+        <div class="file"><span class="mono">healthcare.json</span> · name: <span class="mono">healthcare-baseline</span></div>
+      </div>
+      <a class="btn dark sm" id="dl-healthcare">Download</a>
+    </div>
+    <p class="desc">The strictest of the three. For agents that may touch protected health information: <b>no PHI/PII leaves the boundary, no external endpoints at all</b>, and <b>every</b> consequential action — any write to an EHR, patient, or orders path — requires human approval.</p>
+    <div class="maps">
+      <span class="reg">HIPAA</span><span class="reg">PHI minimum-necessary</span><span class="reg">No external egress</span>
+    </div>
+    <div class="code">
+      <div class="bar"><span class="ttl">healthcare.json</span><div class="acts"><button class="btn copy sm" id="cp-healthcare">Copy</button></div></div>
+<pre id="src-healthcare">{
+  <span class="k">"name"</span>: <span class="s">"healthcare-baseline"</span>,
+  <span class="k">"description"</span>: <span class="s">"Illustrative baseline for agents that may touch protected health information. Gestures at HIPAA (PHI confidentiality and minimum-necessary access), the strictest egress posture of the three sectors (no PHI/PII leaves the boundary, no external endpoints), and human approval for any write to a clinical record. NOT a certified control set and NOT a Business Associate Agreement — a starting template to adapt with qualified counsel and your compliance team."</span>,
+  <span class="k">"allowed_models"</span>: [<span class="s">"local/qwen2.5-coder"</span>],
+  <span class="k">"allowed_egress_endpoints"</span>: [],
+  <span class="k">"no_egress_classifications"</span>: [<span class="s">"phi"</span>, <span class="s">"pii"</span>, <span class="s">"confidential"</span>, <span class="s">"restricted"</span>],
+  <span class="k">"egress_allowed"</span>: <span class="b">false</span>,
+  <span class="k">"consequential_actions"</span>: [<span class="s">"writes_outside_workspace"</span>, <span class="s">"touches_paths:**/ehr/**"</span>, <span class="s">"touches_paths:**/patient/**"</span>, <span class="s">"touches_paths:**/orders/**"</span>],
+  <span class="k">"approval_required_for_consequential"</span>: <span class="b">true</span>,
+  <span class="k">"require_approval_when"</span>: <span class="s">"always"</span>,
+  <span class="k">"max_iterations_cap"</span>: <span class="n">5</span>
+}</pre>
+    </div>
+  </article>
+
+  <div class="usage">
+    <h3>Use a policy</h3>
+    <p style="color:var(--slate);font-size:14.5px;margin-bottom:8px">Download one, adapt it to your own models / endpoints / paths, then enforce it:</p>
+<pre><span class="c"># audit a signed manifest + its provenance against the policy</span>
+<span class="p">abom verify abom.json --policy finance.json</span>
+
+<span class="c"># the same policy fields drive the runtime gate</span>
+<span class="p">abom gate abom.json --tool http_fetch --endpoint ledger.internal</span></pre>
+    <p style="color:var(--slate);font-size:13.5px;margin-top:10px">Building your own from scratch? Use the <a href="policy-builder.html">policy builder</a> to generate and validate one in the browser. See the <a href="spec.html#policy">field reference</a> for what each key enforces.</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. Policies on this page are illustrative baselines, not certified controls or legal advice; validate with qualified counsel.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function text(id){ return document.getElementById(id).textContent; }
+  function download(name, content){
+    var blob = new Blob([content], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  ['finance','manufacturing','healthcare'].forEach(function(key){
+    var dl = document.getElementById('dl-'+key);
+    var cp = document.getElementById('cp-'+key);
+    if(dl) dl.addEventListener('click', function(e){ e.preventDefault(); download(key+'.json', text('src-'+key)); });
+    if(cp) cp.addEventListener('click', function(){
+      navigator.clipboard.writeText(text('src-'+key)).then(function(){
+        var old = cp.textContent; cp.textContent = 'Copied'; setTimeout(function(){ cp.textContent = old; }, 1400);
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
