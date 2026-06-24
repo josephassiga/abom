@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Get Started — ABOM · Agent Bill of Materials</title>
+<meta name="description" content="Install ABOM and scan your first agent in two minutes: a signed bill of materials from local code, a GitHub repo, or a live MCP endpoint. Then block an unauthorized action with the gate.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/get-started.html">
+<meta property="og:title" content="Get Started with ABOM">
+<meta property="og:description" content="Scan your first agent in two minutes — local code, a GitHub repo, or a live MCP endpoint — and block an unauthorized action with the gate.">
+<meta property="og:url" content="https://abom.ai/get-started.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:880px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;gap:24px;align-items:center}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  @media(max-width:680px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:70px 0 56px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(32px,5.5vw,46px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(16px,2.2vw,18px);color:var(--ice);max-width:640px;margin:18px 0 0}
+  .install{margin-top:28px;display:inline-flex;align-items:center;gap:12px;background:#06121f;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:13px 18px;font-size:15px;box-shadow:var(--shadow)}
+  .install .d{color:var(--mint);font-weight:700}.install .mono{color:#eaf6f3}
+
+  main{padding:18px 0 60px}
+  .step{padding:40px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;font-size:14px;margin-bottom:14px}
+  .step h2{font-size:clamp(22px,3.4vw,28px);margin-bottom:10px}
+  .step p{color:var(--slate);font-size:15.5px;margin:10px 0}
+  .step p b{color:var(--ink)}
+  .lead{font-size:16.5px;color:var(--ink)!important}
+
+  .code{background:var(--navy);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;border:1px solid #0a2a40;margin:16px 0}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:11px 15px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .code .bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .bar .r{background:#ff5f57}.bar .y{background:#febc2e}.bar .g{background:#28c840}
+  .code .bar span{margin-left:8px;color:#6f93a6;font-size:12.5px;font-family:ui-monospace,monospace}
+  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.7;color:#cfe8ec;white-space:pre}
+  .code pre .c{color:#5e8597}.code pre .p{color:var(--mint)}.code pre .o{color:#9ad7c8}
+  .code pre .deny{color:#ff8a76;font-weight:700}.code pre .allow{color:#4ee6b8;font-weight:700}.code pre .a{color:#E0A100}
+
+  .note{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+  .note b{color:var(--teal)}
+  .note.warn{background:#FBF1D6;border-color:#E8D7A0}.note.warn b{color:#a87a00}
+
+  .tag{display:inline-flex;align-items:center;gap:6px;background:rgba(31,163,122,.13);color:var(--built);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;vertical-align:middle;margin-left:8px}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+  .gc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow-sm)}
+  .gc h3{font-size:15px;margin-bottom:6px;color:var(--ink)}
+  .gc p{font-size:13px;color:var(--slate);margin:0}
+  .gc .mono{font-size:12px;color:var(--teal);font-weight:700}
+  @media(max-width:680px){.grid3{grid-template-columns:1fr}}
+
+  .tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;table-layout:fixed}
+  .tbl th{background:var(--navy);color:#fff;text-align:left;padding:10px 14px;font-size:12.5px}
+  .tbl td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+  .tbl td:first-child{font-weight:700}
+  .tbl td .mono,.note .mono,.step p .mono{word-break:break-word;overflow-wrap:anywhere}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="/#gate">The gate</a>
+      <a href="/#status">Status</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Get started</div>
+    <h1>Scan your first agent in two minutes.</h1>
+    <p>Install ABOM, then produce a signed bill of materials from local code, a GitHub repo, or a live MCP endpoint — and block an unauthorized action with the gate.</p>
+    <div class="install"><span class="d mono">$</span><span class="mono">pip install abom-cli</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- STEP 1 -->
+  <section class="step">
+    <div class="n">1</div>
+    <h2>Install</h2>
+    <p class="lead">ABOM is an open-source CLI on PyPI. Requires <b>Python 3.10+</b>.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">pip install abom-cli</span>          <span class="c"># the scanner, gate &amp; verifier</span>
+<span class="p">pip install 'abom-cli[mcp]'</span>   <span class="c"># add this to scan live MCP endpoints</span>
+
+abom version                  <span class="c"># → abom 0.1.x · ABOM spec v0.1</span></pre></div>
+    <div class="note"><b>Tip:</b> if you installed with <span class="mono">pipx</span>, add the MCP support with <span class="mono">pipx inject abom-cli httpx</span>. See <a href="#troubleshooting">troubleshooting</a> if a command can't find a module.</div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step">
+    <div class="n">2</div>
+    <h2>Scan a local agent <span class="tag">what it's made of</span></h2>
+    <p class="lead">Point <span class="mono">abom scan</span> at any agent project. It detects the models, tools, prompts, data sources, frameworks and MCP servers it's built from — each with the exact <span class="mono">DETECTED&nbsp;FROM</span> reference — and emits a signed manifest.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre>abom scan .                        <span class="c"># → abom.json (ed25519-signed)</span>
+
+  ABOM · my-agent @ 1.0.0  —  6 components
+  ┌───┬───────────┬───────────────┬──────────┬──────────────────────┐
+  │ # │ TYPE      │ NAME          │ VERSION  │ DETECTED FROM        │
+  ├───┼───────────┼───────────────┼──────────┼──────────────────────┤
+  │ 1 │ model     │ OpenAI (SDK)  │ 1.51.0   │ dependency:openai    │
+  │ 2 │ framework │ LangChain     │ >=0.2.16 │ dependency:langchain │
+  │ 3 │ tool      │ lookup_order  │ —        │ file:agent.py:14     │
+  └───┴───────────┴───────────────┴──────────┴──────────────────────┘
+  signed: ed25519 · key 7f7aa8d6…</pre></div>
+    <p>Verify the signature any time — it's self-contained, so anyone you hand the file to can check it:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre>abom verify abom.json              <span class="c"># → ✓ VALID — signature OK</span></pre></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step">
+    <div class="n">3</div>
+    <h2>Block an unauthorized action <span class="tag">what it's allowed to do</span></h2>
+    <p class="lead">The gate enforces the signed manifest at the tool boundary, <b>deny-by-default</b>. A tool that isn't declared is blocked <b>before it runs</b> — not logged after.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · CLI</span></div>
+<pre>abom gate abom.json --tool lookup_order    <span class="c"># → </span><span class="allow">ALLOW</span><span class="c"> (exit 0)</span>
+abom gate abom.json --tool wire_transfer   <span class="c"># → </span><span class="deny">DENY</span><span class="c">  (exit 1)</span>
+                                           <span class="c">#   tool_not_in_manifest</span></pre></div>
+    <p>Or wrap a tool in your agent code — a prompt injection that calls an undeclared tool raises <span class="mono">ActionDenied</span> before the body executes:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
+<pre><span class="p">from</span> abom <span class="p">import</span> Gate, ActionDenied
+
+gate = Gate(signed_manifest)
+
+<span class="p">@gate.gated()</span>
+<span class="p">def</span> wire_transfer(amount, to):
+    ...                       <span class="c"># never runs if undeclared</span>
+
+<span class="p">try</span>:
+    wire_transfer(1_000_000, to=<span class="o">"attacker"</span>)
+<span class="p">except</span> ActionDenied <span class="p">as</span> e:
+    print(e.decision.rule)    <span class="c"># → </span><span class="deny">"tool_not_in_manifest"</span>
+    <span class="c"># the money never moved — and the denial is notarized</span></pre></div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step">
+    <div class="n">4</div>
+    <h2>Scan a remote agent <span class="tag">three ways</span></h2>
+    <p class="lead">You don't need the code locally. ABOM scans a GitHub repo by URL, or a <b>live deployed agent</b> over the Model Context Protocol.</p>
+    <div class="grid3">
+      <div class="gc"><div class="mono">scan &lt;path&gt;</div><h3>Local code</h3><p>A directory or repo on your machine.</p></div>
+      <div class="gc"><div class="mono">scan --url</div><h3>A GitHub repo</h3><p>Clones, scans, and cleans up. Never runs the code.</p></div>
+      <div class="gc"><div class="mono">scan --mcp</div><h3>A live endpoint</h3><p>Enumerates a running agent's declared capabilities.</p></div>
+    </div>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · a public repo</span></div>
+<pre>abom scan --url https://github.com/assafelovic/gpt-researcher
+
+  ABOM · gpt-researcher @ 0.14.7  —  25 components
+  <span class="c"># models, frameworks, tools, MCP server — versioned, signed</span></pre></div>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · a live MCP server</span></div>
+<pre>abom scan --mcp https://mcp.deepwiki.com/mcp
+
+  ABOM · DeepWiki @ 2.14.3  —  4 components
+  │ tool       │ ask_question        │ mcp:https://mcp.deepwiki.com/mcp │
+  │ tool       │ read_wiki_contents  │ mcp:https://mcp.deepwiki.com/mcp │
+  │ MCP server │ DeepWiki            │ mcp:https://mcp.deepwiki.com/mcp │</pre></div>
+    <div class="note"><b>Auth-gated servers</b> (like GitHub's <span class="mono">https://api.githubcopilot.com/mcp/</span>) work too — pass a token with <span class="mono">--token &lt;PAT&gt;</span> or the <span class="mono">ABOM_MCP_TOKEN</span> env var. ABOM only reads the declared capabilities; it never invokes a tool.</div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step">
+    <div class="n">5</div>
+    <h2>Make it shareable</h2>
+    <p class="lead">Add <span class="mono">--card</span> to any scan or gate to also write a self-contained SVG "report card" you can drop into a PR, a doc, or a slide.</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre>abom scan . --card abom-card.svg
+abom gate abom.json --tool wire_transfer --card decision.svg</pre></div>
+    <p>And it drops into CI — <span class="mono">abom gate</span> exits non-zero on DENY, so an unauthorized action fails the build:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>.github/workflows/ci.yml</span></div>
+<pre><span class="p">- uses:</span> josephassiga/abom-dev/.github/actions/abom-scan@main
+  <span class="p">with:</span>
+    path: .</pre></div>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <section class="step" id="troubleshooting">
+    <div class="n">?</div>
+    <h2>Troubleshooting</h2>
+    <p class="lead">A couple of real-world Python gotchas, and how to fix them.</p>
+    <table class="tbl">
+      <tr><th style="width:38%">Symptom</th><th>Fix</th></tr>
+      <tr>
+        <td>The <span class="mono">abom</span> command says <span class="mono">No module named httpx</span> even though you installed it</td>
+        <td>Your <span class="mono">abom</span> binary (often a <span class="mono">pipx</span> install) uses a different environment than your <span class="mono">pip</span>. Either <span class="mono">pipx inject abom-cli httpx</span>, or run it via the right interpreter: <span class="mono">python -m abom scan --mcp …</span></td>
+      </tr>
+      <tr>
+        <td><span class="mono">import abom</span> reports an old version</td>
+        <td>A stale copy is shadowing the install. Reinstall cleanly: <span class="mono">pip install -U abom-cli</span> (or <span class="mono">pip install -e .</span> from a source checkout for the latest).</td>
+      </tr>
+      <tr>
+        <td><span class="mono">--no-banner</span> "no such option"</td>
+        <td>It's a top-level flag — put it <i>before</i> the command: <span class="mono">abom --no-banner scan …</span></td>
+      </tr>
+      <tr>
+        <td>Piping <span class="mono">scan -o -</span> into <span class="mono">jq</span></td>
+        <td>Works cleanly — the banner and summary go to stderr, so stdout is pure JSON.</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- NEXT -->
+  <section class="step">
+    <div class="n">→</div>
+    <h2>Next steps</h2>
+    <div class="grid3">
+      <div class="gc"><h3>How it works</h3><p><a href="/#what">The three questions</a>, the gate, and the Merkle Notary explained.</p></div>
+      <div class="gc"><h3>Build status</h3><p><a href="/#status">What's real vs. roadmap</a> — honest maturity.</p></div>
+      <div class="gc"><h3>Source &amp; spec</h3><p><a href="https://github.com/josephassiga/abom-dev">GitHub</a> · <a href="https://pypi.org/project/abom-cli/">PyPI</a></p></div>
+    </div>
+    <div class="note">ABOM is <b>draft v0.1</b>, Apache-2.0, and extends CycloneDX ML-BOM. Feedback and spec proposals welcome.</div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="/#what">How it works</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a> · <a href="https://pypi.org/project/abom-cli/">PyPI</a>
+    <p style="margin-top:14px;color:#5d7c8a">ABOM v0.1 (draft) · Apache-2.0 · extends CycloneDX ML-BOM</p>
+  </div>
+</footer>
+
+</body>
+</html>
