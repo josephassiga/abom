@@ -61,11 +61,13 @@
   .secthead h2{font-size:22px}
   .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
 
-  /* tile grid */
+  /* tile grid — tiles in a row share height (tidy resting state); an
+     expanded tile opts out via align-self so it doesn't stretch its neighbor */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
   @media(max-width:760px){.grid{grid-template-columns:1fr}}
 
   .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
+  .pcard.expanded{align-self:start}
   .pcard .top{padding:20px 22px 6px;display:flex;align-items:flex-start;gap:14px}
   .pcard .ic{flex:none;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center}
   .pcard .ic.fin{background:rgba(31,163,122,.13)}
@@ -78,15 +80,16 @@
   .pcard .desc{padding:8px 22px 0;color:var(--slate);font-size:14px;line-height:1.55}
   .pcard .desc b{color:var(--ink)}
 
-  /* metadata rows (Regulations / Egress / Approval / Models) */
-  .meta{padding:14px 22px 4px;font-size:13px;border-top:1px solid var(--line);margin-top:14px}
+  /* metadata rows (Regulations / Egress / Approval / Models) — flex:1 so the
+     block fills the gap and the action row aligns across tiles in a row */
+  .meta{padding:14px 22px 4px;font-size:13px;border-top:1px solid var(--line);margin-top:14px;flex:1 0 auto}
   .meta .row{margin-bottom:7px;color:var(--slate)}
   .meta .row:last-child{margin-bottom:0}
   .meta .row b{color:var(--ink);font-weight:700}
   .maps{display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle}
   .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 
-  .pcard .actions{padding:16px 22px;margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .pcard .actions{padding:16px 22px;display:flex;gap:8px;flex-wrap:wrap}
   .pcard .actions .btn{flex:0 0 auto}
 
   /* collapsible JSON */
@@ -298,15 +301,45 @@
     });
   });
 
+  var cards = [].slice.call(document.querySelectorAll('.pcard'));
+
+  // Equalize the resting height of collapsed tiles that sit on the same grid
+  // row, so the grid looks tidy on desktop. Expanded tiles are skipped (they
+  // grow past the resting height) and single-column (mobile) needs no work.
+  function equalize(){
+    cards.forEach(function(c){ c.style.minHeight = ''; });          // reset to natural
+    if(window.matchMedia('(max-width:760px)').matches) return;      // mobile: 1 col, skip
+    var rows = {};
+    cards.forEach(function(c){
+      if(c.classList.contains('expanded')) return;                  // don't pin expanded tiles
+      var top = Math.round(c.getBoundingClientRect().top);
+      (rows[top] = rows[top] || []).push(c);
+    });
+    Object.keys(rows).forEach(function(top){
+      var group = rows[top];
+      if(group.length < 2) return;
+      var max = Math.max.apply(null, group.map(function(c){ return c.offsetHeight; }));
+      group.forEach(function(c){ c.style.minHeight = max + 'px'; });
+    });
+  }
+
   // show/hide the policy JSON
   document.querySelectorAll('.toggle').forEach(function(btn){
     btn.addEventListener('click', function(){
       var key = btn.dataset.key;
       var code = document.getElementById('code-'+key);
       var open = code.classList.toggle('open');
+      // mark the whole tile expanded so it opts out of equal-row-height
+      // pinning and grows downward without dragging its neighbor
+      btn.closest('.pcard').classList.toggle('expanded', open);
       btn.textContent = open ? 'Hide policy' : 'View policy';
+      equalize();
     });
   });
+
+  equalize();
+  var rt;
+  window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(equalize, 120); });
 })();
 </script>
 
