@@ -170,7 +170,6 @@
     </div>
     <div class="actions">
       <button class="btn dark sm toggle" data-key="finance">View policy</button>
-      <button class="btn subtle sm" id="dl-finance">Download</button>
     </div>
     <div class="code" id="code-finance">
       <div class="bar"><span class="ttl">finance.json</span><div class="acts"><button class="btn copy sm" id="cp-finance">Copy</button></div></div>
@@ -209,7 +208,6 @@
     </div>
     <div class="actions">
       <button class="btn dark sm toggle" data-key="manufacturing">View policy</button>
-      <button class="btn subtle sm" id="dl-manufacturing">Download</button>
     </div>
     <div class="code" id="code-manufacturing">
       <div class="bar"><span class="ttl">manufacturing.json</span><div class="acts"><button class="btn copy sm" id="cp-manufacturing">Copy</button></div></div>
@@ -248,7 +246,6 @@
     </div>
     <div class="actions">
       <button class="btn dark sm toggle" data-key="healthcare">View policy</button>
-      <button class="btn subtle sm" id="dl-healthcare">Download</button>
     </div>
     <div class="code" id="code-healthcare">
       <div class="bar"><span class="ttl">healthcare.json</span><div class="acts"><button class="btn copy sm" id="cp-healthcare">Copy</button></div></div>
@@ -292,18 +289,8 @@
 <script>
 (function(){
   function text(id){ return document.getElementById(id).textContent; }
-  function download(name, content){
-    var blob = new Blob([content], {type:'application/json'});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
-  }
   ['finance','manufacturing','healthcare'].forEach(function(key){
-    var dl = document.getElementById('dl-'+key);
     var cp = document.getElementById('cp-'+key);
-    if(dl) dl.addEventListener('click', function(e){ e.preventDefault(); download(key+'.json', text('src-'+key)); });
     if(cp) cp.addEventListener('click', function(){
       navigator.clipboard.writeText(text('src-'+key)).then(function(){
         var old = cp.textContent; cp.textContent = 'Copied'; setTimeout(function(){ cp.textContent = old; }, 1400);
