@@ -61,13 +61,11 @@
   .secthead h2{font-size:22px}
   .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
 
-  /* tile grid — tiles in a row share height (tidy resting state); an
-     expanded tile opts out via align-self so it doesn't stretch its neighbor */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
+  /* tile grid — equal-height tiles per row (tidy resting state) */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:stretch}
   @media(max-width:760px){.grid{grid-template-columns:1fr}}
 
   .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
-  .pcard.expanded{align-self:start}
   .pcard .top{padding:20px 22px 6px;display:flex;align-items:flex-start;gap:14px}
   .pcard .ic{flex:none;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center}
   .pcard .ic.fin{background:rgba(31,163,122,.13)}
@@ -89,17 +87,31 @@
   .maps{display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle}
   .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 
-  .pcard .actions{padding:16px 22px;display:flex;gap:8px;flex-wrap:wrap}
+  .pcard .actions{padding:16px 22px;margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
   .pcard .actions .btn{flex:0 0 auto}
 
-  /* collapsible JSON */
-  .code{background:var(--navy);overflow:hidden;border-top:1px solid #0a2a40;display:none}
-  .code.open{display:block}
-  .code .bar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:#0a2a40;border-bottom:1px solid #0e3550}
-  .code .bar .ttl{color:#9fc2cc;font-size:12.5px;font-family:ui-monospace,monospace;flex:1}
-  .code .acts{display:flex;gap:8px}
-  .code pre{padding:16px 18px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.65;color:#cfe8ec;white-space:pre;margin:0;max-height:420px}
-  .code pre .k{color:var(--mint)}.code pre .s{color:#9ad7c8}.code pre .n{color:#E0A100}.code pre .b{color:#7fb0ff}
+  /* the inline .code blocks are data sources for the modal — kept in the DOM
+     but never shown on the page */
+  .code{display:none}
+
+  /* modal */
+  .modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal.open{display:flex}
+  .modal .backdrop{position:absolute;inset:0;background:rgba(8,18,31,.55);backdrop-filter:blur(2px)}
+  .modal .dialog{position:relative;z-index:1;width:100%;max-width:720px;max-height:86vh;display:flex;flex-direction:column;
+    background:var(--navy);border:1px solid #0a2a40;border-radius:var(--r);box-shadow:0 24px 70px rgba(8,18,31,.5);overflow:hidden}
+  .modal .mbar{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .modal .mbar .mt{flex:1;min-width:0}
+  .modal .mbar .mt h4{color:#fff;font-size:15px;margin:0}
+  .modal .mbar .mt .sub{color:#9fc2cc;font-size:12px;font-family:ui-monospace,monospace}
+  .modal .mbar .x{flex:none;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);
+    color:#dff3ef;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .modal .mbar .x:hover{background:rgba(255,255,255,.14)}
+  .modal pre{margin:0;padding:18px 20px;overflow:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre}
+  .modal pre .k{color:var(--mint)}.modal pre .s{color:#9ad7c8}.modal pre .n{color:#E0A100}.modal pre .b{color:#7fb0ff}
+  .modal .mfoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid #0e3550;background:#0a2a40}
+  .modal .mfoot .btn.subtle{background:rgba(255,255,255,.06);color:#dff3ef;border:1px solid rgba(255,255,255,.18)}
+  .modal .mfoot .btn.subtle:hover{background:rgba(255,255,255,.14);box-shadow:none;transform:none}
   .btn.copy{background:rgba(255,255,255,.1);color:#dff3ef;border:1px solid rgba(255,255,255,.18)}
   .btn.copy:hover{background:rgba(255,255,255,.18);box-shadow:none;transform:none}
 
@@ -269,6 +281,25 @@
 
   </div><!-- /grid -->
 
+  <!-- policy modal (populated on open) -->
+  <div class="modal" id="policy-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="backdrop" data-close></div>
+    <div class="dialog">
+      <div class="mbar">
+        <div class="mt">
+          <h4 id="modal-title">Policy</h4>
+          <div class="sub" id="modal-file">policy.json</div>
+        </div>
+        <button class="x" id="modal-close" aria-label="Close" data-close>&times;</button>
+      </div>
+      <pre id="modal-body">{}</pre>
+      <div class="mfoot">
+        <button class="btn copy sm" id="modal-copy">Copy</button>
+        <button class="btn subtle sm" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+
   <div class="usage">
     <h3>Use a policy</h3>
     <p style="color:var(--slate);font-size:14.5px;margin-bottom:8px">Download one, adapt it to your own models / endpoints / paths, then enforce it:</p>
@@ -291,55 +322,61 @@
 
 <script>
 (function(){
-  function text(id){ return document.getElementById(id).textContent; }
-  ['finance','manufacturing','healthcare'].forEach(function(key){
-    var cp = document.getElementById('cp-'+key);
-    if(cp) cp.addEventListener('click', function(){
-      navigator.clipboard.writeText(text('src-'+key)).then(function(){
-        var old = cp.textContent; cp.textContent = 'Copied'; setTimeout(function(){ cp.textContent = old; }, 1400);
-      });
-    });
-  });
+  var TITLES = { finance:'Finance', manufacturing:'Manufacturing', healthcare:'Healthcare' };
+  var modal   = document.getElementById('policy-modal');
+  var mBody   = document.getElementById('modal-body');
+  var mTitle  = document.getElementById('modal-title');
+  var mFile   = document.getElementById('modal-file');
+  var mCopy   = document.getElementById('modal-copy');
+  var current = null;                 // key of the policy on screen
+  var lastFocus = null;
 
-  var cards = [].slice.call(document.querySelectorAll('.pcard'));
-
-  // Equalize the resting height of collapsed tiles that sit on the same grid
-  // row, so the grid looks tidy on desktop. Expanded tiles are skipped (they
-  // grow past the resting height) and single-column (mobile) needs no work.
-  function equalize(){
-    cards.forEach(function(c){ c.style.minHeight = ''; });          // reset to natural
-    if(window.matchMedia('(max-width:760px)').matches) return;      // mobile: 1 col, skip
-    var rows = {};
-    cards.forEach(function(c){
-      if(c.classList.contains('expanded')) return;                  // don't pin expanded tiles
-      var top = Math.round(c.getBoundingClientRect().top);
-      (rows[top] = rows[top] || []).push(c);
-    });
-    Object.keys(rows).forEach(function(top){
-      var group = rows[top];
-      if(group.length < 2) return;
-      var max = Math.max.apply(null, group.map(function(c){ return c.offsetHeight; }));
-      group.forEach(function(c){ c.style.minHeight = max + 'px'; });
-    });
+  function openModal(key){
+    var src = document.getElementById('src-'+key);
+    if(!src) return;
+    current = key;
+    mBody.innerHTML = src.innerHTML;  // keep syntax highlighting
+    mTitle.textContent = (TITLES[key] || key) + ' policy';
+    mFile.textContent = key + '.json';
+    mCopy.textContent = 'Copy';
+    lastFocus = document.activeElement;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    mBody.scrollTop = 0;
+    document.getElementById('modal-close').focus();
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    current = null;
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  // show/hide the policy JSON
+  // open from each tile's "View policy" button
   document.querySelectorAll('.toggle').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var key = btn.dataset.key;
-      var code = document.getElementById('code-'+key);
-      var open = code.classList.toggle('open');
-      // mark the whole tile expanded so it opts out of equal-row-height
-      // pinning and grows downward without dragging its neighbor
-      btn.closest('.pcard').classList.toggle('expanded', open);
-      btn.textContent = open ? 'Hide policy' : 'View policy';
-      equalize();
-    });
+    btn.addEventListener('click', function(){ openModal(btn.dataset.key); });
   });
 
-  equalize();
-  var rt;
-  window.addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(equalize, 120); });
+  // close: the × button, the "Close" button, and the backdrop (any [data-close])
+  modal.querySelectorAll('[data-close]').forEach(function(el){
+    el.addEventListener('click', closeModal);
+  });
+  // close on Escape
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  // copy the currently shown policy (plain text)
+  mCopy.addEventListener('click', function(){
+    if(!current) return;
+    var txt = document.getElementById('src-'+current).textContent;
+    navigator.clipboard.writeText(txt).then(function(){
+      mCopy.textContent = 'Copied';
+      setTimeout(function(){ mCopy.textContent = 'Copy'; }, 1400);
+    });
+  });
 })();
 </script>
 
