@@ -61,8 +61,10 @@
   .secthead h2{font-size:22px}
   .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
 
-  /* tile grid — equal-height tiles per row (tidy resting state) */
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:stretch}
+  /* tile grid — each tile sizes to its own content (no forced equal height,
+     so a shorter tile never gets empty filler space). The modal popup means
+     tiles never change size, so this stays tidy. */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
   @media(max-width:760px){.grid{grid-template-columns:1fr}}
 
   .pcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
@@ -80,14 +82,14 @@
 
   /* metadata rows (Regulations / Egress / Approval / Models) — flex:1 so the
      block fills the gap and the action row aligns across tiles in a row */
-  .meta{padding:14px 22px 4px;font-size:13px;border-top:1px solid var(--line);margin-top:14px;flex:1 0 auto}
+  .meta{padding:14px 22px 4px;font-size:13px;border-top:1px solid var(--line);margin-top:14px}
   .meta .row{margin-bottom:7px;color:var(--slate)}
   .meta .row:last-child{margin-bottom:0}
   .meta .row b{color:var(--ink);font-weight:700}
   .maps{display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle}
   .maps .reg{display:inline-flex;align-items:center;background:#E8F2F1;border:1px solid var(--line);color:var(--teal);font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px}
 
-  .pcard .actions{padding:16px 22px;margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .pcard .actions{padding:16px 22px;display:flex;gap:8px;flex-wrap:wrap}
   .pcard .actions .btn{flex:0 0 auto}
 
   /* the inline .code blocks are data sources for the modal — kept in the DOM
