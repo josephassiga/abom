@@ -88,6 +88,11 @@
   .tag.built{background:rgba(31,163,122,.13);color:var(--built)}
   .tag.plan{background:rgba(124,108,214,.13);color:var(--violet)}
 
+  /* contributor CTA */
+  .cta{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin-top:18px;font-size:14.5px;color:var(--ink);line-height:1.7}
+  .cta b{color:var(--teal)}
+  .cta .status{font-size:11px;padding:2px 9px}
+
   /* user guide */
   .guide{margin-top:40px}
   .steps{display:flex;flex-direction:column;gap:0}
@@ -299,6 +304,112 @@ json.dump(client.abom.chain, <span class="k">open</span>(<span class="s">"proven
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- CONTRIBUTE -->
+  <div class="guide" id="contribute">
+    <div class="secthead">
+      <h2>Contribute an adapter</h2>
+      <p>Want a provider that isn't available yet? The fastest path is to <a href="https://github.com/josephassiga/abom-dev/issues">open an issue</a> — adapters live in the reference repo and we'll implement it. If you'd like to spec or prototype it, here's the whole contract.</p>
+    </div>
+
+    <p style="color:var(--slate);font-size:15px;margin:0 0 6px">An adapter does exactly two provider-specific things: <b>recognize its client</b> and <b>wrap the one method that calls the model</b>. Everything else — the provenance chain, the gate, binding to the manifest — is shared in <span class="mono">abom.adapters.base</span>, so an adapter is small.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="n">1</div>
+        <div class="body">
+          <h3>The contract</h3>
+          <p>An adapter implements three things; <span class="mono">parse</span> normalizes a provider response into a <span class="mono">ModelCall</span>.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>abom/adapters/base.py (the interface)</span></div>
+<pre><span class="c"># what every adapter implements</span>
+<span class="k">class</span> Adapter(Protocol):
+    provider: <span class="k">str</span>                              <span class="c"># "acme"</span>
+    <span class="k">def</span> matches(self, client) -> <span class="k">bool</span>: ...    <span class="c"># is this my client?</span>
+    <span class="k">def</span> wrap(self, client, run) -> Any: ...   <span class="c"># instrument it</span>
+
+<span class="c"># the normalized capture each call produces</span>
+<span class="k">class</span> ModelCall:
+    model: <span class="k">str</span>
+    tokens: <span class="k">int</span> | <span class="k">None</span>
+    output_sha256: <span class="k">str</span> | <span class="k">None</span>
+    endpoint: <span class="k">str</span> | <span class="k">None</span></pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">2</div>
+        <div class="body">
+          <h3>Write the adapter</h3>
+          <p>Wrap the provider's model method: <b>gate → call through → record</b>. The <span class="mono">run</span> object (shared) does the recording and gating; you only supply provider knowledge.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>abom/adapters/acme.py</span></div>
+<pre><span class="k">import</span> functools
+<span class="k">from</span> .base <span class="k">import</span> AbomRun, ModelCall, _sha256, register
+
+ACME_ENDPOINT = <span class="s">"api.acme.ai"</span>
+
+<span class="k">def</span> parse(model, response) -> ModelCall:
+    <span class="c"># read the provider's response shape → normalized fields</span>
+    text = response.output_text
+    <span class="k">return</span> ModelCall(
+        model=model,
+        tokens=response.usage.total_tokens,
+        output_sha256=_sha256(text) <span class="k">if</span> text <span class="k">else</span> <span class="k">None</span>,
+        endpoint=ACME_ENDPOINT,
+    )
+
+<span class="k">class</span> AcmeAdapter:
+    provider = <span class="s">"acme"</span>
+
+    <span class="k">def</span> matches(self, client) -> <span class="k">bool</span>:
+        <span class="k">return</span> type(client).__module__.split(<span class="s">"."</span>)[<span class="n">0</span>] == <span class="s">"acme"</span>
+
+    <span class="k">def</span> wrap(self, client, run: AbomRun):
+        original = client.generate                 <span class="c"># the method that calls the model</span>
+
+        @functools.wraps(original)
+        <span class="k">def</span> generate(*args, **kwargs):
+            model = kwargs[<span class="s">"model"</span>]
+            run.enforce(ModelCall(model=model, endpoint=ACME_ENDPOINT))  <span class="c"># gate</span>
+            response = original(*args, **kwargs)                          <span class="c"># call through</span>
+            run.record(parse(model, response))                           <span class="c"># record</span>
+            <span class="k">return</span> response
+
+        client.generate = generate
+        <span class="k">return</span> client
+
+register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</span></pre></div>
+          <p style="margin-top:10px;color:var(--slate);font-size:13.5px">Duck-type on the client (check the module / attributes) rather than importing the SDK, so the provider package stays an optional dependency.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">3</div>
+        <div class="body">
+          <h3>Test it</h3>
+          <p>Prove the three guarantees with a <b>fake client</b> — no live API, no SDK install. Every shipped adapter has this exact test shape.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>tests/test_adapters_acme.py</span></div>
+<pre><span class="k">def</span> test_records_and_gates():
+    client = instrument(FakeAcme(), manifest=signed_manifest, gate=<span class="k">True</span>)
+    client.generate(model=<span class="s">"acme-1"</span>, prompt=<span class="s">"hi"</span>)
+
+    chain = client.abom.chain
+    <span class="k">assert</span> chain[<span class="n">0</span>][<span class="s">"data"</span>][<span class="s">"model_calls"</span>][<span class="n">0</span>][<span class="s">"model"</span>] == <span class="s">"acme-1"</span>
+    <span class="k">assert</span> verify_chain(chain)[<span class="s">"valid"</span>]        <span class="c"># hash chain holds</span>
+
+    <span class="c"># a model not in the manifest is denied before the call runs</span>
+    bad = instrument(FakeAcme(), manifest=other_manifest, gate=<span class="k">True</span>)
+    <span class="k">with</span> pytest.raises(ActionDenied):
+        bad.generate(model=<span class="s">"acme-1"</span>, prompt=<span class="s">"hi"</span>)</pre></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cta">
+      <b>Ready?</b> <a href="https://github.com/josephassiga/abom-dev/issues">Open an issue</a> with the provider name and SDK, or attach a prototype following the shape above — we'll get it reviewed and shipped, and its tile flips to <span class="status available" style="margin-left:2px"><span class="dot"></span>Available</span>.
     </div>
   </div>
 
