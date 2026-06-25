@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adapter Hub — ABOM · Runtime adapters per model provider</title>
+<meta name="description" content="ABOM runtime adapters wrap a model provider's SDK to auto-record what an agent does — emitting signed Action Provenance and optionally enforcing the gate — with no manual instrumentation. One adapter per provider.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/adapters.html">
+<meta property="og:title" content="ABOM Adapter Hub">
+<meta property="og:description" content="Runtime adapters per model provider — auto-record what your agent does and enforce the gate, with no manual instrumentation.">
+<meta property="og:url" content="https://abom.ai/adapters.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:920px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;gap:22px;align-items:center}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .navlinks a.active{color:#fff}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s;cursor:pointer;border:none}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  @media(max-width:820px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:64px 0 50px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(32px,5.5vw,46px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(16px,2.2vw,18px);color:var(--ice);max-width:700px;margin:18px 0 0}
+
+  main{padding:18px 0 60px}
+
+  .note{background:#FBF1D6;border:1px solid #E8D7A0;border-radius:var(--r);padding:16px 18px;margin:22px 0;font-size:14px;color:#5b4a16}
+  .note b{color:#a87a00}
+
+  .secthead{margin:30px 0 14px}
+  .secthead h2{font-size:22px}
+  .secthead p{color:var(--slate);font-size:15px;margin-top:6px}
+
+  /* adapter catalog grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:460px){.grid{grid-template-columns:1fr}}
+
+  .acard{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px}
+  .acard .hd{display:flex;align-items:center;gap:10px}
+  .acard .ic{flex:none;width:34px;height:34px;border-radius:9px;background:#E8F2F1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--teal);font-size:15px}
+  .acard h3{font-size:15.5px;margin:0}
+  .acard .pkg{font-size:12px;color:var(--slate);font-family:"SF Mono",ui-monospace,monospace}
+  .acard .foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+  .status{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px}
+  .status.planned{background:rgba(124,108,214,.13);color:var(--violet)}
+  .status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+
+  /* user guide */
+  .guide{margin-top:40px}
+  .steps{display:flex;flex-direction:column;gap:0}
+  .step{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .step .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .step .body{flex:1;min-width:0}
+  .step h3{font-size:17px;margin-bottom:6px}
+  .step p{color:var(--slate);font-size:14.5px;margin:0 0 4px}
+  .step p b{color:var(--ink)}
+
+  .code{background:var(--navy);border-radius:12px;overflow:hidden;border:1px solid #0a2a40;margin:12px 0 0}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#0a2a40;border-bottom:1px solid #0e3550}
+  .code .bar i{width:10px;height:10px;border-radius:50%;display:block}
+  .bar .r{background:#ff5f57}.bar .y{background:#febc2e}.bar .g{background:#28c840}
+  .code .bar span{margin-left:6px;color:#6f93a6;font-size:12px;font-family:ui-monospace,monospace}
+  .code pre{padding:14px 16px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre;margin:0}
+  .code pre .c{color:#5e8597}.code pre .p{color:var(--mint)}.code pre .k{color:#7fb0ff}.code pre .s{color:#9ad7c8}
+
+  .what{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0 0 8px}
+  .what h3{font-size:16px;margin-bottom:8px}
+  .what ul{list-style:none;margin:0}
+  .what li{position:relative;padding-left:24px;margin-bottom:8px;font-size:14.5px;color:var(--ink)}
+  .what li:last-child{margin-bottom:0}
+  .what li:before{content:"";position:absolute;left:0;top:6px;width:14px;height:14px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/10px no-repeat}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+  footer .dis{color:#7796a4;max-width:680px;margin:14px auto 0;font-size:12px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="spec.html">Spec</a>
+      <a href="policies.html">Policies</a>
+      <a href="adapters.html" class="active">Adapters</a>
+      <a href="policy-builder.html">Policy builder</a>
+      <a href="get-started.html">Get started</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Adapter hub</div>
+    <h1>One adapter per model provider.</h1>
+    <p>An ABOM adapter wraps a model provider's SDK so your agent's calls are recorded automatically — emitting signed Action Provenance and, optionally, enforcing the gate inline — with no manual instrumentation. Pick the adapter for the provider you use.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="note">
+    <b>Adapters are on the roadmap.</b> The providers below are the targets for ABOM's runtime adapters; each is marked <i>Planned</i>. Today you can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+  </div>
+
+  <!-- WHAT AN ADAPTER DOES -->
+  <div class="what">
+    <h3>What an adapter does</h3>
+    <ul>
+      <li><b>Records</b> every model call your agent makes — model, tokens, output hash, endpoint — into a hash-chained, signed Action Provenance record.</li>
+      <li><b>Binds</b> each action to the signed Composition Manifest it ran under, so runtime can always be traced back to what was declared.</li>
+      <li><b>Enforces</b> (optionally) the gate inline: an undeclared model or a disallowed egress is denied before the call leaves your boundary.</li>
+    </ul>
+  </div>
+
+  <!-- CATALOG -->
+  <div class="secthead">
+    <h2>Adapter catalog</h2>
+    <p>One adapter per model provider — the providers ABOM targets for runtime capture. All are <i>Planned</i>; the catalog grows as adapters ship.</p>
+  </div>
+
+  <div class="grid" id="catalog"></div>
+
+  <!-- USER GUIDE -->
+  <div class="guide">
+    <div class="secthead">
+      <h2>Using an adapter</h2>
+      <p>Once an adapter ships for your provider, the flow is the same for every one — install, wrap, verify.</p>
+    </div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="n">1</div>
+        <div class="body">
+          <h3>Install</h3>
+          <p>Adapters ship with the CLI. Install <span class="mono">abom-cli</span> and the provider extra for the SDK you use.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">pip install "abom-cli[openai]"</span>   <span class="c"># or [anthropic], [mistral], …</span></pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">2</div>
+        <div class="body">
+          <h3>Wrap your client</h3>
+          <p>Point the adapter at your existing model client and your signed manifest. No changes to your call sites — the adapter records each call and can deny one that falls outside the signed envelope.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
+<pre><span class="k">from</span> abom.adapters <span class="k">import</span> instrument
+<span class="k">from</span> openai <span class="k">import</span> OpenAI
+
+client = instrument(OpenAI(), manifest=<span class="s">"abom.json"</span>, gate=<span class="k">True</span>)
+
+<span class="c"># use the client exactly as before — calls are now recorded</span>
+client.chat.completions.create(model=<span class="s">"gpt-4o-mini"</span>, messages=[...])</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">3</div>
+        <div class="body">
+          <h3>Verify the run</h3>
+          <p>Each call appends to a hash-chained Action Provenance log bound to the manifest. Verify the whole run — signature, chain integrity, and policy — after the fact.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom verify abom.json --policy finance.json</span>
+<span class="c">#  ✓ VALID — signature OK, chain intact, policy clean</span></pre></div>
+          <p style="margin-top:10px">See the <a href="spec.html#provenance">Action Provenance reference</a> for the record shape, and the <a href="policies.html">policy hub</a> for a policy to enforce.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. Adapters are on the roadmap; statuses on this page reflect planned runtime-capture support per provider.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // one adapter per model provider — derived from the providers ABOM recognizes
+  var ADAPTERS = [
+    { name:"OpenAI",       pkg:"openai",          ab:"AI" },
+    { name:"Anthropic",    pkg:"anthropic",       ab:"AN" },
+    { name:"Mistral",      pkg:"mistralai",       ab:"MI" },
+    { name:"Google",       pkg:"google-genai",    ab:"GO" },
+    { name:"Google Vertex",pkg:"vertexai",        ab:"GV" },
+    { name:"Cohere",       pkg:"cohere",          ab:"CO" },
+    { name:"AWS Bedrock",  pkg:"boto3",           ab:"BR" },
+    { name:"Groq",         pkg:"groq",            ab:"GQ" },
+    { name:"Together",     pkg:"together",        ab:"TG" },
+    { name:"Replicate",    pkg:"replicate",       ab:"RP" },
+    { name:"Ollama",       pkg:"ollama",          ab:"OL" },
+    { name:"vLLM",         pkg:"vllm",            ab:"VL" },
+    { name:"Hugging Face", pkg:"huggingface-hub", ab:"HF" }
+  ];
+  var html = ADAPTERS.map(function(a){
+    return '<article class="acard">'
+      + '<div class="hd"><div class="ic">'+a.ab+'</div>'
+      + '<div><h3>'+a.name+'</h3><div class="pkg">'+a.pkg+'</div></div></div>'
+      + '<div class="foot"><span class="status planned"><span class="dot"></span>Planned</span></div>'
+      + '</article>';
+  }).join('');
+  document.getElementById('catalog').innerHTML = html;
+})();
+</script>
+
+</body>
+</html>
