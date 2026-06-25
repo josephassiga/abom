@@ -150,7 +150,7 @@
 <main class="wrap">
 
   <div class="note">
-    <b>The Anthropic adapter ships today; the rest are on the roadmap.</b> Each provider below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+    <b>The Anthropic and OpenAI adapters ship today; the rest are on the roadmap.</b> Each provider below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
   </div>
 
   <!-- WHAT AN ADAPTER DOES -->
@@ -179,7 +179,7 @@
           <thead><tr><th>Provider</th><th>SDK</th><th>Method wrapped</th></tr></thead>
           <tbody>
             <tr><td>Anthropic <span class="tag built">Available</span></td><td class="mono">anthropic</td><td class="mono">client.messages.create</td></tr>
-            <tr><td>OpenAI <span class="tag plan">Planned</span></td><td class="mono">openai</td><td class="mono">client.chat.completions.create</td></tr>
+            <tr><td>OpenAI <span class="tag built">Available</span></td><td class="mono">openai</td><td class="mono">client.chat.completions.create</td></tr>
             <tr><td>Mistral <span class="tag plan">Planned</span></td><td class="mono">mistralai</td><td class="mono">client.chat.complete</td></tr>
           </tbody>
         </table>
@@ -202,7 +202,7 @@
   <!-- CATALOG -->
   <div class="secthead">
     <h2>Adapter catalog</h2>
-    <p>One adapter per model provider — the providers ABOM targets for runtime capture. <b>Anthropic</b> is available now; the rest are <i>Planned</i> and the catalog grows as adapters ship.</p>
+    <p>One adapter per model provider — the providers ABOM targets for runtime capture. <b>Anthropic</b> and <b>OpenAI</b> are available now; the rest are <i>Planned</i> and the catalog grows as adapters ship.</p>
   </div>
 
   <div class="grid" id="catalog"></div>
@@ -276,7 +276,7 @@ client.abom.chain</pre></div>
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic adapter is available; other providers are planned. Statuses on this page reflect runtime-capture support per provider.</p>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic and OpenAI adapters are available; other providers are planned. Statuses on this page reflect runtime-capture support per provider.</p>
   </div>
 </footer>
 
@@ -286,7 +286,7 @@ client.abom.chain</pre></div>
   // status: "available" once an adapter is implemented + tested; else "planned".
   var ADAPTERS = [
     { name:"Anthropic",    pkg:"anthropic",       ab:"AN", status:"available" },
-    { name:"OpenAI",       pkg:"openai",          ab:"AI" },
+    { name:"OpenAI",       pkg:"openai",          ab:"AI", status:"available" },
     { name:"Mistral",      pkg:"mistralai",       ab:"MI" },
     { name:"Google",       pkg:"google-genai",    ab:"GO" },
     { name:"Google Vertex",pkg:"vertexai",        ab:"GV" },
