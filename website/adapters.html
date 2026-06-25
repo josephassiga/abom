@@ -70,6 +70,7 @@
   .acard .foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
   .status{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:20px}
   .status.planned{background:rgba(124,108,214,.13);color:var(--violet)}
+  .status.available{background:rgba(31,163,122,.13);color:var(--built)}
   .status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
 
   /* user guide */
@@ -134,7 +135,7 @@
 <main class="wrap">
 
   <div class="note">
-    <b>Adapters are on the roadmap.</b> The providers below are the targets for ABOM's runtime adapters; each is marked <i>Planned</i>. Today you can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+    <b>The Anthropic adapter ships today; the rest are on the roadmap.</b> Each provider below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
   </div>
 
   <!-- WHAT AN ADAPTER DOES -->
@@ -150,7 +151,7 @@
   <!-- CATALOG -->
   <div class="secthead">
     <h2>Adapter catalog</h2>
-    <p>One adapter per model provider — the providers ABOM targets for runtime capture. All are <i>Planned</i>; the catalog grows as adapters ship.</p>
+    <p>One adapter per model provider — the providers ABOM targets for runtime capture. <b>Anthropic</b> is available now; the rest are <i>Planned</i> and the catalog grows as adapters ship.</p>
   </div>
 
   <div class="grid" id="catalog"></div>
@@ -169,7 +170,7 @@
           <h3>Install</h3>
           <p>Adapters ship with the CLI. Install <span class="mono">abom-cli</span> and the provider extra for the SDK you use.</p>
           <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
-<pre><span class="p">pip install "abom-cli[openai]"</span>   <span class="c"># or [anthropic], [mistral], …</span></pre></div>
+<pre><span class="p">pip install "abom-cli[anthropic]"</span>   <span class="c"># the provider extra for the SDK you use</span></pre></div>
         </div>
       </div>
 
@@ -180,12 +181,15 @@
           <p>Point the adapter at your existing model client and your signed manifest. No changes to your call sites — the adapter records each call and can deny one that falls outside the signed envelope.</p>
           <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
 <pre><span class="k">from</span> abom.adapters <span class="k">import</span> instrument
-<span class="k">from</span> openai <span class="k">import</span> OpenAI
+<span class="k">from</span> anthropic <span class="k">import</span> Anthropic
 
-client = instrument(OpenAI(), manifest=<span class="s">"abom.json"</span>, gate=<span class="k">True</span>)
+client = instrument(Anthropic(), manifest=<span class="s">"abom.json"</span>, gate=<span class="k">True</span>)
 
 <span class="c"># use the client exactly as before — calls are now recorded</span>
-client.chat.completions.create(model=<span class="s">"gpt-4o-mini"</span>, messages=[...])</pre></div>
+client.messages.create(model=<span class="s">"claude-3-5-sonnet-20241022"</span>, messages=[...])
+
+<span class="c"># the captured Action Provenance chain</span>
+client.abom.chain</pre></div>
         </div>
       </div>
 
@@ -209,16 +213,17 @@ client.chat.completions.create(model=<span class="s">"gpt-4o-mini"</span>, messa
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. Adapters are on the roadmap; statuses on this page reflect planned runtime-capture support per provider.</p>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic adapter is available; other providers are planned. Statuses on this page reflect runtime-capture support per provider.</p>
   </div>
 </footer>
 
 <script>
 (function(){
-  // one adapter per model provider — derived from the providers ABOM recognizes
+  // one adapter per model provider — derived from the providers ABOM recognizes.
+  // status: "available" once an adapter is implemented + tested; else "planned".
   var ADAPTERS = [
+    { name:"Anthropic",    pkg:"anthropic",       ab:"AN", status:"available" },
     { name:"OpenAI",       pkg:"openai",          ab:"AI" },
-    { name:"Anthropic",    pkg:"anthropic",       ab:"AN" },
     { name:"Mistral",      pkg:"mistralai",       ab:"MI" },
     { name:"Google",       pkg:"google-genai",    ab:"GO" },
     { name:"Google Vertex",pkg:"vertexai",        ab:"GV" },
@@ -231,11 +236,13 @@ client.chat.completions.create(model=<span class="s">"gpt-4o-mini"</span>, messa
     { name:"vLLM",         pkg:"vllm",            ab:"VL" },
     { name:"Hugging Face", pkg:"huggingface-hub", ab:"HF" }
   ];
+  var LABEL = { available:"Available", planned:"Planned" };
   var html = ADAPTERS.map(function(a){
+    var st = a.status || "planned";
     return '<article class="acard">'
       + '<div class="hd"><div class="ic">'+a.ab+'</div>'
       + '<div><h3>'+a.name+'</h3><div class="pkg">'+a.pkg+'</div></div></div>'
-      + '<div class="foot"><span class="status planned"><span class="dot"></span>Planned</span></div>'
+      + '<div class="foot"><span class="status '+st+'"><span class="dot"></span>'+LABEL[st]+'</span></div>'
       + '</article>';
   }).join('');
   document.getElementById('catalog').innerHTML = html;
