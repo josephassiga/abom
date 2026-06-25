@@ -73,6 +73,21 @@
   .status.available{background:rgba(31,163,122,.13);color:var(--built)}
   .status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
 
+  /* how-it-works mechanism block */
+  .mech{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:8px 4px}
+  .mechrow{display:flex;gap:16px;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .mechrow:last-child{border-bottom:none}
+  .mnum{flex:none;width:28px;height:28px;border-radius:8px;background:#E8F2F1;color:var(--teal);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .mechrow > div:last-child{flex:1;min-width:0}
+  .mechrow b{font-size:14.5px;color:var(--ink)}
+  .mechrow p{color:var(--slate);font-size:14px;margin:5px 0 0}
+  .mtbl{width:100%;border-collapse:collapse;margin:10px 0 0;font-size:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .mtbl th{background:var(--navy);color:#fff;text-align:left;padding:8px 12px;font-size:12px}
+  .mtbl td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:middle}
+  .tag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle}
+  .tag.built{background:rgba(31,163,122,.13);color:var(--built)}
+  .tag.plan{background:rgba(124,108,214,.13);color:var(--violet)}
+
   /* user guide */
   .guide{margin-top:40px}
   .steps{display:flex;flex-direction:column;gap:0}
@@ -148,6 +163,42 @@
     </ul>
   </div>
 
+  <!-- HOW IT WORKS -->
+  <div class="secthead" id="how">
+    <h2>How an adapter works</h2>
+    <p>An adapter does one thing: it <b>wraps the method your SDK uses to call the model</b>, leaving your code unchanged. <span class="mono">instrument(client, …)</span> replaces that method in place and returns the same client object.</p>
+  </div>
+
+  <div class="mech">
+    <div class="mechrow">
+      <div class="mnum">→</div>
+      <div>
+        <b>The intercepted method (per provider)</b>
+        <p>Each adapter wraps the single call surface its SDK exposes for a model request:</p>
+        <table class="mtbl">
+          <thead><tr><th>Provider</th><th>SDK</th><th>Method wrapped</th></tr></thead>
+          <tbody>
+            <tr><td>Anthropic <span class="tag built">Available</span></td><td class="mono">anthropic</td><td class="mono">client.messages.create</td></tr>
+            <tr><td>OpenAI <span class="tag plan">Planned</span></td><td class="mono">openai</td><td class="mono">client.chat.completions.create</td></tr>
+            <tr><td>Mistral <span class="tag plan">Planned</span></td><td class="mono">mistralai</td><td class="mono">client.chat.complete</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mechrow">
+      <div class="mnum">1</div>
+      <div><b>Gate (optional, before the call)</b><p>If <span class="mono">gate=True</span>, the adapter checks the requested model against the signed manifest <i>first</i>. A model that isn't declared is denied — <span class="mono">ActionDenied</span> is raised and the request never leaves your boundary.</p></div>
+    </div>
+    <div class="mechrow">
+      <div class="mnum">2</div>
+      <div><b>Call through</b><p>The original SDK method runs unchanged. Same arguments, same return value — your agent code doesn't know it's wrapped.</p></div>
+    </div>
+    <div class="mechrow">
+      <div class="mnum">3</div>
+      <div><b>Record (after the call)</b><p>The adapter reads the <span class="mono">model</span>, token usage, and output from the response, hashes the output, and appends a record to the run's hash-chained Action Provenance log — bound to the manifest's <span class="mono">composition_sha256</span>.</p></div>
+    </div>
+  </div>
+
   <!-- CATALOG -->
   <div class="secthead">
     <h2>Adapter catalog</h2>
@@ -160,9 +211,21 @@
   <div class="guide">
     <div class="secthead">
       <h2>Using an adapter</h2>
-      <p>Once an adapter ships for your provider, the flow is the same for every one — install, wrap, verify.</p>
+      <p>The flow is the same for every provider — generate a manifest, install, wrap, verify.</p>
     </div>
     <div class="steps">
+
+      <div class="step">
+        <div class="n">0</div>
+        <div class="body">
+          <h3>Generate the manifest (<span class="mono">abom.json</span>)</h3>
+          <p>The adapter needs a <b>signed Composition Manifest</b> to record against and gate on. You don't write it by hand — <span class="mono">abom scan</span> produces it from your code, detecting the models, tools, and frameworks it uses, then signs it.</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="p">abom scan . -o abom.json</span>      <span class="c"># scan this repo → signed abom.json</span>
+<span class="c"># abom.json now declares e.g. the model "claude-3-5-sonnet-20241022"</span></pre></div>
+          <p style="margin-top:10px">The model you call at runtime must be one this manifest declares — that's what the gate enforces. New to this? See <a href="get-started.html">Get started</a> for the full scan walkthrough.</p>
+        </div>
+      </div>
 
       <div class="step">
         <div class="n">1</div>
