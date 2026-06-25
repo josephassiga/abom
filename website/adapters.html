@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0F2A4A">
 <link rel="canonical" href="https://abom.ai/adapters.html">
 <meta property="og:title" content="ABOM Adapter Hub">
-<meta property="og:description" content="Runtime adapters per model provider — auto-record what your agent does and enforce the gate, with no manual instrumentation.">
+<meta property="og:description" content="Runtime adapters per model provider, auto-record what your agent does and enforce the gate, with no manual instrumentation.">
 <meta property="og:url" content="https://abom.ai/adapters.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
@@ -127,7 +127,7 @@
   <div class="wrap">
     <div class="eyebrow">Adapter hub</div>
     <h1>One adapter per model provider.</h1>
-    <p>An ABOM adapter wraps a model provider's SDK so your agent's calls are recorded automatically — emitting signed Action Provenance and, optionally, enforcing the gate inline — with no manual instrumentation. Pick the adapter for the provider you use.</p>
+    <p>An ABOM adapter wraps a model provider's SDK so your agent's calls are recorded automatically, emitting signed Action Provenance and, optionally, enforcing the gate inline with no manual instrumentation. Pick the adapter for the provider you use.</p>
   </div>
 </header>
 
@@ -141,7 +141,7 @@
   <div class="what">
     <h3>What an adapter does</h3>
     <ul>
-      <li><b>Records</b> every model call your agent makes — model, tokens, output hash, endpoint — into a hash-chained, signed Action Provenance record.</li>
+      <li><b>Records</b> every model call your agent makes, model, tokens, output hash, endpoint — into a hash-chained, signed Action Provenance record.</li>
       <li><b>Binds</b> each action to the signed Composition Manifest it ran under, so runtime can always be traced back to what was declared.</li>
       <li><b>Enforces</b> (optionally) the gate inline: an undeclared model or a disallowed egress is denied before the call leaves your boundary.</li>
     </ul>
