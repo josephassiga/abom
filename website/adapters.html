@@ -249,10 +249,41 @@
 client = instrument(Anthropic(), manifest=<span class="s">"abom.json"</span>, gate=<span class="k">True</span>)
 
 <span class="c"># use the client exactly as before — calls are now recorded</span>
-client.messages.create(model=<span class="s">"claude-3-5-sonnet-20241022"</span>, messages=[...])
+client.messages.create(model=<span class="s">"claude-3-5-sonnet-20241022"</span>, messages=[...])</pre></div>
 
-<span class="c"># the captured Action Provenance chain</span>
-client.abom.chain</pre></div>
+          <p style="margin-top:14px"><b>What <span class="mono">instrument</span> returns.</b> It hands back <i>the same client object</i> — your code keeps calling it normally. It doesn't replace the client; it does two things to it:</p>
+          <ul style="margin:0 0 4px;padding-left:20px;color:var(--slate);font-size:14px;line-height:1.7">
+            <li>swaps the model method (<span class="mono">messages.create</span>) for a wrapped version that gates → calls → records;</li>
+            <li>attaches a run handle at <span class="mono">client.abom</span> that holds the live record list.</li>
+          </ul>
+
+          <p style="margin-top:14px"><b><span class="mono">client.abom.chain</span></b> is that record list — one <b>Action Provenance record</b> per model call, appended as your agent runs. After two calls it has two entries; each is hash-chained to the previous one and bound to the manifest. Read it, save it, or hand it to <span class="mono">abom verify</span>:</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>python</span></div>
+<pre><span class="k">import</span> json
+
+<span class="c"># client.abom.chain is a list of provenance records — one per model call</span>
+<span class="k">for</span> record <span class="k">in</span> client.abom.chain:
+    <span class="k">print</span>(record[<span class="s">"seq"</span>], record[<span class="s">"data"</span>][<span class="s">"model_calls"</span>])
+
+<span class="c"># persist it next to the manifest for later verification</span>
+json.dump(client.abom.chain, <span class="k">open</span>(<span class="s">"provenance.json"</span>, <span class="s">"w"</span>), indent=<span class="n">2</span>)</pre></div>
+
+          <p style="margin-top:12px">Each record looks like this — see the <a href="spec.html#provenance">Action Provenance reference</a> for every field:</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>one record in client.abom.chain</span></div>
+<pre>{
+  <span class="k">"run_id"</span>: <span class="s">"loan-doc-agent"</span>,
+  <span class="k">"seq"</span>: <span class="n">0</span>,
+  <span class="k">"event_type"</span>: <span class="s">"ActionProvenance"</span>,
+  <span class="k">"prev_hash"</span>: <span class="s">"GENESIS"</span>,           <span class="c"># chains to the previous record</span>
+  <span class="k">"hash"</span>: <span class="s">"a1b2c3…"</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"composition_sha256"</span>: <span class="s">"…"</span>,    <span class="c"># the manifest this ran under</span>
+    <span class="k">"decision"</span>: <span class="s">"model_call"</span>,
+    <span class="k">"model_calls"</span>: [
+      { <span class="k">"model"</span>: <span class="s">"claude-3-5-sonnet-20241022"</span>, <span class="k">"tokens"</span>: <span class="n">128</span>, <span class="k">"output_sha256"</span>: <span class="s">"…"</span> }
+    ]
+  }
+}</pre></div>
         </div>
       </div>
 
