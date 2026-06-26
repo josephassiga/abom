@@ -64,7 +64,9 @@
 
   .acard{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px}
   .acard .hd{display:flex;align-items:center;gap:10px}
-  .acard .ic{flex:none;width:34px;height:34px;border-radius:9px;background:#E8F2F1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--teal);font-size:15px}
+  .acard .ic{flex:none;width:34px;height:34px;border-radius:9px;background:#E8F2F1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--teal);font-size:15px;overflow:hidden}
+  .acard .ic .logo{width:22px;height:22px;object-fit:contain;display:block}
+  .acard .ic .glyph{font-weight:800;color:var(--teal);font-size:15px}
   .acard h3{font-size:15.5px;margin:0}
   .acard .pkg{font-size:12px;color:var(--slate);font-family:"SF Mono",ui-monospace,monospace}
   .acard .foot{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
@@ -426,26 +428,35 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
 (function(){
   // one adapter per model provider — derived from the providers ABOM recognizes.
   // status: "available" once an adapter is implemented + tested; else "planned".
+  // img: logo file in img/adapters/<img>. Falls back to the letter glyph (ab)
+  // if the file is missing, so the catalog never shows a broken image.
   var ADAPTERS = [
-    { name:"Anthropic",    pkg:"anthropic",       ab:"AN", status:"available" },
-    { name:"OpenAI",       pkg:"openai",          ab:"AI", status:"available" },
-    { name:"Mistral",      pkg:"mistralai",       ab:"MI", status:"available" },
-    { name:"Google",       pkg:"google-genai",    ab:"GO" },
-    { name:"Google Vertex",pkg:"vertexai",        ab:"GV" },
-    { name:"Cohere",       pkg:"cohere",          ab:"CO" },
-    { name:"AWS Bedrock",  pkg:"boto3",           ab:"BR" },
-    { name:"Groq",         pkg:"groq",            ab:"GQ" },
-    { name:"Together",     pkg:"together",        ab:"TG" },
-    { name:"Replicate",    pkg:"replicate",       ab:"RP" },
-    { name:"Ollama",       pkg:"ollama",          ab:"OL" },
-    { name:"vLLM",         pkg:"vllm",            ab:"VL" },
-    { name:"Hugging Face", pkg:"huggingface-hub", ab:"HF" }
+    { name:"Anthropic",    pkg:"anthropic",       ab:"AN", img:"anthropic.svg",    status:"available" },
+    { name:"OpenAI",       pkg:"openai",          ab:"AI", img:"openai.svg",       status:"available" },
+    { name:"Mistral",      pkg:"mistralai",       ab:"MI", img:"mistral.svg",      status:"available" },
+    { name:"Google",       pkg:"google-genai",    ab:"GO", img:"google.svg" },
+    { name:"Google Vertex",pkg:"vertexai",        ab:"GV", img:"google-vertex.svg" },
+    { name:"Cohere",       pkg:"cohere",          ab:"CO", img:"cohere.svg" },
+    { name:"AWS Bedrock",  pkg:"boto3",           ab:"BR", img:"aws-bedrock.svg" },
+    { name:"Groq",         pkg:"groq",            ab:"GQ", img:"groq.svg" },
+    { name:"Together",     pkg:"together",        ab:"TG", img:"together.svg" },
+    { name:"Replicate",    pkg:"replicate",       ab:"RP", img:"replicate.svg" },
+    { name:"Ollama",       pkg:"ollama",          ab:"OL", img:"ollama.svg" },
+    { name:"vLLM",         pkg:"vllm",            ab:"VL", img:"vllm.svg" },
+    { name:"Hugging Face", pkg:"huggingface-hub", ab:"HF", img:"huggingface.svg" }
   ];
   var LABEL = { available:"Available", planned:"Planned" };
+  function icon(a){
+    // <img> with onerror fallback: if the logo file is missing, swap to the
+    // letter glyph so a tile is never broken.
+    var fallback = "this.replaceWith(Object.assign(document.createElement('span'),{className:'glyph',textContent:'"+a.ab+"'}))";
+    return '<img class="logo" src="img/adapters/'+a.img+'" alt="'+a.name+' logo" '
+      + 'loading="lazy" onerror="'+fallback+'">';
+  }
   var html = ADAPTERS.map(function(a){
     var st = a.status || "planned";
     return '<article class="acard">'
-      + '<div class="hd"><div class="ic">'+a.ab+'</div>'
+      + '<div class="hd"><div class="ic">'+icon(a)+'</div>'
       + '<div><h3>'+a.name+'</h3><div class="pkg">'+a.pkg+'</div></div></div>'
       + '<div class="foot"><span class="status '+st+'"><span class="dot"></span>'+LABEL[st]+'</span></div>'
       + '</article>';
