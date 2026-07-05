@@ -113,6 +113,9 @@
   .code .bar span{margin-left:6px;color:#6f93a6;font-size:12px;font-family:ui-monospace,monospace}
   .code pre{padding:14px 16px;overflow-x:auto;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:#cfe8ec;white-space:pre;margin:0}
   .code pre .c{color:#5e8597}.code pre .p{color:var(--mint)}.code pre .k{color:#7fb0ff}.code pre .s{color:#9ad7c8}
+  /* number-literal highlight — must undo .step .n's circle-badge styling when a
+     code block sits inside a guide step */
+  .code pre .n{display:inline;width:auto;height:auto;border-radius:0;background:none;color:#E0A100;font-weight:400;font-size:inherit}
 
   .what{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0 0 8px}
   .what h3{font-size:16px;margin-bottom:8px}
