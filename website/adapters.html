@@ -157,7 +157,7 @@
 <main class="wrap">
 
   <div class="note">
-    <b>The Anthropic, OpenAI, and Mistral adapters ship today; the rest are on the roadmap.</b> Each provider below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+    <b>The Anthropic, OpenAI, and Mistral SDK adapters and the LangChain framework adapter ship today; the rest are on the roadmap.</b> Each entry below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
   </div>
 
   <!-- WHAT AN ADAPTER DOES -->
@@ -188,6 +188,7 @@
             <tr><td>Anthropic <span class="tag built">Available</span></td><td class="mono">anthropic</td><td class="mono">client.messages.create</td></tr>
             <tr><td>OpenAI <span class="tag built">Available</span></td><td class="mono">openai</td><td class="mono">client.chat.completions.create</td></tr>
             <tr><td>Mistral <span class="tag built">Available</span></td><td class="mono">mistralai</td><td class="mono">client.chat.complete</td></tr>
+            <tr><td>LangChain <span class="tag built">Available</span></td><td class="mono">langchain</td><td class="mono">callbacks: on_tool_start · on_llm_end</td></tr>
           </tbody>
         </table>
       </div>
@@ -213,6 +214,14 @@
   </div>
 
   <div class="grid" id="catalog"></div>
+
+  <!-- FRAMEWORK ADAPTERS -->
+  <div class="secthead">
+    <h2>Framework adapters</h2>
+    <p>Model-SDK adapters capture what an agent <i>says</i>; framework adapters also capture what it <i>does</i> — tool calls, gated deny-by-default before they execute. <b>LangChain</b> is available now via a callback handler.</p>
+  </div>
+
+  <div class="grid" id="framework-catalog"></div>
 
   <!-- USER GUIDE -->
   <div class="guide">
@@ -291,6 +300,18 @@ json.dump(client.abom.chain, <span class="k">open</span>(<span class="s">"proven
     ]
   }
 }</pre></div>
+
+          <p style="margin-top:14px"><b>On LangChain instead?</b> Frameworks act through <i>tools</i>, so the LangChain adapter is a callback handler rather than a client wrapper — it records model <b>and</b> tool calls, and with <span class="mono">gate=True</span> an undeclared tool raises <span class="mono">ActionDenied</span> <i>before</i> the tool body runs:</p>
+          <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>langchain_agent.py</span></div>
+<pre><span class="k">from</span> abom.adapters.langchain <span class="k">import</span> AbomLangChainHandler
+
+handler = AbomLangChainHandler(manifest=<span class="s">"abom.json"</span>, gate=<span class="k">True</span>, sink=<span class="s">"auto"</span>)
+
+<span class="c"># the ONE change to your agent: pass the handler as a callback</span>
+agent.invoke({<span class="s">"input"</span>: <span class="s">"..."</span>}, config={<span class="s">"callbacks"</span>: [handler]})
+
+<span class="c"># model + tool records, hash-chained and persisted like any run</span>
+handler.abom.chain</pre></div>
         </div>
       </div>
 
@@ -420,7 +441,7 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic, OpenAI, and Mistral adapters are available; other providers are planned. Statuses on this page reflect runtime-capture support per provider.</p>
+    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic, OpenAI, and Mistral SDK adapters and the LangChain framework adapter are available; the rest are planned. Statuses on this page reflect runtime-capture support per integration.</p>
   </div>
 </footer>
 
@@ -445,6 +466,13 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
     { name:"vLLM",         pkg:"vllm",            ab:"VL", img:"vllm.svg" },
     { name:"Hugging Face", pkg:"huggingface-hub", ab:"HF", img:"huggingface.svg" }
   ];
+  // framework adapters live in their own group: they capture tool calls (what
+  // the agent DOES), not just model calls, via the framework's callback seam.
+  var FRAMEWORKS = [
+    { name:"LangChain", pkg:"langchain", ab:"LC", img:"langchain.svg", status:"available" },
+    { name:"CrewAI",    pkg:"crewai",    ab:"CA", img:"crewai.svg" },
+    { name:"LlamaIndex",pkg:"llama-index",ab:"LI", img:"llamaindex.svg" }
+  ];
   var LABEL = { available:"Available", planned:"Planned" };
   function icon(a){
     // <img> with onerror fallback: if the logo file is missing, swap to the
@@ -453,15 +481,18 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
     return '<img class="logo" src="img/adapters/'+a.img+'" alt="'+a.name+' logo" '
       + 'loading="lazy" onerror="'+fallback+'">';
   }
-  var html = ADAPTERS.map(function(a){
-    var st = a.status || "planned";
-    return '<article class="acard">'
-      + '<div class="hd"><div class="ic">'+icon(a)+'</div>'
-      + '<div><h3>'+a.name+'</h3><div class="pkg">'+a.pkg+'</div></div></div>'
-      + '<div class="foot"><span class="status '+st+'"><span class="dot"></span>'+LABEL[st]+'</span></div>'
-      + '</article>';
-  }).join('');
-  document.getElementById('catalog').innerHTML = html;
+  function render(list, targetId){
+    document.getElementById(targetId).innerHTML = list.map(function(a){
+      var st = a.status || "planned";
+      return '<article class="acard">'
+        + '<div class="hd"><div class="ic">'+icon(a)+'</div>'
+        + '<div><h3>'+a.name+'</h3><div class="pkg">'+a.pkg+'</div></div></div>'
+        + '<div class="foot"><span class="status '+st+'"><span class="dot"></span>'+LABEL[st]+'</span></div>'
+        + '</article>';
+    }).join('');
+  }
+  render(ADAPTERS, 'catalog');
+  render(FRAMEWORKS, 'framework-catalog');
 })();
 </script>
 
