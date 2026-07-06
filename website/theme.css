@@ -1,0 +1,104 @@
+/* ABOM site theme — "Proofon" glass edition.
+   Loaded AFTER each page's inline styles, so these rules win at equal
+   specificity. One file re-skins all six pages: light glass gradient,
+   DM Sans, coral highlight (#ff5a54), teal primary (#0891b2), mint
+   accent (#00c896). Dark ink-teal is kept for code blocks, tables, the
+   problem strip, and the footer as contrast anchors.
+   Remove this <link> from a page to fall back to the deep-ocean theme. */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap');
+
+:root{
+  /* palette remap — every page reads these tokens */
+  --navy:#04303c;            /* deep ink-teal: code, tables, footer */
+  --navy2:#075063;
+  --teal:#077a96;            /* primary / links (AA on white + white-on-it) */
+  --seafoam:#00c896;
+  --mint:#00c896;            /* checkmarks, positive accents */
+  --coral:#ff5a54;           /* highlight / CTA fills */
+  --coral-hl:#f5443d;        /* large-text coral (AA-large on paper) */
+  --coral-text:#c73a33;      /* small-text coral (AA on paper) */
+  --ice:#d7edf3;             /* on-dark secondary text */
+  --paper:#f3fafb;
+  --card:#ffffff;
+  --ink:#022932;
+  --slate:#04566b;
+  --line:#c9e7ee;
+  --shadow:0 10px 30px rgba(4,80,96,.10);
+  --shadow-sm:0 2px 10px rgba(4,80,96,.07);
+}
+
+body{
+  font-family:"DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background:linear-gradient(135deg,#f3fafb 0%,#e6faf5 55%,#fff3f3 100%) fixed;
+  color:var(--ink);
+}
+
+/* --- nav: white glass, dark text ------------------------------------------ */
+nav{
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(16px) saturate(1.4);
+  -webkit-backdrop-filter:blur(16px) saturate(1.4);
+  border-bottom:1px solid rgba(8,145,178,.14);
+}
+nav .brand{color:var(--ink)}
+.navlinks a{color:var(--slate)}
+.navlinks a:hover{color:var(--ink)}
+.navlinks a.active{color:var(--ink)}
+nav .btn.ghost{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid #abdae5}
+nav .btn.ghost:hover{background:#ffffff;box-shadow:var(--shadow-sm)}
+/* the shield mark: coral chip, white shield */
+.brand svg rect{fill:var(--coral)}
+.brand svg path{stroke:#ffffff}
+
+/* --- hero: light, dark text, soft coral/mint glows ------------------------- */
+header.hero, .hero{
+  background:
+    radial-gradient(55% 75% at 88% -12%, rgba(255,90,84,.12), transparent 62%),
+    radial-gradient(48% 65% at 6% 112%, rgba(0,200,150,.14), transparent 65%);
+  color:var(--ink);
+}
+.hero:after{display:none}
+.hero h1, header.hero h1{color:var(--ink)}
+.hero h1 .hl{color:var(--coral-hl)}
+.hero p, .hero p.sub, header.hero p{color:var(--slate)}
+.hero .eyebrow, header.hero .eyebrow{color:var(--coral-text)}
+/* inline white <b> tags written for the dark hero */
+.hero b[style], header.hero b[style]{color:var(--ink) !important}
+.chip{background:rgba(255,255,255,.66);border:1px solid #cfe9ef;color:var(--slate)}
+.chip b{color:var(--coral-text)}
+.install{background:var(--navy);border-color:rgba(4,48,60,.35)}
+
+/* --- buttons: coral CTA ----------------------------------------------------- */
+.btn{background:var(--coral);color:#26120f}
+.btn:hover{box-shadow:0 8px 22px rgba(255,90,84,.35)}
+.btn.dark{background:var(--teal);color:#ffffff}
+.btn.dark:hover{box-shadow:0 6px 18px rgba(8,145,178,.35)}
+.btn.ghost{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid #abdae5}
+.btn.ghost:hover{background:#ffffff;box-shadow:none}
+.btn.subtle{background:#e9f7fa;color:var(--teal);border:1px solid var(--line)}
+.btn.subtle:hover{background:#dcf1f6}
+
+/* --- accents + tinted panels (old #E8F2F1 family) --------------------------- */
+.eyebrow{color:var(--coral-text)}
+.sec-tint{background:rgba(230,250,245,.65)}
+.toc a{background:#e9f7fa;border-color:var(--line)}
+.toc a:hover{background:#dcf1f6}
+.acard .ic{background:#e9f7f4}
+.maps .reg{background:#e9f7fa;border-color:var(--line)}
+.mnum{background:#e9f7fa}
+.what{background:#eafaf5;border-color:#cdeee2}
+.usage{background:#eafaf5;border-color:#cdeee2}
+.cta{background:#eafaf5;border-color:#cdeee2}
+
+/* --- dark contrast anchors: code, dialogs, tables --------------------------- */
+.code{border-color:#0b3844}
+.code .bar{background:#06333f;border-bottom-color:#0b4552}
+.out{border-color:#0b3844}
+.out .bar{background:#06333f;border-bottom-color:#0b4552}
+.modal .dialog{border-color:#0b3844}
+.modal .mbar{background:#06333f;border-bottom-color:#0b4552}
+.modal .mfoot{background:#06333f;border-top-color:#0b4552}
+
+/* --- footer: deep ink-teal --------------------------------------------------- */
+footer .muted, footer .dis, footer .disclaimer{color:#8fc0cd}
