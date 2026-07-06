@@ -279,7 +279,73 @@
         <span class="dollar mono">$</span><span class="mono">pip install abom-cli &amp;&amp; abom scan .</span>
       </div>
     </div>
-    <aside class="hero-demo" aria-label="ABOM blocking an unauthorized agent action (animated demo)">
+    <aside class="hero-demo" aria-label="An AI agent's actions passing through the ABOM gate into a signed provenance ledger, watched for EU compliance">
+      <svg class="scene" viewBox="0 0 420 300" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sc-ledger" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#075063"/><stop offset="1" stop-color="#04303c"/>
+          </linearGradient>
+          <radialGradient id="sc-eye" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#00c896"/><stop offset="1" stop-color="#077a96"/>
+          </radialGradient>
+          <filter id="sc-glow"><feGaussianBlur stdDeviation="2.4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+
+        <!-- EU compliance eye: 12-star ring watching over everything -->
+        <g class="sc-eu" transform="translate(210 52)">
+          <g class="sc-stars">
+            <!-- 12 stars in a ring, generated positions -->
+            <g fill="#ffd21f">
+              <circle cx="0" cy="-30" r="2.1"/><circle cx="15" cy="-26" r="2.1"/>
+              <circle cx="26" cy="-15" r="2.1"/><circle cx="30" cy="0" r="2.1"/>
+              <circle cx="26" cy="15" r="2.1"/><circle cx="15" cy="26" r="2.1"/>
+              <circle cx="0" cy="30" r="2.1"/><circle cx="-15" cy="26" r="2.1"/>
+              <circle cx="-26" cy="15" r="2.1"/><circle cx="-30" cy="0" r="2.1"/>
+              <circle cx="-26" cy="-15" r="2.1"/><circle cx="-15" cy="-26" r="2.1"/>
+            </g>
+          </g>
+          <circle r="15" fill="url(#sc-eye)" opacity=".92"/>
+          <circle class="sc-pupil" r="6" fill="#04303c"/>
+          <circle class="sc-scan" r="15" fill="none" stroke="#00c896" stroke-width="1.5" opacity=".6"/>
+        </g>
+        <text x="210" y="100" text-anchor="middle" font-size="8" fill="#04566b" font-family="DM Sans,sans-serif" font-weight="600" letter-spacing=".08em">EU · OBSERVED</text>
+
+        <!-- the agent (left) -->
+        <g transform="translate(52 190)">
+          <rect x="-26" y="-26" width="52" height="52" rx="13" fill="#fff" stroke="#c9e7ee" stroke-width="1.5"/>
+          <circle class="sc-agent-core" cx="0" cy="0" r="9" fill="#077a96"/>
+          <circle cx="0" cy="0" r="15" fill="none" stroke="#077a96" stroke-width="1.2" opacity=".35"/>
+          <text x="0" y="42" text-anchor="middle" font-size="8" fill="#04566b" font-family="DM Sans,sans-serif" font-weight="700">AGENT</text>
+        </g>
+
+        <!-- the gate/shield (center) -->
+        <g transform="translate(210 190)">
+          <path d="M0 -30 L26 -20 V4 C26 22 14 32 0 38 C-14 32 -26 22 -26 4 V-20 Z"
+                fill="rgba(255,255,255,.9)" stroke="#077a96" stroke-width="2"/>
+          <path class="sc-check" d="M-11 0 L-3 9 L12 -10" fill="none" stroke="#00c896"
+                stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="0" y="54" text-anchor="middle" font-size="8" fill="#04566b" font-family="DM Sans,sans-serif" font-weight="700">GATE</text>
+        </g>
+
+        <!-- the ledger (right) -->
+        <g transform="translate(368 190)">
+          <rect x="-24" y="-30" width="48" height="60" rx="7" fill="url(#sc-ledger)"/>
+          <g stroke="#2dd4bf" stroke-width="1.4" opacity=".8">
+            <line class="sc-row sc-r1" x1="-15" y1="-16" x2="15" y2="-16"/>
+            <line class="sc-row sc-r2" x1="-15" y1="-6"  x2="15" y2="-6"/>
+            <line class="sc-row sc-r3" x1="-15" y1="4"   x2="9"  y2="4"/>
+            <line class="sc-row sc-r4" x1="-15" y1="14"  x2="15" y2="14"/>
+          </g>
+          <text x="0" y="46" text-anchor="middle" font-size="8" fill="#04566b" font-family="DM Sans,sans-serif" font-weight="700">LEDGER</text>
+        </g>
+
+        <!-- action packets travelling agent → gate → ledger -->
+        <g fill="#00c896"><circle class="sc-pkt sc-pkt-1" r="4"/></g>
+        <g fill="#00c896"><circle class="sc-pkt sc-pkt-2" r="4"/></g>
+        <!-- the blocked one: agent → gate, then bounced back red -->
+        <g fill="#ff5a54"><circle class="sc-pkt sc-pkt-deny" r="4.4"/></g>
+      </svg>
       <div class="term">
         <div class="tbar"><i class="r"></i><i class="y"></i><i class="g"></i><span>abom — live gate</span></div>
         <pre id="term-screen"></pre>

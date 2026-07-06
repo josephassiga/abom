@@ -168,3 +168,60 @@ footer .muted, footer .dis, footer .disclaimer{color:#8fc0cd}
   .hero-net{opacity:.5}                 /* static frame drawn once by JS */
   .hero-scan::before{animation:none;display:none}
 }
+
+/* --- hero scene: agent → gate → ledger, watched by the EU eye ------------- */
+.scene{width:100%;max-width:420px;display:block;margin:0 auto 14px;
+  filter:drop-shadow(0 10px 26px rgba(4,80,96,.14))}
+
+/* EU eye: slow watch-rotation of the star ring + a scanning pulse + a pupil that looks around */
+.sc-stars{animation:sc-spin 40s linear infinite;transform-origin:center}
+@keyframes sc-spin{to{transform:rotate(360deg)}}
+.sc-scan{animation:sc-scan 3.2s ease-out infinite}
+@keyframes sc-scan{0%{transform:scale(1);opacity:.6}70%,100%{transform:scale(2.1);opacity:0}}
+.sc-pupil{animation:sc-look 6s ease-in-out infinite;transform-origin:center}
+@keyframes sc-look{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,1px)}60%{transform:translate(3px,-1px)}}
+.sc-agent-core{animation:sc-emit 2.4s ease-in-out infinite}
+@keyframes sc-emit{0%,100%{r:9;opacity:1}50%{r:11;opacity:.8}}
+
+/* the gate check flicks green on each approved packet, red-flashes on a deny */
+.sc-check{stroke-dasharray:40;stroke-dashoffset:0;animation:sc-approve 6s ease-in-out infinite}
+@keyframes sc-approve{0%,42%,100%{stroke:#00c896}46%,52%{stroke:#ff5a54}}
+
+/* ledger rows draw in, as if records are being appended */
+.sc-row{stroke-dasharray:34;stroke-dashoffset:34;animation:sc-append 6s ease-in-out infinite}
+.sc-r1{animation-delay:.2s}
+.sc-r2{animation-delay:1.6s}
+.sc-r3{animation-delay:3.0s}
+.sc-r4{animation-delay:4.2s}
+@keyframes sc-append{0%{stroke-dashoffset:34}18%,100%{stroke-dashoffset:0}}
+
+/* approved packets: agent (52,190) → gate (210,190) → ledger (368,190) */
+.sc-pkt{offset-rotate:0deg}
+.sc-pkt-1{animation:sc-flow 6s ease-in-out infinite}
+.sc-pkt-2{animation:sc-flow 6s ease-in-out infinite;animation-delay:3s}
+@keyframes sc-flow{
+  0%   {transform:translate(52px,190px);opacity:0}
+  8%   {opacity:1}
+  40%  {transform:translate(210px,190px);opacity:1}   /* reach gate */
+  46%  {transform:translate(210px,190px) scale(1.3)}   /* verified */
+  80%  {transform:translate(368px,190px);opacity:1}    /* into ledger */
+  90%,100%{transform:translate(368px,190px);opacity:0}
+}
+/* the denied packet: agent → gate, flashes, bounces back and fades */
+.sc-pkt-deny{animation:sc-deny 6s ease-in-out infinite;animation-delay:1.4s}
+@keyframes sc-deny{
+  0%,100%{opacity:0}
+  4%{transform:translate(52px,190px);opacity:1}
+  22%{transform:translate(200px,190px);opacity:1}      /* almost at gate */
+  26%{transform:translate(196px,178px) scale(1.35)}    /* rejected, kicks up */
+  40%{transform:translate(96px,150px);opacity:.9}      /* bounced away */
+  48%{transform:translate(70px,140px);opacity:0}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .sc-stars,.sc-scan,.sc-pupil,.sc-agent-core,.sc-check,.sc-row,
+  .sc-pkt-1,.sc-pkt-2,.sc-pkt-deny{animation:none}
+  .sc-row{stroke-dashoffset:0}
+  .sc-pkt-1{transform:translate(300px,190px);opacity:1}
+  .sc-pkt-2,.sc-pkt-deny{opacity:0}
+}
