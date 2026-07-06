@@ -1,6 +1,14 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "abom-site", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "4599", "--directory", "../abom/website"], "port": 4599 }
+    {
+      "name": "abom-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "/Users/josephassiga/Desktop/abom/.claude/serve.py",
+        "4599"
+      ],
+      "port": 4599
+    }
   ]
 }
