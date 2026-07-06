@@ -106,3 +106,44 @@ header.hero, .hero{
 
 /* --- footer: deep ink-teal --------------------------------------------------- */
 footer .muted, footer .dis, footer .disclaimer{color:#8fc0cd}
+
+/* --- motion: aurora glows, terminal demo, scroll reveals -------------------- */
+.hero{position:relative;overflow:hidden}
+.aurora{position:absolute;inset:0;pointer-events:none;z-index:0}
+.aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;will-change:transform}
+.aurora i:nth-child(1){width:420px;height:420px;right:-90px;top:-140px;background:rgba(255,90,84,.28);animation:drift 13s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:360px;height:360px;left:-110px;bottom:-160px;background:rgba(0,200,150,.30);animation:drift 17s ease-in-out infinite alternate-reverse}
+.aurora i:nth-child(3){width:260px;height:260px;left:44%;top:30%;background:rgba(8,145,178,.16);animation:drift 21s ease-in-out infinite alternate}
+@keyframes drift{
+  from{transform:translate(0,0) scale(1)}
+  to{transform:translate(46px,-34px) scale(1.18)}
+}
+
+/* hero two-column: copy left, live terminal right */
+.hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:46px;align-items:center}
+@media(max-width:1020px){.hero-grid{grid-template-columns:1fr;gap:30px}}
+
+.term{background:var(--navy);border:1px solid #0b3844;border-radius:16px;overflow:hidden;
+  box-shadow:0 24px 60px rgba(4,48,60,.28)}
+.term .tbar{display:flex;align-items:center;gap:7px;padding:11px 15px;background:#06333f;border-bottom:1px solid #0b4552}
+.term .tbar i{width:11px;height:11px;border-radius:50%;display:block}
+.term .tbar i.r{background:#ff5f57}.term .tbar i.y{background:#febc2e}.term .tbar i.g{background:#28c840}
+.term .tbar span{margin-left:8px;color:#6f9aa8;font-size:12.5px;font-family:ui-monospace,monospace}
+.term pre{margin:0;padding:16px 18px;min-height:238px;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  font-size:12.5px;line-height:1.85;color:#cfe8ec;white-space:pre-wrap;word-break:break-word}
+.term .tp{color:#7fe3c8}          /* typed prompt */
+.term .ok{color:#4ee6b8;font-weight:700}
+.term .deny{color:#ff8a76;font-weight:700}
+.term .warn{color:#ffcf6b}
+.term .dim{color:#6f9aa8}
+.term .cur{display:inline-block;width:7px;height:13px;margin-left:2px;background:#7fe3c8;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* scroll reveals (class added by JS so no-JS stays fully visible) */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  .aurora i,.term .cur{animation:none}
+  .rv{opacity:1;transform:none;transition:none}
+}

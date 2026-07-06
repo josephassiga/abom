@@ -259,21 +259,30 @@
 
 <!-- HERO -->
 <header class="hero" id="top">
-  <div class="wrap">
-    <div class="pill-row">
-      <span class="chip"><b>●</b> Open source · Apache-2.0</span>
-      <span class="chip"><b>●</b> Inspired by CycloneDX ML-BOM</span>
-      <span class="chip"><b>●</b> Runs in your boundary</span>
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="pill-row">
+        <span class="chip"><b>●</b> Open source · Apache-2.0</span>
+        <span class="chip"><b>●</b> Inspired by CycloneDX ML-BOM</span>
+        <span class="chip"><b>●</b> Runs in your boundary</span>
+      </div>
+      <h1>Know what your AI agents are made of <span class="hl">and prove what they did.</span></h1>
+      <p class="sub">ABOM is the Agent Bill of Materials: a signed, tamper-evident way to declare what an AI agent is built from, <b style="color:#fff">enforce</b> what it's allowed to do at runtime, and <b style="color:#fff">prove</b> to an auditor what it actually did. The trust is cryptographic, not reputational.</p>
+      <div class="cta-row">
+        <a class="btn" href="get-started.html">Get started</a>
+        <a class="btn ghost" href="#what">See how it works</a>
+      </div>
+      <div class="install">
+        <span class="dollar mono">$</span><span class="mono">pip install abom-cli &amp;&amp; abom scan .</span>
+      </div>
     </div>
-    <h1>Know what your AI agents are made of <span class="hl">and prove what they did.</span></h1>
-    <p class="sub">ABOM is the Agent Bill of Materials: a signed, tamper-evident way to declare what an AI agent is built from, <b style="color:#fff">enforce</b> what it's allowed to do at runtime, and <b style="color:#fff">prove</b> to an auditor what it actually did. The trust is cryptographic, not reputational.</p>
-    <div class="cta-row">
-      <a class="btn" href="get-started.html">Get started</a>
-      <a class="btn ghost" href="#what">See how it works</a>
-    </div>
-    <div class="install">
-      <span class="dollar mono">$</span><span class="mono">pip install abom-cli &amp;&amp; abom scan .</span>
-    </div>
+    <aside class="hero-demo" aria-label="ABOM blocking an unauthorized agent action (animated demo)">
+      <div class="term">
+        <div class="tbar"><i class="r"></i><i class="y"></i><i class="g"></i><span>abom — live gate</span></div>
+        <pre id="term-screen"></pre>
+      </div>
+    </aside>
   </div>
 </header>
 
@@ -668,6 +677,84 @@ GET /v1/registry/events
     <p class="disclaimer">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. A company in formation — this site is informational, not investment or legal advice; regulatory positioning should be validated with qualified counsel.</p>
   </div>
 </footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- hero terminal: the flagship story, self-typing on loop --------------- */
+  var SCRIPT = [
+    {t:'cmd', text:'abom scan .'},
+    {t:'ok',  text:'✓ signed manifest — 9 components, ed25519'},
+    {t:'cmd', text:'python agent.py'},
+    {t:'warn',text:'⚠ prompt-injected: wire_transfer($1,000,000)'},
+    {t:'deny',text:'✗ DENY — wire_transfer not in signed manifest'},
+    {t:'dim', text:'  notarized · merkle root 9f2c41…'},
+    {t:'cmd', text:'abom verify abom.json --run r-0042'},
+    {t:'ok',  text:'✓ VALID — signature OK · chain intact · policy clean'}
+  ];
+  var CLS = {cmd:'tp', ok:'ok', deny:'deny', warn:'warn', dim:'dim'};
+  var screen = document.getElementById('term-screen');
+
+  if (screen && reduced) {
+    // static final frame: everything visible, no typing, no cursor
+    screen.innerHTML = SCRIPT.map(function(s){
+      return '<span class="' + CLS[s.t] + '">' + (s.t==='cmd' ? '$ ' : '') + s.text + '</span>';
+    }).join('\n');
+  } else if (screen) {
+    var li = 0, ci = 0, lineEl = null, spanEl = null;
+    function newLine(){
+      var step = SCRIPT[li];
+      lineEl = document.createElement('div');
+      if (step.t === 'cmd') {
+        var d = document.createElement('span'); d.className = 'dim'; d.textContent = '$ ';
+        lineEl.appendChild(d);
+      }
+      spanEl = document.createElement('span');
+      spanEl.className = CLS[step.t];
+      lineEl.appendChild(spanEl);
+      var cur = document.createElement('span'); cur.className = 'cur';
+      lineEl.appendChild(cur);
+      screen.appendChild(lineEl);
+      ci = 0;
+    }
+    function tick(){
+      var step = SCRIPT[li];
+      if (!lineEl) newLine();
+      if (step.t === 'cmd') {
+        // commands type character by character
+        if (ci < step.text.length) {
+          spanEl.textContent += step.text[ci++];
+          return setTimeout(tick, 26 + Math.random()*36);
+        }
+      } else {
+        // output lines land whole, after a beat
+        spanEl.textContent = step.text;
+      }
+      lineEl.querySelector('.cur').remove();
+      lineEl = null; li++;
+      if (li < SCRIPT.length) {
+        var pause = SCRIPT[li].t === 'cmd' ? 650 : 340;
+        return setTimeout(tick, pause);
+      }
+      // loop: hold the final frame, then clear and replay
+      setTimeout(function(){ screen.textContent = ''; li = 0; tick(); }, 4200);
+    }
+    setTimeout(tick, 500);
+  }
+
+  /* --- scroll reveals (JS adds the class, so no-JS keeps content visible) --- */
+  if (!reduced && 'IntersectionObserver' in window) {
+    var targets = document.querySelectorAll('section .wrap, .problem .q');
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold: 0.12});
+    targets.forEach(function(el){ el.classList.add('rv'); io.observe(el); });
+  }
+})();
+</script>
 
 </body>
 </html>
