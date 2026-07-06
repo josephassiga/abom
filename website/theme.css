@@ -69,8 +69,10 @@ header.hero, .hero{
 .hero .eyebrow, header.hero .eyebrow{color:var(--coral-text)}
 /* inline white <b> tags written for the dark hero */
 .hero b[style], header.hero b[style]{color:var(--ink) !important}
-.chip{background:rgba(255,255,255,.66);border:1px solid #cfe9ef;color:var(--slate)}
-.chip b{color:var(--coral-text)}
+/* .hero .chip specificity so this beats spec.html's scoped `.hero .chip`
+   rule (which sets light-on-dark colors meant for the old dark hero) */
+.chip, .hero .chip, header.hero .chip{background:rgba(255,255,255,.66);border:1px solid #cfe9ef;color:var(--slate)}
+.chip b, .hero .chip b, header.hero .chip b{color:var(--coral-text)}
 .install{background:var(--navy);border-color:rgba(4,48,60,.35)}
 
 /* --- buttons: coral CTA ----------------------------------------------------- */
