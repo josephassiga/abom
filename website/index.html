@@ -260,6 +260,8 @@
 <!-- HERO -->
 <header class="hero" id="top">
   <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <canvas class="hero-net" aria-hidden="true"></canvas>
+  <div class="hero-scan" aria-hidden="true"></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <div class="pill-row">
@@ -753,6 +755,114 @@ GET /v1/registry/events
     }, {threshold: 0.12});
     targets.forEach(function(el){ el.classList.add('rv'); io.observe(el); });
   }
+
+  /* --- animated backdrop: a living provenance network ----------------------- */
+  (function heroNetwork(){
+    var cv = document.querySelector('.hero-net');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var host = document.querySelector('.hero');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, nodes = [], pulses = [];
+
+    function resize(){
+      var r = host.getBoundingClientRect();
+      W = r.width; H = r.height;
+      cv.width = W * dpr; cv.height = H * dpr;
+      cv.style.width = W + 'px'; cv.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // ~1 node per 14k px², clamped — denser feels busy, sparser feels dead
+      var count = Math.max(26, Math.min(64, Math.round((W * H) / 14000)));
+      nodes = [];
+      for (var i = 0; i < count; i++){
+        nodes.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.22, vy: (Math.random() - 0.5) * 0.22,
+          r: 1.1 + Math.random() * 1.9
+        });
+      }
+    }
+
+    var LINK = 132;            // link distance
+    var TEAL = '8,145,178', MINT = '0,200,150', CORAL = '255,90,84';
+
+    function step(){
+      ctx.clearRect(0, 0, W, H);
+      // move nodes, bounce at edges
+      for (var i = 0; i < nodes.length; i++){
+        var n = nodes[i];
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > W) n.vx *= -1;
+        if (n.y < 0 || n.y > H) n.vy *= -1;
+      }
+      // links (the hash chain), fading with distance
+      for (var a = 0; a < nodes.length; a++){
+        for (var b = a + 1; b < nodes.length; b++){
+          var dx = nodes[a].x - nodes[b].x, dy = nodes[a].y - nodes[b].y;
+          var d = Math.sqrt(dx*dx + dy*dy);
+          if (d < LINK){
+            var o = (1 - d / LINK) * 0.20;
+            ctx.strokeStyle = 'rgba(' + TEAL + ',' + o + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(nodes[a].x, nodes[a].y);
+            ctx.lineTo(nodes[b].x, nodes[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+      // nodes
+      for (var k = 0; k < nodes.length; k++){
+        var m = nodes[k];
+        ctx.fillStyle = 'rgba(' + TEAL + ',0.55)';
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2); ctx.fill();
+      }
+      // occasional "provenance pulse" travelling along a link
+      if (pulses.length < 5 && Math.random() < 0.04){
+        var s = nodes[(Math.random() * nodes.length) | 0];
+        var near = [];
+        for (var q = 0; q < nodes.length; q++){
+          if (nodes[q] === s) continue;
+          var ddx = s.x - nodes[q].x, ddy = s.y - nodes[q].y;
+          if (Math.sqrt(ddx*ddx + ddy*ddy) < LINK) near.push(nodes[q]);
+        }
+        if (near.length){
+          pulses.push({ a: s, b: near[(Math.random()*near.length)|0], t: 0,
+                        col: Math.random() < 0.22 ? CORAL : MINT });
+        }
+      }
+      for (var p = pulses.length - 1; p >= 0; p--){
+        var pu = pulses[p];
+        pu.t += 0.018;
+        if (pu.t >= 1){ pulses.splice(p, 1); continue; }
+        var px = pu.a.x + (pu.b.x - pu.a.x) * pu.t;
+        var py = pu.a.y + (pu.b.y - pu.a.y) * pu.t;
+        var glow = Math.sin(pu.t * Math.PI);          // fade in/out along path
+        ctx.fillStyle = 'rgba(' + pu.col + ',' + (0.8 * glow) + ')';
+        ctx.beginPath(); ctx.arc(px, py, 2.6, 0, Math.PI * 2); ctx.fill();
+      }
+      raf = requestAnimationFrame(step);
+    }
+
+    var raf;
+    resize();
+    window.addEventListener('resize', function(){ cancelAnimationFrame(raf); resize();
+      if (reduced) drawStatic(); else step(); });
+
+    function drawStatic(){
+      // one still frame for reduced-motion / no-animation preference
+      ctx.clearRect(0,0,W,H);
+      for (var a=0;a<nodes.length;a++) for (var b=a+1;b<nodes.length;b++){
+        var dx=nodes[a].x-nodes[b].x, dy=nodes[a].y-nodes[b].y, d=Math.sqrt(dx*dx+dy*dy);
+        if (d<LINK){ ctx.strokeStyle='rgba('+TEAL+','+((1-d/LINK)*0.16)+')'; ctx.beginPath();
+          ctx.moveTo(nodes[a].x,nodes[a].y); ctx.lineTo(nodes[b].x,nodes[b].y); ctx.stroke(); }
+      }
+      for (var k=0;k<nodes.length;k++){ ctx.fillStyle='rgba('+TEAL+',0.5)';
+        ctx.beginPath(); ctx.arc(nodes[k].x,nodes[k].y,nodes[k].r,0,Math.PI*2); ctx.fill(); }
+    }
+
+    if (reduced) drawStatic(); else step();
+  })();
 })();
 </script>
 
