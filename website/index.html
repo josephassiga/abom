@@ -247,6 +247,7 @@
     </a>
     <div class="navlinks">
       <a href="#what">What it is</a>
+      <a href="#broker">Broker</a>
       <a href="spec.html">Spec</a>
       <a href="policies.html">Policies</a>
       <a href="adapters.html">Adapters</a>
@@ -353,6 +354,7 @@
         <p class="lede">A SIEM tells you an agent wired money to an attacker <i>yesterday</i>. ABOM's gate <b>stops the call before it executes</b> because the tool isn't in the agent's signed manifest. This is the difference between a guardrail and an audit trail.</p>
         <ul>
           <li><b>Deny-by-default.</b> A tool not in the signed manifest is blocked, not logged-and-allowed.</li>
+          <li><b>Signature-pinned.</b> Pin the authorized signer and the gate refuses to enforce a manifest that was tampered or re-signed by anyone else — "signed" authenticates <i>who</i>, not just integrity.</li>
           <li><b>Framework-agnostic.</b> A decorator, a wrapper, or a direct check — no LangChain / MCP lock-in.</li>
           <li><b>Three decidable rules:</b> undeclared tool, endpoint not on allowlist, confidential data egress.</li>
           <li><b>Every decision is notarized</b> — allowed and denied alike.</li>
@@ -360,10 +362,12 @@
       </div>
       <div class="code">
         <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>agent.py</span></div>
-<pre><span class="c"># the signed manifest is the agent's envelope</span>
+<pre><span class="c"># pin the signer: a re-signed manifest is refused</span>
 <span class="k">from</span> abom <span class="k">import</span> Gate, Action, ActionDenied
 
-gate = Gate(signed_manifest)
+gate = Gate(signed_manifest,
+            trusted_keys={<span class="s">"9a72f7ef…"</span>})  <span class="c"># pinned</span>
+<span class="c"># forged manifest, attacker's key → </span><span class="deny">refused</span>
 
 <span class="k">@gate.gated()</span>              <span class="c"># wrap any tool</span>
 <span class="k">def</span> wire_transfer(amount, to):
@@ -376,6 +380,38 @@ gate = Gate(signed_manifest)
 <span class="k">except</span> ActionDenied <span class="k">as</span> e:
     e.decision.rule   <span class="c"># → </span><span class="deny">"tool_not_in_manifest"</span>
     <span class="c"># the money never moved. denial notarized.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE MCP BROKER -->
+<section id="broker" class="sec-white divider">
+  <div class="wrap">
+    <div class="feature alt">
+      <div>
+        <div class="eyebrow">The MCP broker</div>
+        <h2>Move the gate <span class="accent">out of the agent's process</span></h2>
+        <p class="lede">A decorator trusts the agent to route calls through it. A prompt-injected agent can just… not. The broker relocates the gate to a choke point the agent doesn't control: it sits between the agent and its MCP server, and <b>every <span class="mono">tools/call</span> transits the gate before it's forwarded</b>. Deny-by-default becomes structural, not cooperative.</p>
+        <ul>
+          <li><b>Nothing to instrument.</b> Point the agent's MCP client at the broker; the manifest auto-builds from <span class="mono">tools/list</span>. New tool at runtime → auto-denied.</li>
+          <li><b>Denied calls never reach the server.</b> A blocked <span class="mono">tools/call</span> is answered with a notarized JSON-RPC error — the upstream tool is never invoked.</li>
+          <li><b>Every decision lands in the durable transparency log</b> — allowed and denied alike, surviving restart.</li>
+          <li><b>Honest scope.</b> Structural for brokered tools; pair with egress containment to stop out-of-band calls the agent makes without transiting the broker.</li>
+        </ul>
+      </div>
+      <div class="code">
+        <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>broker</span></div>
+<pre><span class="c"># the agent gets its tools FROM the broker</span>
+$ abom broker abom.json \
+    <span class="k">--upstream</span> https://mcp.internal/rpc \
+    <span class="k">--trusted-key</span> 9a72f7ef… <span class="k">--log</span> gate.mlog
+
+<span class="c"># agent (prompt-injected) tries a tool it</span>
+<span class="c"># was never granted:</span>
+tools/call  wire_transfer   <span class="c"># → </span><span class="deny">DENIED (-32001)</span>
+<span class="c"># the upstream server never saw the call.</span>
+tools/call  lookup_customer <span class="c"># → </span><span class="allow">forwarded</span></pre>
       </div>
     </div>
   </div>

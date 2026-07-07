@@ -101,6 +101,7 @@
     </a>
     <div class="navlinks">
       <a href="/#what">What it is</a>
+      <a href="/#broker">Broker</a>
       <a href="spec.html">Spec</a>
       <a href="policies.html">Policies</a>
       <a href="adapters.html">Adapters</a>
@@ -285,6 +286,18 @@ gate = Gate(signed_manifest)
 <span class="p">except</span> ActionDenied <span class="p">as</span> e:
     print(e.decision.rule)    <span class="c"># → </span><span class="deny">"tool_not_in_manifest"</span>
     <span class="c"># the money never moved — and the denial is notarized</span></pre></div>
+
+    <p>Or move the gate <b>out of the agent's process entirely</b> with the MCP broker. The agent connects to the broker instead of its MCP server; every <span class="mono">tools/call</span> is checked against the signed manifest <b>before</b> it's forwarded, so a call the agent was never granted never reaches the server:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · the MCP broker</span></div>
+<pre><span class="p">abom broker abom.json --upstream https://mcp.internal/rpc \
+             --trusted-key 9a72f7ef… --log gate.mlog</span>
+
+  ABOM broker → https://mcp.internal/rpc
+  mediating tools/call against the signed manifest (deny-by-default)
+
+  tools/call  lookup_customer  <span class="c"># → </span><span class="allow">forwarded</span>
+  tools/call  wire_transfer    <span class="c"># → </span><span class="deny">DENIED (-32001)</span>  <span class="c"># upstream never saw it</span></pre></div>
+    <div class="note"><b>Honest scope:</b> enforcement is structural for brokered tools. It doesn't stop an agent from making raw out-of-band calls (HTTP, subprocess) that never transit the broker — pair it with network egress containment for that.</div>
   </section>
 
   <!-- STEP 4 -->
