@@ -34,7 +34,7 @@
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
   .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
   .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
-  .navlinks{display:flex;gap:24px;align-items:center}
+  .navlinks{display:flex;flex-wrap:nowrap;gap:20px;align-items:center;white-space:nowrap}
   .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
   .navlinks a.active{color:#fff}
   .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s}
@@ -120,6 +120,8 @@
     </a>
     <div class="navlinks">
       <a href="/#what">What it is</a>
+      <a href="/#broker">Broker</a>
+      <a href="/#witness">Witness</a>
       <a href="spec.html" class="active">Spec</a>
       <a href="policies.html">Policies</a>
       <a href="adapters.html">Adapters</a>
