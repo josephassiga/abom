@@ -301,8 +301,44 @@ gate = Gate(signed_manifest)
   </section>
 
   <!-- STEP 4 -->
-  <section class="step">
+  <section class="step" id="witness">
     <div class="n">4</div>
+    <h2>Prove the record can't be rewritten <span class="tag">verify without trusting the operator</span></h2>
+    <p class="lead">Every gate decision lands in an append-only <b>Merkle transparency log</b> — the same RFC 6962 construction behind Certificate Transparency and Sigstore. Two independent steps make that record something a third party can rely on, even against the operator who runs it.</p>
+
+    <p><b>A witness cosigns the log with its own key.</b> It holds a key separate from the operator's and refuses to cosign a new tree head unless a consistency proof shows the log only grew. Rewrite or truncate history, and the witness won't sign the forged head:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>witness.py</span></div>
+<pre><span class="p">from</span> abom <span class="p">import</span> Witness, LocalSigner
+<span class="p">from</span> abom.sign <span class="p">import</span> load_or_create_key
+
+<span class="c"># the witness key is DISTINCT from the gate's key</span>
+witness = Witness(LocalSigner(load_or_create_key(<span class="o">"witness.pem"</span>)))
+
+<span class="c"># cosign the current head; on growth, pass the consistency proof</span>
+witness.cosign(gate.head())
+proof = gate.consistency_since(1)
+witness.cosign(gate.head(), consistency=proof)
+
+<span class="c"># operator rewrites history and tries again:</span>
+witness.cosign(forged_head, consistency=bad)
+<span class="c"># → </span><span class="deny">WitnessRejected: not an append-only extension</span></pre></div>
+
+    <p><b>Anchor the root to an RFC 3161 timestamp authority</b> — an independent third party the operator doesn't control. Under <b>eIDAS Art. 41</b> a qualified timestamp carries a legal presumption of time and integrity, so this proves the log root existed, unaltered, by time T:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>anchor.py</span></div>
+<pre><span class="p">from</span> abom <span class="p">import</span> anchor_head
+
+token = anchor_head(gate.head(),
+                    tsa_url=<span class="o">"https://freetsa.org/tsr"</span>)
+
+token[<span class="o">"root_hash"</span>]              <span class="c"># the root that was timestamped</span>
+token[<span class="o">"timestamp_token_b64"</span>]    <span class="c"># the TSA's signed proof, stored</span>
+<span class="c"># → </span><span class="allow">re-verifiable offline, by anyone, later</span></pre></div>
+    <div class="note"><b>Honest scope:</b> a witness you host yourself is defense-in-depth — the operator holds both keys. Genuine non-equivocation comes from an <i>independent</i> witness (the neutral network is the next step). The RFC 3161 timestamp is the third-party proof that stands today.</div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step">
+    <div class="n">5</div>
     <h2>Scan a remote agent <span class="tag">three ways</span></h2>
     <p class="lead">You don't need the code locally. ABOM scans a GitHub repo by URL, or a <b>live deployed agent</b> over the Model Context Protocol.</p>
     <div class="grid3">
@@ -420,9 +456,9 @@ gate = Gate(signed_manifest)
     <div class="note">ABOM only reads the <b>declared</b> capabilities over the protocol — it never invokes a tool.</div>
   </section>
 
-  <!-- STEP 5 -->
+  <!-- STEP 6 -->
   <section class="step">
-    <div class="n">5</div>
+    <div class="n">6</div>
     <h2>Make it shareable</h2>
     <p class="lead">Add <span class="mono">--card</span> to any scan or gate to also write a self-contained SVG "report card" you can drop into a PR, a doc, or a slide.</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
