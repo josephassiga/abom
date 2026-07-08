@@ -424,7 +424,7 @@ tools/call  lookup_customer <span class="c"># → </span><span class="allow">for
       <div>
         <div class="eyebrow">The Notary</div>
         <h2>Tamper-evidence <span class="accent">you can verify yourself</span></h2>
-        <p class="lede">A plain hash chain proves internal consistency, but an operator who controls the store can rebuild it from scratch. ABOM uses an append-only <b>Merkle transparency log</b> (the same RFC 6962 construction behind Certificate Transparency), so any party can verify the record <b>without trusting whoever produced it</b>.</p>
+        <p class="lede">A plain hash chain proves internal consistency, but an operator who controls the store can rebuild it from scratch. ABOM uses an append-only <b>Merkle transparency log</b> (the same RFC 6962 construction behind Certificate Transparency) — inclusion and consistency proofs anyone can check. Paired with the witness and anchor below, the record becomes verifiable <b>without trusting whoever produced it</b>.</p>
         <ul>
           <li><b>Inclusion proof</b> — "this decision is in the log, under this signed root."</li>
           <li><b>Consistency proof</b> — "nothing already published was edited or deleted."</li>
@@ -445,6 +445,37 @@ verify_payload(head, head_sig)    <span class="c"># → </span><span class="allo
 <span class="c"># attacker tries to backdate the record:</span>
 verify_inclusion(forged, proof)   <span class="c"># → </span><span class="deny">False</span>
 <span class="c"># the proof no longer matches.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE WITNESS + ANCHOR -->
+<section id="witness" class="sec-white divider">
+  <div class="wrap">
+    <div class="feature">
+      <div>
+        <div class="eyebrow">The witness &amp; the anchor</div>
+        <h2>Proof the operator <span class="accent">can't quietly rewrite</span></h2>
+        <p class="lede">A Merkle log is tamper-evident to outsiders — but the operator holds the store and the key, so on its own it can still be rebuilt from scratch. Two independent things close that gap and make the record something a third party can actually rely on.</p>
+        <ul>
+          <li><b>A witness cosigns the log</b> with its <i>own</i> key and refuses unless a consistency proof shows the log only grew. Rewrite or truncate history, and the witness won't sign the forged head.</li>
+          <li><b>An RFC 3161 timestamp anchors the root</b> to an independent authority the operator doesn't control. Under <b>eIDAS Art. 41</b>, a qualified timestamp carries a legal presumption of time and integrity — evidence regulated buyers already recognize.</li>
+          <li><b>Honest about scope.</b> A self-hosted witness is defense-in-depth; genuine non-equivocation comes from an independent one. The timestamp is the third-party proof that stands today.</li>
+        </ul>
+      </div>
+      <div class="code">
+        <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>notary</span></div>
+<pre><span class="c"># a second party cosigns — with a different key</span>
+witness.cosign(head, consistency=proof)
+
+<span class="c"># operator rewrites history, asks again:</span>
+witness.cosign(forged_head, consistency=bad)
+<span class="c"># → </span><span class="deny">WitnessRejected: not append-only</span>
+
+<span class="c"># anchor the root to an RFC 3161 authority</span>
+anchor_head(head, tsa_url=<span class="s">"https://tsa…"</span>)
+<span class="c"># → signed proof it existed by time T</span> <span class="allow">✓</span></pre>
       </div>
     </div>
   </div>
