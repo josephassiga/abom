@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pricing & Editions — ABOM · Agent Bill of Materials</title>
+<meta name="description" content="ABOM editions: the open-source CLI and self-hosted enforcement are free forever. The neutral hosted Notary, enterprise support, on-prem/air-gap, and compliance attestations are the paid tier for regulated teams.">
+<meta name="theme-color" content="#0F2A4A">
+<link rel="canonical" href="https://abom.ai/pricing.html">
+<meta property="og:title" content="ABOM Pricing & Editions">
+<meta property="og:description" content="Free forever: the CLI + self-hosted enforcement. Paid: the neutral hosted Notary, support, on-prem, and compliance attestations.">
+<meta property="og:url" content="https://abom.ai/pricing.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
+<style>
+  :root{
+    --navy:#0F2A4A; --navy2:#1C4A6E; --teal:#0B7C7C; --seafoam:#14B8A6; --mint:#2DD4BF;
+    --ice:#D5EAE8; --paper:#F4F8F9; --card:#FFFFFF; --ink:#12222B; --slate:#5A7682;
+    --line:#DCE7EA; --amber:#E0A100; --coral:#E5604D; --violet:#7C6CD6;
+    --built:#1FA37A; --maxw:1000px;
+    --shadow:0 6px 28px rgba(15,42,74,.10); --shadow-sm:0 2px 10px rgba(15,42,74,.07);
+    --r:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.02em;font-weight:800}
+  .mono{font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(15,42,74,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1120px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#fff;font-size:18px}
+  .brand:hover{text-decoration:none}.brand svg{width:25px;height:25px}
+  .navlinks{display:flex;flex-wrap:nowrap;gap:20px;align-items:center;white-space:nowrap}
+  .navlinks a{color:var(--ice);font-size:14.5px;font-weight:600}.navlinks a:hover{color:#fff;text-decoration:none}
+  .navlinks a.active{color:#fff}
+  .btn{display:inline-block;background:var(--mint);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:10px;font-size:14.5px;transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,212,191,.35);text-decoration:none}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .btn.ghost:hover{background:rgba(255,255,255,.08);box-shadow:none}
+  .btn.dark{background:var(--navy);color:#fff}
+  @media(max-width:760px){.navlinks a:not(.btn){display:none}}
+
+  header.hero{background:radial-gradient(120% 90% at 80% -10%,#163b56,var(--navy) 60%);color:#fff;padding:64px 0 50px}
+  .hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin-bottom:12px}
+  .hero h1{font-size:clamp(32px,5.5vw,46px);color:#fff;max-width:760px}
+  .hero p{font-size:clamp(16px,2.2vw,18px);color:var(--ice);max-width:720px;margin:18px 0 0}
+
+  main{padding:36px 0 60px}
+
+  /* pricing cards */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:8px 0 10px}
+  @media(max-width:860px){.plans{grid-template-columns:1fr}}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+  .plan.feature{border:2px solid var(--mint);box-shadow:var(--shadow);position:relative}
+  .plan .badge{position:absolute;top:-12px;left:24px;background:var(--mint);color:var(--navy);font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px}
+  .plan .name{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+  .plan .price{font-size:30px;font-weight:800;color:var(--ink);margin:10px 0 2px}
+  .plan .price small{font-size:14px;font-weight:600;color:var(--slate)}
+  .plan .who{font-size:14px;color:var(--slate);margin-bottom:16px;min-height:40px}
+  .plan ul{list-style:none;margin:6px 0 20px;flex:1}
+  .plan li{position:relative;padding-left:24px;margin-bottom:9px;font-size:14px;color:var(--ink)}
+  .plan li:before{content:"";position:absolute;left:0;top:6px;width:14px;height:14px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/10px no-repeat}
+  .plan .cta{margin-top:auto}
+  .plan .cta a{display:block;text-align:center}
+
+  .line{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin:26px 0;box-shadow:var(--shadow-sm)}
+  .line h2{font-size:22px;margin-bottom:6px}
+  .line p{color:var(--slate);font-size:15px;margin:8px 0}
+  .line p b{color:var(--ink)}
+
+  .tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.8px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .tbl th{background:var(--navy);color:#fff;text-align:left;padding:11px 14px;font-size:12.5px}
+  .tbl th:not(:first-child){text-align:center}
+  .tbl td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:middle}
+  .tbl td:first-child{font-weight:700}
+  .tbl td:not(:first-child){text-align:center;color:var(--slate)}
+  .tbl .yes{color:var(--built);font-weight:800}
+  .tbl .no{color:#c3d0d6}
+  .tbl tr:hover td{background:#fafdfd}
+
+  .sec-head{max-width:760px;margin:44px 0 18px}
+  .sec-head .eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+  .sec-head h2{font-size:clamp(22px,3.4vw,30px)}
+  .sec-head p{color:var(--slate);font-size:15.5px;margin-top:8px}
+
+  .cta-band{background:radial-gradient(120% 120% at 80% -20%,#163b56,var(--navy) 60%);color:#fff;border-radius:18px;padding:36px;margin:40px 0 0;text-align:center}
+  .cta-band h2{color:#fff;font-size:26px}
+  .cta-band p{color:var(--ice);max-width:560px;margin:12px auto 20px;font-size:15.5px}
+  .cta-band .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  .note{background:#E8F2F1;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin:18px 0;font-size:14.5px;color:var(--ink)}
+  .note b{color:var(--teal)}
+
+  footer{background:var(--navy);color:var(--ice);padding:36px 0;border-top:1px solid rgba(255,255,255,.08);text-align:center;font-size:13px}
+  footer a{color:var(--ice);font-weight:600;margin:0 10px}
+  footer .dis{color:#7796a4;max-width:700px;margin:14px auto 0;font-size:12px;line-height:1.6}
+</style>
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#1C4A6E"/><path d="M50 20 L75 30 V53 C75 70 64 80 50 84 C36 80 25 70 25 53 V30 Z" fill="none" stroke="#2DD4BF" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      ABOM
+    </a>
+    <div class="navlinks">
+      <a href="/#what">What it is</a>
+      <a href="/#broker">Broker</a>
+      <a href="/#witness">Witness</a>
+      <a href="spec.html">Spec</a>
+      <a href="pricing.html" class="active">Pricing</a>
+      <a href="get-started.html">Get started</a>
+      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Pricing &amp; editions</div>
+    <h1>Free to build with. Paid when you need to be trusted.</h1>
+    <p>The <b>open-source CLI and self-hosted enforcement are free forever</b> — scan, gate, broker, witness, anchor, verify. The paid tier is the one thing you can't build yourself: a <b>neutral, hosted Notary</b> an auditor, insurer or regulator can rely on <i>because you didn't produce it</i> — with enterprise support, on-prem/air-gap, and compliance attestations.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="plans">
+    <!-- FREE -->
+    <div class="plan">
+      <div class="name">Open Source</div>
+      <div class="price">Free<small> · forever</small></div>
+      <div class="who">For builders and security teams instrumenting their own agents.</div>
+      <ul>
+        <li><b>The full <span class="mono">abom</span> CLI</b> — scan, gate, broker, verify</li>
+        <li>Signed Composition Manifests (ed25519)</li>
+        <li>Deny-by-default enforcement + the MCP broker</li>
+        <li><b>Self-hosted</b> witness &amp; RFC 3161 anchoring</li>
+        <li>Durable Merkle transparency log</li>
+        <li>The open ABOM spec &amp; policy schema</li>
+        <li>Community support (GitHub)</li>
+      </ul>
+      <div class="cta"><a class="btn dark" href="get-started.html">Get started</a></div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="plan feature">
+      <div class="badge">Most teams</div>
+      <div class="name">Team</div>
+      <div class="price">Talk to us<small> · per agent / per org</small></div>
+      <div class="who">For teams that need to prove it to a third party, not just enforce it.</div>
+      <ul>
+        <li>Everything in Open Source, plus:</li>
+        <li><b>Hosted, neutral Notary</b> — cosigns &amp; anchors your logs</li>
+        <li>Queryable registry across agents &amp; time</li>
+        <li>Independent witness (real non-equivocation)</li>
+        <li>SIEM &amp; CycloneDX export</li>
+        <li>Sector policy packs (finance, healthcare, mfg)</li>
+        <li>Email support with an SLA</li>
+      </ul>
+      <div class="cta"><a class="btn" href="#contact">Book a demo</a></div>
+    </div>
+
+    <!-- ENTERPRISE -->
+    <div class="plan">
+      <div class="name">Enterprise</div>
+      <div class="price">Custom<small> · annual</small></div>
+      <div class="who">For regulated estates with sovereignty and audit requirements.</div>
+      <ul>
+        <li>Everything in Team, plus:</li>
+        <li><b>On-prem / air-gapped</b> deployment</li>
+        <li>eIDAS-qualified timestamp anchoring</li>
+        <li>Signed verification attestations for auditors</li>
+        <li>Composition-match / drift enforcement</li>
+        <li>Integration &amp; onboarding services</li>
+        <li>Priority support, security review support</li>
+      </ul>
+      <div class="cta"><a class="btn dark" href="#contact">Contact sales</a></div>
+    </div>
+  </div>
+
+  <div class="note"><b>The line, stated plainly:</b> the CLI and everything you run on your own machine is free and open (Apache-2.0), forever — we win the standard by giving the generator away. You pay only when you want a record a third party can <i>rely on without trusting you</i> — the neutral, hosted Notary — plus the support and deployment a regulated estate needs. See <a href="https://github.com/josephassiga/abom-dev/blob/main/docs/EDITIONS.md">EDITIONS.md</a> for the why.</div>
+
+  <!-- FEATURE MATRIX -->
+  <div class="sec-head">
+    <div class="eyebrow">What's in each edition</div>
+    <h2>Free vs. paid, feature by feature</h2>
+    <p>Enforcement is free. Neutrality, scale, and support are the paid tier.</p>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="tbl">
+    <tr><th>Capability</th><th>Open Source</th><th>Team</th><th>Enterprise</th></tr>
+    <tr><td>Scan → signed manifest</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Gate / MCP broker enforcement</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Self-hosted witness + RFC 3161 anchor</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Hosted <b>neutral</b> Notary (independent witness)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Queryable registry + SIEM / CycloneDX export</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Sector policy packs</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>On-prem / air-gapped deployment</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+    <tr><td>eIDAS-qualified anchoring + signed attestations</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+    <tr><td>Support</td><td>Community</td><td>SLA</td><td>Priority</td></tr>
+  </table>
+  </div>
+
+  <!-- WHY PAY -->
+  <div class="sec-head">
+    <div class="eyebrow">Why the paid tier exists</div>
+    <h2>You can self-host the proof. You can't self-host the neutrality.</h2>
+    <p>A witness you run yourself is real defense-in-depth — but you hold both keys, so it isn't proof against <i>you</i>. The value an auditor, insurer, or regulator pays for is a record produced by a party that isn't the one being audited. That's the hosted Notary — the one thing in ABOM that is, by definition, not self-hostable.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="cta-band" id="contact">
+    <h2>Book a demo</h2>
+    <p>See ABOM enforce a real agent, then hand the notarized record to a third party who can verify it without trusting you. We'll scope the free line, the hosted Notary, and on-prem options for your estate.</p>
+    <div class="row">
+      <a class="btn" href="mailto:hello@abom.ai?subject=ABOM%20demo%20request">Email hello@abom.ai</a>
+      <a class="btn ghost" href="get-started.html">Or try the free CLI now</a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="pricing.html">Pricing</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <p class="dis">ABOM v0.1 (draft) · the CLI is Apache-2.0 and free. Paid editions are commercial. Pricing shown as "talk to us" while we work with early design partners; ranges are set per deployment and capacity. This page is not an offer or contract.</p>
+  </div>
+</footer>
+
+</body>
+</html>
