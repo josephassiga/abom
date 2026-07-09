@@ -315,13 +315,13 @@
     <div class="feature">
       <div>
         <div class="eyebrow">The /authorize API</div>
-        <h2>An authorization call <span class="accent">for every agent action</span></h2>
-        <p class="lede">One endpoint. Your agent asks "am I allowed to do this?" before it acts — and gets back ALLOW or DENY plus a <b>signed, notarized receipt</b> in a single call. Every AI firewall can log a decision. ABOM hands you one a third party can verify without trusting you.</p>
+        <h2>Authorize every tool call — <span class="accent">with zero agent code</span></h2>
+        <p class="lede">Point your agent's MCP client at the ABOM broker instead of its MCP server. Every <span class="mono">tools/call</span> is authorized before it runs, and comes back ALLOW/DENY plus a <b>signed, notarized receipt</b>. You don't wrap tools or write integration code — the agent doesn't even know the API is there.</p>
         <ul>
-          <li><b>Deny-by-default in one call.</b> Checked against the agent's signed manifest, before the action runs.</li>
-          <li><b>A receipt, not just a log.</b> Each verdict comes with a Merkle inclusion proof + signed tree head — hand it to your buyer's security team.</li>
-          <li><b>Drop-in.</b> <span class="mono">pip install abom-cli && abom serve abom.json</span>. Metered API keys when you're ready to run it as a service.</li>
-          <li><b>Free to start.</b> Self-host free forever; the neutral hosted version is the paid tier.</li>
+          <li><b>Nothing to instrument.</b> The broker hooks the MCP loop at the tool-call step. A denied call never reaches the upstream server — structural, not cooperative.</li>
+          <li><b>A receipt, not just a log.</b> Each verdict carries a Merkle inclusion proof + signed tree head — hand it to your buyer's security team.</li>
+          <li><b>Or call it directly.</b> Not on MCP? <span class="mono">POST /authorize</span> an action, get the same verdict + receipt.</li>
+          <li><b>Free to start.</b> Self-host free forever; the neutral hosted endpoint is the paid tier, metered per key.</li>
         </ul>
         <div class="cta-row" style="margin-top:22px">
           <a class="btn" href="get-started.html">Get an endpoint running</a>
@@ -330,19 +330,21 @@
       </div>
       <div class="code">
         <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
-<pre><span class="c"># your agent asks before it acts</span>
-$ curl localhost:8088/authorize \
-    -d <span class="s">'{"tool":"wire_transfer"}'</span>
+<pre><span class="c"># point the agent's MCP client at the broker —</span>
+<span class="c"># it authorizes every tools/call against your API</span>
+$ abom broker abom.json \
+    <span class="k">--authorize-url</span> https://api.abom.ai/authorize \
+    <span class="k">--api-key</span> abom_…
 
+<span class="c"># a prompt-injected tool call the agent was never</span>
+<span class="c"># granted comes back:</span>
 {
   <span class="k">"verdict"</span>: <span class="deny">"deny"</span>,
   <span class="k">"rule"</span>: <span class="s">"tool_not_in_manifest"</span>,
-  <span class="k">"receipt"</span>: {
-    <span class="k">"inclusion_proof"</span>: { … },   <span class="c"># notarized</span>
-    <span class="k">"head_signature"</span>: { … }     <span class="c"># signed</span>
-  }
+  <span class="k">"receipt"</span>: { <span class="k">"inclusion_proof"</span>: {…},  <span class="c"># notarized</span>
+               <span class="k">"head_signature"</span>: {…} }  <span class="c"># signed</span>
 }
-<span class="c"># the money never moved — and you can prove it.</span></pre>
+<span class="c"># the upstream never saw it. and you can prove it.</span></pre>
       </div>
     </div>
   </div>
