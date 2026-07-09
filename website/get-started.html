@@ -129,18 +129,18 @@
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
 <pre><span class="p">pip install -U abom-cli</span>
 ...
-<span class="o">Successfully installed abom-cli-0.1.15</span></pre></div>
+<span class="o">Successfully installed abom-cli-0.1.19</span></pre></div>
     <p>Confirm it's working — every command opens with the ABOM banner:</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
 <pre><span class="p">abom version</span>
 
    <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
    <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
-   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.15</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.19</span>
    <span class="p">   ╰─╯</span>
   <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
 
-abom 0.1.15 · ABOM spec v0.1</pre></div>
+abom 0.1.19 · ABOM spec v0.1</pre></div>
     <div class="note"><b>Tip:</b> if you installed with <span class="mono">pipx</span>, add the MCP support with <span class="mono">pipx inject abom-cli httpx</span>. See <a href="#troubleshooting">troubleshooting</a> if a command can't find a module.</div>
 
     <p class="lead" style="margin-top:26px">In a hurry? Scan an agent and run the <b>/authorize API</b> in two commands — your agent asks before it acts and gets back a verdict plus a signed receipt:</p>
@@ -203,7 +203,7 @@ FAST_MODEL = <span class="o">"claude-3-5-sonnet-20241022"</span>
 
    <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
    <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
-   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.15</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.19</span>
    <span class="p">   ╰─╯</span>
   <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
 
@@ -232,7 +232,7 @@ FAST_MODEL = <span class="o">"claude-3-5-sonnet-20241022"</span>
 
    <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
    <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
-   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.15</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.19</span>
    <span class="p">   ╰─╯</span>
   <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
 
@@ -263,7 +263,7 @@ FAST_MODEL = <span class="o">"claude-3-5-sonnet-20241022"</span>
 
    <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
    <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
-   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.15</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.19</span>
    <span class="p">   ╰─╯</span>
   <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
 
@@ -276,7 +276,7 @@ FAST_MODEL = <span class="o">"claude-3-5-sonnet-20241022"</span>
 
    <span class="p">╭───────╮    ▄▀█ █▄▄ █▀█ █▀▄▀█</span>
    <span class="p">│   ✔   │    █▀█ █▄█ █▄█ █░▀░█</span>
-   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.15</span>
+   <span class="p">╰──╮ ╭──╯</span>    <span class="o">Agent Bill of Materials  v0.1.19</span>
    <span class="p">   ╰─╯</span>
   <span class="c">a signed record of what your AI agent is, what it can do, and what it did</span>
 
@@ -313,8 +313,35 @@ gate = Gate(signed_manifest)
   </section>
 
   <!-- STEP 4 -->
-  <section class="step" id="witness">
+  <section class="step" id="api">
     <div class="n">4</div>
+    <h2>Authorize against the /authorize API <span class="tag">zero agent code</span></h2>
+    <p class="lead">The same broker can authorize every tool call against a hosted <span class="mono">/authorize</span> endpoint instead of deciding locally — so a brokered MCP agent gets a signed receipt per call and the endpoint meters usage. The agent changes <b>nothing</b>: it just points its MCP client at the broker.</p>
+
+    <p>First, run the API yourself (self-hosted, free). Issue a key to run it metered:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · the /authorize API</span></div>
+<pre><span class="p">abom serve abom.json</span>                       <span class="c"># POST /authorize on :8088</span>
+<span class="p">abom keys issue --label acme</span>              <span class="c"># a Bearer key (shown once)</span>
+<span class="p">abom serve abom.json --keys .abom/keys.json</span> <span class="c"># metered</span>
+
+<span class="p">curl localhost:8088/authorize -d '{"tool":"wire_transfer"}'</span>
+  { "verdict": <span class="deny">"deny"</span>, "rule": "tool_not_in_manifest",
+    "receipt": { "inclusion_proof": {…}, "head_signature": {…} } }</pre></div>
+
+    <p>Then point the broker at that endpoint. Now every brokered <span class="mono">tools/call</span> is authorized by the API and comes back with a signed receipt — the agent never touches the API:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · broker → /authorize</span></div>
+<pre><span class="p">abom broker abom.json --upstream https://mcp.internal/rpc \
+    --authorize-url https://api.abom.ai/authorize \
+    --api-key abom_…</span>
+
+  tools/call  lookup_customer  <span class="c"># → </span><span class="allow">authorized, forwarded</span>
+  tools/call  wire_transfer    <span class="c"># → </span><span class="deny">DENIED</span>  <span class="c"># signed receipt, upstream never saw it</span></pre></div>
+    <div class="note"><b>The hosted, neutral endpoint is the paid tier</b> — an independent attestor a third party can rely on. Self-hosting <span class="mono">abom serve</span> is free forever. See <a href="pricing.html">pricing</a>.</div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step" id="witness">
+    <div class="n">5</div>
     <h2>Prove the record can't be rewritten <span class="tag">verify without trusting the operator</span></h2>
     <p class="lead">Every gate decision lands in an append-only <b>Merkle transparency log</b> — the same RFC 6962 construction behind Certificate Transparency and Sigstore. Two independent steps make that record something a third party can rely on, even against the operator who runs it.</p>
 
@@ -345,9 +372,9 @@ gate = Gate(signed_manifest)
     <div class="note"><b>Honest scope:</b> a witness you host yourself is defense-in-depth — the operator holds both keys. Genuine non-equivocation comes from an <i>independent</i> witness (the neutral network is the next step). The RFC 3161 timestamp is the third-party proof that stands today.</div>
   </section>
 
-  <!-- STEP 5 -->
+  <!-- STEP 6 -->
   <section class="step">
-    <div class="n">5</div>
+    <div class="n">6</div>
     <h2>Scan a remote agent <span class="tag">three ways</span></h2>
     <p class="lead">You don't need the code locally. ABOM scans a GitHub repo by URL, or a <b>live deployed agent</b> over the Model Context Protocol.</p>
     <div class="grid3">
@@ -465,9 +492,9 @@ gate = Gate(signed_manifest)
     <div class="note">ABOM only reads the <b>declared</b> capabilities over the protocol — it never invokes a tool.</div>
   </section>
 
-  <!-- STEP 6 -->
+  <!-- STEP 7 -->
   <section class="step">
-    <div class="n">6</div>
+    <div class="n">7</div>
     <h2>Make it shareable</h2>
     <p class="lead">Add <span class="mono">--card</span> to any scan or gate to also write a self-contained SVG "report card" you can drop into a PR, a doc, or a slide.</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
