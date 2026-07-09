@@ -100,14 +100,11 @@
       ABOM
     </a>
     <div class="navlinks">
-      <a href="/#what">What it is</a>
-      <a href="/#broker">Broker</a>
-      <a href="/#witness">Witness</a>
+      <a href="/#api">API</a>
+      <a href="/#what">How it works</a>
       <a href="spec.html">Spec</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="policies.html">Policies</a>
       <a href="adapters.html">Adapters</a>
-      <a href="policy-builder.html">Policy builder</a>
+      <a href="pricing.html">Pricing</a>
       <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
     </div>
   </div>
@@ -145,6 +142,19 @@
 
 abom 0.1.15 · ABOM spec v0.1</pre></div>
     <div class="note"><b>Tip:</b> if you installed with <span class="mono">pipx</span>, add the MCP support with <span class="mono">pipx inject abom-cli httpx</span>. See <a href="#troubleshooting">troubleshooting</a> if a command can't find a module.</div>
+
+    <p class="lead" style="margin-top:26px">In a hurry? Scan an agent and run the <b>/authorize API</b> in two commands — your agent asks before it acts and gets back a verdict plus a signed receipt:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · the /authorize API</span></div>
+<pre><span class="p">abom scan . -o abom.json</span>          <span class="c"># signed manifest</span>
+<span class="p">abom serve abom.json</span>              <span class="c"># POST /authorize on :8088</span>
+
+<span class="p">curl localhost:8088/authorize -d '{"tool":"wire_transfer"}'</span>
+  { "verdict": <span class="deny">"deny"</span>, "rule": "tool_not_in_manifest",
+    "receipt": { "inclusion_proof": {…}, "head_signature": {…} } }
+
+<span class="c"># run it metered (Bearer keys + per-key /usage):</span>
+<span class="p">abom keys issue --label acme</span>
+<span class="p">abom serve abom.json --keys .abom/keys.json</span></pre></div>
   </section>
 
   <!-- STEP 2 -->

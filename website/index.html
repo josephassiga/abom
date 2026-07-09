@@ -246,14 +246,11 @@
       ABOM
     </a>
     <div class="navlinks">
-      <a href="#what">What it is</a>
-      <a href="#broker">Broker</a>
-      <a href="#witness">Witness</a>
+      <a href="#api">API</a>
+      <a href="#what">How it works</a>
       <a href="spec.html">Spec</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="policies.html">Policies</a>
       <a href="adapters.html">Adapters</a>
-      <a href="policy-builder.html">Policy builder</a>
+      <a href="pricing.html">Pricing</a>
       <a href="get-started.html">Get started</a>
       <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
     </div>
@@ -311,6 +308,45 @@
     </div>
   </div>
 </div>
+
+<!-- THE AUTHORIZE API -->
+<section id="api" class="sec-white divider">
+  <div class="wrap">
+    <div class="feature">
+      <div>
+        <div class="eyebrow">The /authorize API</div>
+        <h2>An authorization call <span class="accent">for every agent action</span></h2>
+        <p class="lede">One endpoint. Your agent asks "am I allowed to do this?" before it acts — and gets back ALLOW or DENY plus a <b>signed, notarized receipt</b> in a single call. Every AI firewall can log a decision. ABOM hands you one a third party can verify without trusting you.</p>
+        <ul>
+          <li><b>Deny-by-default in one call.</b> Checked against the agent's signed manifest, before the action runs.</li>
+          <li><b>A receipt, not just a log.</b> Each verdict comes with a Merkle inclusion proof + signed tree head — hand it to your buyer's security team.</li>
+          <li><b>Drop-in.</b> <span class="mono">pip install abom-cli && abom serve abom.json</span>. Metered API keys when you're ready to run it as a service.</li>
+          <li><b>Free to start.</b> Self-host free forever; the neutral hosted version is the paid tier.</li>
+        </ul>
+        <div class="cta-row" style="margin-top:22px">
+          <a class="btn" href="get-started.html">Get an endpoint running</a>
+          <a class="btn ghost" href="pricing.html">Pricing</a>
+        </div>
+      </div>
+      <div class="code">
+        <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
+<pre><span class="c"># your agent asks before it acts</span>
+$ curl localhost:8088/authorize \
+    -d <span class="s">'{"tool":"wire_transfer"}'</span>
+
+{
+  <span class="k">"verdict"</span>: <span class="deny">"deny"</span>,
+  <span class="k">"rule"</span>: <span class="s">"tool_not_in_manifest"</span>,
+  <span class="k">"receipt"</span>: {
+    <span class="k">"inclusion_proof"</span>: { … },   <span class="c"># notarized</span>
+    <span class="k">"head_signature"</span>: { … }     <span class="c"># signed</span>
+  }
+}
+<span class="c"># the money never moved — and you can prove it.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- WHAT IT IS / THREE QUESTIONS -->
 <section id="what" class="sec-tint">
