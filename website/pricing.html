@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pricing & Editions — ABOM · Agent Bill of Materials</title>
-<meta name="description" content="ABOM editions: the open-source CLI and self-hosted enforcement are free forever. The neutral hosted Notary, enterprise support, on-prem/air-gap, and compliance attestations are the paid tier for regulated teams.">
+<meta name="description" content="ABOM editions: the open-source CLI and self-hosted /authorize API are free forever. The hosted, neutral /authorize endpoint is metered per call, with enterprise support, on-prem/air-gap, and compliance attestations for regulated teams.">
 <meta name="theme-color" content="#0F2A4A">
 <link rel="canonical" href="https://abom.ai/pricing.html">
 <meta property="og:title" content="ABOM Pricing & Editions">
-<meta property="og:description" content="Free forever: the CLI + self-hosted enforcement. Paid: the neutral hosted Notary, support, on-prem, and compliance attestations.">
+<meta property="og:description" content="Free forever: the CLI + self-hosted /authorize API. Paid: the hosted, neutral endpoint, metered per authorization, plus support and on-prem.">
 <meta property="og:url" content="https://abom.ai/pricing.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEYyQTRBIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkRENEJGIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
@@ -124,8 +124,8 @@
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow">Pricing &amp; editions</div>
-    <h1>Free to build with. Paid when you need to be trusted.</h1>
-    <p>The <b>open-source CLI and self-hosted enforcement are free forever</b> — scan, gate, broker, witness, anchor, verify. The paid tier is the one thing you can't build yourself: a <b>neutral, hosted Notary</b> an auditor, insurer or regulator can rely on <i>because you didn't produce it</i> — with enterprise support, on-prem/air-gap, and compliance attestations.</p>
+    <h1>Free to build with. Metered when it's in production.</h1>
+    <p>The <b>open-source CLI and self-hosted enforcement are free forever</b> — scan, gate, broker, witness, anchor, verify. The paid tier is the <b>hosted <span class="mono">/authorize</span> endpoint</b>: priced per authorization, it returns a signed receipt on every call and is neutral by design — an attestor a third party can rely on <i>because you didn't produce it</i>. On-prem, air-gap, and compliance attestations for regulated estates.</p>
   </div>
 </header>
 
@@ -135,13 +135,13 @@
     <!-- FREE -->
     <div class="plan">
       <div class="name">Open Source</div>
-      <div class="price">Free<small> · forever</small></div>
-      <div class="who">For builders and security teams instrumenting their own agents.</div>
+      <div class="price">Free<small> · forever, self-hosted</small></div>
+      <div class="who">For builders and security teams running their own agents.</div>
       <ul>
         <li><b>The full <span class="mono">abom</span> CLI</b> — scan, gate, broker, verify</li>
-        <li>Signed Composition Manifests (ed25519)</li>
+        <li><b>Self-hosted <span class="mono">/authorize</span> API</b> — unlimited calls on your own infra</li>
         <li>Deny-by-default enforcement + the MCP broker</li>
-        <li><b>Self-hosted</b> witness &amp; RFC 3161 anchoring</li>
+        <li>Self-hosted witness &amp; RFC 3161 anchoring</li>
         <li>Durable Merkle transparency log</li>
         <li>The open ABOM spec &amp; policy schema</li>
         <li>Community support (GitHub)</li>
@@ -153,14 +153,14 @@
     <div class="plan feature">
       <div class="badge">Most teams</div>
       <div class="name">Team</div>
-      <div class="price">Talk to us<small> · per agent / per org</small></div>
-      <div class="who">For teams that need to prove it to a third party, not just enforce it.</div>
+      <div class="price">Talk to us<small> · per authorization</small></div>
+      <div class="who">For teams shipping agents that need a receipt a third party can trust.</div>
       <ul>
         <li>Everything in Open Source, plus:</li>
-        <li><b>Hosted, neutral Notary</b> — cosigns &amp; anchors your logs</li>
-        <li>Queryable registry across agents &amp; time</li>
-        <li>Independent witness (real non-equivocation)</li>
-        <li>SIEM &amp; CycloneDX export</li>
+        <li><b>Hosted, neutral <span class="mono">/authorize</span> endpoint</b> — metered per call</li>
+        <li>A generous free monthly allowance; usage-based above it</li>
+        <li>Independent witness — real non-equivocation on your receipts</li>
+        <li>Queryable registry + SIEM / CycloneDX export</li>
         <li>Sector policy packs (finance, healthcare, mfg)</li>
         <li>Email support with an SLA</li>
       </ul>
@@ -185,7 +185,7 @@
     </div>
   </div>
 
-  <div class="note"><b>The line, stated plainly:</b> the CLI and everything you run on your own machine is free and open (Apache-2.0), forever — we win the standard by giving the generator away. You pay only when you want a record a third party can <i>rely on without trusting you</i> — the neutral, hosted Notary — plus the support and deployment a regulated estate needs. See <a href="https://github.com/josephassiga/abom-dev/blob/main/docs/EDITIONS.md">EDITIONS.md</a> for the why.</div>
+  <div class="note"><b>The line, stated plainly:</b> the CLI and everything you run on your own machine — including the <span class="mono">/authorize</span> API self-hosted — is free and open (Apache-2.0), forever. You pay per call only for the <b>hosted, neutral</b> endpoint: a receipt a third party can <i>rely on without trusting you</i>, plus the support and deployment a regulated estate needs. See <a href="https://github.com/josephassiga/abom-dev/blob/main/docs/EDITIONS.md">EDITIONS.md</a> for the why.</div>
 
   <!-- FEATURE MATRIX -->
   <div class="sec-head">
@@ -199,8 +199,8 @@
     <tr><th>Capability</th><th>Open Source</th><th>Team</th><th>Enterprise</th></tr>
     <tr><td>Scan → signed manifest</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Gate / MCP broker enforcement</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-    <tr><td>Self-hosted witness + RFC 3161 anchor</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-    <tr><td>Hosted <b>neutral</b> Notary (independent witness)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Self-hosted <span class="mono">/authorize</span> API + witness + anchor</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Hosted <b>neutral</b> <span class="mono">/authorize</span> (metered, independent witness)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Queryable registry + SIEM / CycloneDX export</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Sector policy packs</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>On-prem / air-gapped deployment</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
@@ -213,13 +213,13 @@
   <div class="sec-head">
     <div class="eyebrow">Why the paid tier exists</div>
     <h2>You can self-host the proof. You can't self-host the neutrality.</h2>
-    <p>A witness you run yourself is real defense-in-depth — but you hold both keys, so it isn't proof against <i>you</i>. The value an auditor, insurer, or regulator pays for is a record produced by a party that isn't the one being audited. That's the hosted Notary — the one thing in ABOM that is, by definition, not self-hostable.</p>
+    <p>A witness you run yourself is real defense-in-depth — but you hold both keys, so it isn't proof against <i>you</i>. The value an auditor, insurer, or regulator pays for is a record produced by a party that isn't the one being audited. That's the hosted <span class="mono">/authorize</span> endpoint — the one thing in ABOM that is, by definition, not self-hostable.</p>
   </div>
 
   <!-- CONTACT -->
   <div class="cta-band" id="contact">
     <h2>Book a demo</h2>
-    <p>See ABOM enforce a real agent, then hand the notarized record to a third party who can verify it without trusting you. We'll scope the free line, the hosted Notary, and on-prem options for your estate.</p>
+    <p>See ABOM enforce a real agent, then hand the notarized record to a third party who can verify it without trusting you. We'll scope the free line, per-call pricing on the hosted endpoint, and on-prem options for your estate.</p>
     <div class="row">
       <a class="btn" href="mailto:hello@abom.ai?subject=ABOM%20demo%20request">Email hello@abom.ai</a>
       <a class="btn ghost" href="get-started.html">Or try the free CLI now</a>
