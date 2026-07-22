@@ -145,7 +145,7 @@
       <a href="adapters.html" class="active">Adapters</a>
       <a href="pricing.html">Pricing</a>
       <a href="get-started.html">Get started</a>
-      <a class="btn ghost" href="https://github.com/josephassiga/abom-dev">GitHub</a>
+      <a class="btn ghost" href="https://pypi.org/project/abom-cli/">PyPI</a>
     </div>
   </div>
 </nav>
@@ -161,7 +161,7 @@
 <main class="wrap">
 
   <div class="note">
-    <b>The Anthropic, OpenAI, and Mistral SDK adapters, the LangChain framework adapter, and the Model Armor guardrail adapter ship today; the rest are on the roadmap.</b> Each entry below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+    <b>The Anthropic, OpenAI, and Mistral SDK adapters, the LangChain framework adapter, and the Model Armor guardrail adapter ship today; the rest are on the roadmap.</b> Each entry below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="mailto:hello@abom.ai?subject=ABOM%20adapter%20request">Email hello@abom.ai</a>.
   </div>
 
   <div class="note">
@@ -350,7 +350,7 @@ handler.abom.chain</pre></div>
   <div class="guide" id="contribute">
     <div class="secthead">
       <h2>Contribute an adapter</h2>
-      <p>Want a provider that isn't available yet? The fastest path is to <a href="https://github.com/josephassiga/abom-dev/issues">open an issue</a> — adapters live in the reference repo and we'll implement it. If you'd like to spec or prototype it, here's the whole contract.</p>
+      <p>Want a provider that isn't available yet? The fastest path is to <a href="mailto:hello@abom.ai?subject=ABOM%20adapter%20request">email hello@abom.ai</a> with the provider name and SDK — we'll implement it. If you'd like to spec or prototype it, here's the whole contract.</p>
     </div>
 
     <p style="color:var(--slate);font-size:15px;margin:0 0 6px">An adapter does exactly two provider-specific things: <b>recognize its client</b> and <b>wrap the one method that calls the model</b>. Everything else — the provenance chain, the gate, binding to the manifest — is shared in <span class="mono">abom.adapters.base</span>, so an adapter is small.</p>
@@ -448,7 +448,7 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
     </div>
 
     <div class="cta">
-      <b>Ready?</b> <a href="https://github.com/josephassiga/abom-dev/issues">Open an issue</a> with the provider name and SDK, or attach a prototype following the shape above — we'll get it reviewed and shipped, and its tile flips to <span class="status available" style="margin-left:2px"><span class="dot"></span>Available</span>.
+      <b>Ready?</b> <a href="mailto:hello@abom.ai?subject=ABOM%20adapter%20prototype">Email hello@abom.ai</a> with the provider name and SDK, or attach a prototype following the shape above — we'll get it reviewed and shipped, and its tile flips to <span class="status available" style="margin-left:2px"><span class="dot"></span>Available</span>.
     </div>
   </div>
 
@@ -456,7 +456,7 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
 
 <footer>
   <div class="wrap">
-    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
+    <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://pypi.org/project/abom-cli/">PyPI</a>
     <p class="dis">ABOM v0.1 + v0.2 (drafts) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic, OpenAI, and Mistral SDK adapters, the LangChain framework adapter, and the Model Armor guardrail adapter are available; the rest are planned. Statuses on this page reflect runtime-capture support per integration.</p>
   </div>
 </footer>
