@@ -364,7 +364,7 @@
   <section class="sec" id="v02">
     <div class="eyebrow">The gateway layer · breaking changes, never silent</div>
     <h2>v0.2 draft — signed records, event types, commitments</h2>
-    <p class="lead">v0.2 is the spec of the <b>MCP gateway</b>: one signed record per tool call, written before the call runs. Everything below is implemented in the reference CLI and specified in <a href="https://github.com/josephassiga/abom-dev/blob/main/spec/abom-0.2-draft.md">abom-0.2-draft.md</a>; the breaking changes are what justify the version bump.</p>
+    <p class="lead">v0.2 is the spec of the <b>MCP gateway</b>: one signed record per tool call, written before the call runs. Everything below is implemented in the reference CLI, and the full draft ships with it — <span class="mono">spec/abom-0.2-draft.md</span> plus the decision log (<span class="mono">docs/adr/</span>) in the <a href="https://pypi.org/project/abom-cli/">abom-cli sdist</a>; the breaking changes are what justify the version bump.</p>
 
     <h3>Every record individually signed <span class="tag req">breaking</span></h3>
     <p>In v0.1 only the manifest carries a signature; the provenance chain is hash-linked but records are unsigned. In v0.2 <b>every record MUST carry a detached ed25519 signature</b> over its canonical form. The hash chain and the signature cross-cover: mutating a chained field breaks both. A valid v0.1 chain is <i>not</i> a valid v0.2 chain.</p>

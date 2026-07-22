@@ -386,7 +386,7 @@ verify_argument_claim(…, args={<span class="o">"amount"</span>: 20, <span clas
 <span class="p">abom gateway run gateway-baseline.json --floor org-floor.json \
     -u https://mcp.internal/rpc --enforce</span>
   tools/call  wire_transfer   <span class="c"># → </span><span class="deny">DENIED (-32001)</span>  <span class="c"># floor policy: *_transfer</span></pre></div>
-    <div class="note"><b>The floor is CISO-grade:</b> a project template that contradicts it (say, allowing <span class="mono">wire_transfer</span> against a floor that denies <span class="mono">*_transfer</span>) is <b>refused at startup with a signed <span class="mono">PolicyConformanceViolation</span> record</b> — the refusal is evidence too. Upstream failures likewise become signed <span class="mono">GatewayDegraded</span> records: "we degraded at 14:03, here's the proof", never a silent gap. Spec: <a href="https://github.com/josephassiga/abom-dev/blob/main/spec/abom-0.2-draft.md">abom-0.2 draft</a>.</div>
+    <div class="note"><b>The floor is CISO-grade:</b> a project template that contradicts it (say, allowing <span class="mono">wire_transfer</span> against a floor that denies <span class="mono">*_transfer</span>) is <b>refused at startup with a signed <span class="mono">PolicyConformanceViolation</span> record</b> — the refusal is evidence too. Upstream failures likewise become signed <span class="mono">GatewayDegraded</span> records: "we degraded at 14:03, here's the proof", never a silent gap. Spec: <a href="spec.html#v02">the v0.2 draft</a> (full text ships in the <a href="https://pypi.org/project/abom-cli/">sdist</a>).</div>
   </section>
 
   <!-- STEP 6 -->
