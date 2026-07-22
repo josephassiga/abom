@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ABOM — Agent Bill of Materials · Know what your AI agents are made of, and prove it</title>
-<meta name="description" content="ABOM gives every AI-agent action a signed, tamper-evident record a third party can verify — what the agent is made of, what it did, and proof nobody edited the story. Attestation first; inline enforcement one flag away. Open source, inspired by CycloneDX. Apache 2.0.">
+<meta name="description" content="ABOM gives every AI-agent action a signed, tamper-evident record a third party can verify, what the agent is made of, what it did, and proof nobody edited the story. Attestation first; inline enforcement one flag away. Open source, inspired by CycloneDX. Apache 2.0.">
 <meta name="theme-color" content="#0B1F33">
 <link rel="canonical" href="https://abom.ai/overview.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ABOM">
 <meta property="og:title" content="ABOM — Agent Bill of Materials">
-<meta property="og:description" content="A signed, verifiable record of what every AI agent is and did — attestation and non-repudiation first, enforcement one flag away. Cryptographic, not reputational. Open source.">
+<meta property="og:description" content="A signed, verifiable record of what every AI agent is and did, attestation and non-repudiation first, enforcement one flag away. Cryptographic, not reputational. Open source.">
 <meta property="og:url" content="https://abom.ai/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjMEIxRjMzIj48L3JlY3Q+PHBhdGggZD0iTTUwIDIwIEw3NSAzMCBWNTMgQzc1IDcwIDY0IDgwIDUwIDg0IEMzNiA4MCAyNSA3MCAyNSA1MyBWMzAgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDJDMzlBIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PC9wYXRoPjwvc3ZnPg==">
@@ -137,6 +137,18 @@
   .step p{font-size:14px;color:var(--slate);margin-top:6px}
   .boundary{margin-top:20px;border:1.5px dashed var(--teal);border-radius:var(--r);padding:14px 18px;font-size:13px;color:var(--teal);font-weight:600;text-align:center;background:rgba(2,128,144,.04)}
   @media(max-width:820px){.flow{grid-template-columns:1fr}}
+
+  /* interactive architecture embed: fixed 1440x1190 canvas scaled to fit */
+  .arch-embed{position:relative;width:100%;overflow:hidden;border:1px solid var(--line);
+    border-radius:var(--r);box-shadow:var(--shadow-sm);background:#faf9f5;margin-top:30px}
+  .arch-embed iframe{position:absolute;left:0;top:0;width:1440px;height:1190px;border:0;transform-origin:0 0}
+  .arch-open{text-align:center;margin-top:14px;font-size:14.5px}
+  .arch-fallback{display:none}
+  @media(max-width:720px){
+    .arch-embed{display:none}
+    .arch-fallback{display:block;background:var(--card);border:1px solid var(--line);
+      border-radius:var(--r);padding:22px;margin-top:24px;text-align:center;color:var(--slate)}
+  }
 
   /* inline svg diagrams */
   .diagram{max-width:820px;margin:40px auto 0;overflow-x:auto}
@@ -636,9 +648,41 @@ GET /v1/registry/events
       </div>
     </div>
     <div class="boundary">🔒 &nbsp;Customer trust boundary — keys in KMS/HSM · ed25519 · trust is in the keys + proofs, not our word</div>
-    <p style="text-align:center;margin-top:18px"><a href="architecture.html"><b>Explore the interactive architecture →</b></a> <span style="color:var(--slate);font-size:14px">— every plane, from CI to independent verification, clickable.</span></p>
   </div>
 </section>
+
+<!-- INTERACTIVE ARCHITECTURE -->
+<section id="architecture" class="sec-white divider">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The architecture</div>
+      <h2>One chain of custody, <span class="accent">CI to auditor</span></h2>
+      <p class="lede">Every plane of the system, live below — click any node for what it does and why it's there; watch the evidence flow 1 → 5 from the build pipeline through the gateway and local chain to the verifiers <b>outside the operator's control</b>.</p>
+    </div>
+    <div class="arch-embed" id="arch-embed">
+      <iframe src="architecture.html" title="Interactive ABOM architecture — chain of custody from CI/CD to independent verification" loading="lazy"></iframe>
+    </div>
+    <div class="arch-fallback">The interactive architecture needs a wider screen — <a href="architecture.html"><b>open it full-page →</b></a></div>
+    <p class="arch-open"><a href="architecture.html"><b>Open full-screen →</b></a></p>
+  </div>
+</section>
+<script>
+(function(){
+  var box = document.getElementById('arch-embed');
+  if (!box) return;
+  var frame = box.querySelector('iframe');
+  var W = 1440, H = 1190;
+  function size(){
+    var w = box.clientWidth;
+    if (!w) return;
+    var k = w / W;
+    frame.style.transform = 'scale(' + k + ')';
+    box.style.height = (H * k) + 'px';
+  }
+  size();
+  window.addEventListener('resize', size);
+})();
+</script>
 
 <!-- THE TWO ARTIFACTS -->
 <section id="artifacts" class="sec-white divider">
