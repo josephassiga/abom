@@ -114,7 +114,7 @@
   <div class="wrap">
     <div class="eyebrow">Get started</div>
     <h1>Scan your first agent in two minutes.</h1>
-    <p>Install ABOM, then produce a signed bill of materials from local code, a GitHub repo, or a live MCP endpoint — and block an unauthorized action with the gate.</p>
+    <p>Install ABOM, then produce a signed bill of materials from local code, a GitHub repo, or a live MCP endpoint — run the MCP gateway for signed, verifiable evidence on every tool call, and turn on blocking when you opt in.</p>
     <div class="install"><span class="d mono">$</span><span class="mono">pip install abom-cli</span></div>
   </div>
 </header>
@@ -339,9 +339,59 @@ gate = Gate(signed_manifest)
     <div class="note"><b>The hosted, neutral endpoint is the paid tier</b> — an independent attestor a third party can rely on. Self-hosting <span class="mono">abom serve</span> is free forever. See <a href="pricing.html">pricing</a>.</div>
   </section>
 
-  <!-- STEP 5 -->
-  <section class="step" id="witness">
+  <!-- STEP 5: THE GATEWAY (v0.2) -->
+  <section class="step" id="gateway">
     <div class="n">5</div>
+    <h2>Run the MCP gateway <span class="tag">signed evidence per tool call · v0.2</span></h2>
+    <p class="lead">The gateway sits between your agent and its MCP server and turns <b>every</b> <span class="mono">tools/call</span> into a signed, hash-chained Action Provenance Record — written and <span class="mono">fsync</span>'d to disk <b>before</b> the call is forwarded, so a forwarded-but-unrecorded call cannot exist. The default is <b>inspect-only</b>: policy violations are recorded as <span class="mono">would_deny</span> and forwarded — the evidence is the product, blocking is one flag away.</p>
+
+    <p>Point it at your MCP server with a project policy and an org-wide <b>floor</b> no template can weaken:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · inspect-only by default</span></div>
+<pre><span class="p">abom gateway run gateway-baseline.json --floor org-floor.json \
+    --upstream https://mcp.internal/rpc --jurisdiction EU</span>
+
+  ABOM gateway → https://mcp.internal/rpc  (policy 'gateway-baseline' · 26618a1394…)
+  <span class="o">inspect mode (default)</span> — violations recorded as would_deny and forwarded;
+  pass --enforce to block
+  signed provenance per call → gateway.apr.jsonl
+
+  <span class="c"># … the agent works normally; the log fills with evidence …</span>
+  session ended · 4 forwarded · 0 denied · <span class="deny">1 would-deny</span> · 0 degraded · 5 record(s)</pre></div>
+
+    <p>Every record is ed25519-signed and hash-chained; the file opens with a signed epoch (its creation is itself attested), and arguments enter the log as <b>salted-HMAC commitments plus a de-identified shape</b> — never content. Verify the whole chain, or a set of rotated files, in one command:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · the auditor's check</span></div>
+<pre><span class="p">abom gateway verify gateway.apr.jsonl</span>
+  <span class="allow">✓ VALID — 5 record(s), chain intact, every record signed</span>
+
+<span class="c"># tamper with any record — the chain breaks at the exact seq:</span>
+<span class="p">abom gateway verify gateway.apr.jsonl</span>
+  <span class="deny">✗ INVALID at seq 3 — chain: hash mismatch</span></pre></div>
+
+    <p>Because arguments are commitments, you can later <b>prove which call was made</b> without payloads ever having entered the log — the per-file salt stays in your boundary, its hash sealed in the epoch:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>python · settle a dispute</span></div>
+<pre><span class="p">from abom.gateway import verify_argument_claim</span>
+verify_argument_claim(<span class="o">"gateway.apr.jsonl"</span>, seq=3, salt_hex=salt,
+                      args={<span class="o">"amount"</span>: 1_000_000, <span class="o">"to"</span>: <span class="o">"attacker-iban"</span>})
+  <span class="allow">{"valid": True}</span>   <span class="c"># it WAS the $1,000,000 call…</span>
+verify_argument_claim(…, args={<span class="o">"amount"</span>: 20, <span class="o">"to"</span>: <span class="o">"attacker-iban"</span>})
+  <span class="deny">{"valid": False}</span>  <span class="c"># …and provably not the $20 one</span></pre></div>
+
+    <p>Already running <b>Google Model Armor</b>? Keep it — and seal its verdicts into the same signed records. And when the evidence has earned trust, turn on blocking:</p>
+    <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell · notarize the guardrail · then enforce</span></div>
+<pre><span class="c"># they decide, you prove: sanitize-API verdicts land in detectors[]</span>
+<span class="p">abom gateway run gateway-baseline.json -u https://mcp.internal/rpc \
+    --model-armor-template projects/acme/locations/eu/templates/strict</span>
+
+<span class="c"># opt into blocking — would_deny becomes a denial the upstream never sees:</span>
+<span class="p">abom gateway run gateway-baseline.json --floor org-floor.json \
+    -u https://mcp.internal/rpc --enforce</span>
+  tools/call  wire_transfer   <span class="c"># → </span><span class="deny">DENIED (-32001)</span>  <span class="c"># floor policy: *_transfer</span></pre></div>
+    <div class="note"><b>The floor is CISO-grade:</b> a project template that contradicts it (say, allowing <span class="mono">wire_transfer</span> against a floor that denies <span class="mono">*_transfer</span>) is <b>refused at startup with a signed <span class="mono">PolicyConformanceViolation</span> record</b> — the refusal is evidence too. Upstream failures likewise become signed <span class="mono">GatewayDegraded</span> records: "we degraded at 14:03, here's the proof", never a silent gap. Spec: <a href="https://github.com/josephassiga/abom-dev/blob/main/spec/abom-0.2-draft.md">abom-0.2 draft</a>.</div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="step" id="witness">
+    <div class="n">6</div>
     <h2>Prove the record can't be rewritten <span class="tag">verify without trusting the operator</span></h2>
     <p class="lead">Every gate decision lands in an append-only <b>Merkle transparency log</b> — the same RFC 6962 construction behind Certificate Transparency and Sigstore. Two independent steps make that record something a third party can rely on, even against the operator who runs it.</p>
 
@@ -374,7 +424,7 @@ gate = Gate(signed_manifest)
 
   <!-- STEP 6 -->
   <section class="step">
-    <div class="n">6</div>
+    <div class="n">7</div>
     <h2>Scan a remote agent <span class="tag">three ways</span></h2>
     <p class="lead">You don't need the code locally. ABOM scans a GitHub repo by URL, or a <b>live deployed agent</b> over the Model Context Protocol.</p>
     <div class="grid3">
@@ -494,7 +544,7 @@ gate = Gate(signed_manifest)
 
   <!-- STEP 7 -->
   <section class="step">
-    <div class="n">7</div>
+    <div class="n">8</div>
     <h2>Make it shareable</h2>
     <p class="lead">Add <span class="mono">--card</span> to any scan or gate to also write a self-contained SVG "report card" you can drop into a PR, a doc, or a slide.</p>
     <div class="code"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>shell</span></div>
