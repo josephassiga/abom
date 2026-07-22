@@ -325,6 +325,7 @@
         <ul>
           <li><b>Nothing to instrument.</b> The broker hooks the MCP loop at the tool-call step. A denied call never reaches the upstream server — structural, not cooperative.</li>
           <li><b>A receipt, not just a log.</b> Each verdict carries a Merkle inclusion proof + signed tree head — hand it to your buyer's security team.</li>
+          <li><b>Or evidence-first: the v0.2 gateway.</b> <span class="mono">abom gateway run</span> records every call as a signed, fsync'd provenance record — inspect-only by default, <span class="mono">--enforce</span> to block. See it in the <a href="get-started.html#gateway">quickstart</a>.</li>
           <li><b>Or call it directly.</b> Not on MCP? <span class="mono">POST /authorize</span> an action, get the same verdict + receipt.</li>
           <li><b>Free to start.</b> Self-host free forever; the neutral hosted endpoint is the paid tier, metered per key.</li>
         </ul>
@@ -512,7 +513,7 @@ tools/call  lookup_customer <span class="c"># → </span><span class="allow">for
         <rect x="320" y="380" width="12" height="12" rx="3" fill="#F4F8F9" stroke="#C9DAE0"/>
         <text x="338" y="386" text-anchor="start" dominant-baseline="central" font-size="12" fill="#5A7682">your agent stack</text>
       </svg>
-      <p class="diagram-cap">New in the v0.2 draft: <span class="mono">abom gateway</span> — the same choke point, driven by a declarative policy file, emitting one ed25519-signed Action Provenance Record per tool call, written to the append-only chain <b>before</b> the call is forwarded. Even the denial is evidence.</p>
+      <p class="diagram-cap">The v0.2 <span class="mono">abom gateway</span> — the same choke point, driven by a declarative policy file (with an org-wide floor no template can weaken), emitting one ed25519-signed Action Provenance Record per tool call, written to the append-only chain <b>before</b> the call is forwarded, and a linked outcome record after it returns. Inspect-only by default: a violation is recorded as <span class="mono">would_deny</span> and forwarded; <span class="mono">--enforce</span> blocks. Even the denial is evidence.</p>
     </div>
   </div>
 </section>
@@ -678,9 +679,9 @@ GET /v1/registry/events
       </div>
       <div class="step">
         <div class="n">2</div>
-        <span class="verb">the gate</span>
-        <h3>Gate</h3>
-        <p>Enforce that manifest at the tool boundary. Every action is ALLOW or DENY <b>before execution</b>, deny-by-default.</p>
+        <span class="verb">the gateway</span>
+        <h3>Attest</h3>
+        <p>Route tool calls through the gateway: every call becomes a <b>signed record before execution</b> — <span class="mono">would_deny</span> as evidence by default, hard ALLOW/DENY with <span class="mono">--enforce</span>.</p>
       </div>
       <div class="step">
         <div class="n">3</div>
@@ -732,7 +733,7 @@ GET /v1/registry/events
         <span class="label">What the agent did</span>
         <h3>Action Provenance Record</h3>
         <div class="it">The flight recorder · per consequential action</div>
-        <p>One hash-chained record per action: the decision, model calls, tools invoked, data touched (with classification + egress flag), policy decisions and approvals — linked back to the manifest by hash. Any edit, insertion, deletion or reorder breaks the chain at a known point.</p>
+        <p>One hash-chained record per action — and in v0.2, <b>every record is individually ed25519-signed</b>: the decision (allow / deny / <span class="mono">would_deny</span>), policy and floor hashes, guardrail verdicts (<span class="mono">detectors[]</span>), salted-HMAC argument commitments instead of payloads, and a linked outcome record per forwarded call. Any edit, insertion, deletion or reorder breaks the chain at a known point; even degradations and refused policies enter the chain as signed events.</p>
       </div>
     </div>
   </div>

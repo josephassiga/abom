@@ -132,9 +132,9 @@
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">Spec &amp; reference · v0.1 (draft)</div>
+    <div class="eyebrow">Spec &amp; reference · v0.1 (draft) + v0.2 (draft)</div>
     <h1>What's in an ABOM, field by field.</h1>
-    <p>An ABOM document is one of two things: a <b>Composition Manifest</b> (what an agent <i>is</i>) or an <b>Action Provenance Record</b> (what an agent <i>did</i>). This page documents every field, the kind of data that goes in it, the seven component types, and the enforcement-policy schema the gate and verifier act on.</p>
+    <p>An ABOM document is one of two things: a <b>Composition Manifest</b> (what an agent <i>is</i>) or an <b>Action Provenance Record</b> (what an agent <i>did</i>). This page documents every field, the seven component types, the enforcement-policy schema — and the <a href="#v02">v0.2 draft</a>: per-record signatures, the gateway's event types, payload commitments, and floor + template policies.</p>
     <div class="chips">
       <span class="chip"><b>●</b> JSON Schema · Draft 2020-12</span>
       <span class="chip"><b>●</b> ed25519-signed</span>
@@ -152,6 +152,7 @@
     <a href="#provenance">Action Provenance</a>
     <a href="#signature">Signature</a>
     <a href="#policy">Enforcement policy</a>
+    <a href="#v02">v0.2 draft</a>
   </div>
 
   <!-- ARTIFACTS -->
@@ -359,12 +360,42 @@
     <p>Ready-made policies for finance, manufacturing, and healthcare live on the <a href="policies.html">policy hub</a>. Build and validate your own with the <a href="policy-builder.html">policy builder</a>.</p>
   </section>
 
+  <!-- V0.2 DRAFT -->
+  <section class="sec" id="v02">
+    <div class="eyebrow">The gateway layer · breaking changes, never silent</div>
+    <h2>v0.2 draft — signed records, event types, commitments</h2>
+    <p class="lead">v0.2 is the spec of the <b>MCP gateway</b>: one signed record per tool call, written before the call runs. Everything below is implemented in the reference CLI and specified in <a href="https://github.com/josephassiga/abom-dev/blob/main/spec/abom-0.2-draft.md">abom-0.2-draft.md</a>; the breaking changes are what justify the version bump.</p>
+
+    <h3>Every record individually signed <span class="tag req">breaking</span></h3>
+    <p>In v0.1 only the manifest carries a signature; the provenance chain is hash-linked but records are unsigned. In v0.2 <b>every record MUST carry a detached ed25519 signature</b> over its canonical form. The hash chain and the signature cross-cover: mutating a chained field breaks both. A valid v0.1 chain is <i>not</i> a valid v0.2 chain.</p>
+
+    <h3>Event types</h3>
+    <p>A v0.2 log is a chain of typed, signed records — the gaps are attested, not silent:</p>
+    <table class="tbl">
+      <thead><tr><th style="width:32%">event_type</th><th>What it attests</th></tr></thead>
+      <tbody>
+        <tr><td>ActionProvenance</td><td>One per <span class="mono">tools/call</span> — allowed, denied, or <span class="mono">would_deny</span> (inspect mode). Written and <span class="mono">fsync</span>'d <b>before</b> forwarding; carries <span class="mono">enforcement_mode</span>, <span class="mono">floor_hash</span>, <span class="mono">policy_template_hash</span>, <span class="mono">jurisdiction</span>, <span class="mono">detectors[]</span>, payload commitments.</td></tr>
+        <tr><td>ActionOutcome</td><td>The upstream result of a forwarded call, linked to its APR by <span class="mono">outcome_of</span> — closes the decision≠execution gap.</td></tr>
+        <tr><td>LogEpoch</td><td>REQUIRED first record of every log file: file creation is itself attested. Carries <span class="mono">predecessor_final_hash</span> (rotation continuity — catches tail-truncation, file suppression, delete-and-restart) and <span class="mono">salt_custody</span>.</td></tr>
+        <tr><td>GatewayDegraded</td><td>An upstream failure or timeout as a signed event — "we degraded at 14:03, here's the proof", never a missing record.</td></tr>
+        <tr><td>PolicyConformanceViolation</td><td>A project template refused for contradicting the org floor — the refusal itself enters the chain.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Payload commitments</h3>
+    <p>Arguments never enter the log as content. Each call records a <b>per-file salted HMAC</b> (<span class="mono">arguments_hmac</span>) — call identity that is not dictionary-attackable — plus a de-identified <span class="mono">arguments_shape</span> (keys, types, sizes). The salt stays inside the boundary; the epoch seals its hash, so a salt disclosed in a dispute is authenticatable and <span class="mono">verify_argument_claim</span> settles what a call contained.</p>
+
+    <h3>Policy v0.2 — floor + template</h3>
+    <p>Additive over v0.1 (<span class="mono">abom-policy-0.2.schema.json</span>): <span class="mono">allowed_tools</span> / <span class="mono">denied_tools</span> globs, <span class="mono">allowed_egress_endpoints</span> at the gateway, and a <span class="mono">max_calls</span> session budget. Two documents of the same schema can be layered — an <b>org floor</b> and a <b>project template</b> — evaluated conjunctively: floor denials cannot be overridden, allowlists intersect, the budget is the minimum, and denial reasons name the layer that fired.</p>
+    <div class="note"><b>Default mode is inspect-only.</b> A violation is recorded as a first-class <span class="mono">would_deny</span> decision and forwarded — the evidence is the deliverable; <span class="mono">--enforce</span> opts into blocking. The raw policy verdict is always preserved in <span class="mono">policy_decisions[]</span> alongside what the gateway actually did.</div>
+  </section>
+
 </main>
 
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The component model is aligned with CycloneDX naming; ABOM does not claim CycloneDX conformance. This page documents the draft schema and may change between versions.</p>
+    <p class="dis">ABOM v0.1 + v0.2 (drafts) · Apache-2.0 · inspired by CycloneDX ML-BOM. The component model is aligned with CycloneDX naming; ABOM does not claim CycloneDX conformance. This page documents the draft schemas and may change between versions.</p>
   </div>
 </footer>
 

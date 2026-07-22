@@ -161,7 +161,11 @@
 <main class="wrap">
 
   <div class="note">
-    <b>The Anthropic, OpenAI, and Mistral SDK adapters and the LangChain framework adapter ship today; the rest are on the roadmap.</b> Each entry below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+    <b>The Anthropic, OpenAI, and Mistral SDK adapters, the LangChain framework adapter, and the Model Armor guardrail adapter ship today; the rest are on the roadmap.</b> Each entry below is marked <i>Available</i> or <i>Planned</i>. You can already produce a signed bill of materials with <span class="mono">abom scan</span> and enforce actions with <span class="mono">abom gate</span> — adapters automate the runtime-provenance capture on top of that. Want a provider prioritized? <a href="https://github.com/josephassiga/abom-dev">Open an issue.</a>
+  </div>
+
+  <div class="note">
+    <b>Zero instrumentation at all?</b> Adapters are <i>cooperative</i> — they observe an agent that routes calls through them. The <b>MCP gateway</b> needs no adapter and no code change: point the agent's MCP client at <span class="mono">abom gateway run</span> and every <span class="mono">tools/call</span> becomes a signed, hash-chained Action Provenance Record — inspect-only by default, <span class="mono">--enforce</span> to block. See <a href="get-started.html#gateway">the gateway quickstart</a>.
   </div>
 
   <!-- WHAT AN ADAPTER DOES -->
@@ -226,6 +230,14 @@
   </div>
 
   <div class="grid" id="framework-catalog"></div>
+
+  <!-- GUARDRAIL / SCREENING ADAPTERS -->
+  <div class="secthead">
+    <h2>Guardrail &amp; screening adapters</h2>
+    <p>A third kind of adapter: it doesn't capture calls, it <b>notarizes another product's verdicts</b>. The gateway's detector seam accepts any <span class="mono">(tool, args) → findings</span> callable and seals the findings into each signed record's <span class="mono">detectors[]</span> — the screen never gates, policy decides. <b>Google Model Armor</b> is available now: <span class="mono">abom gateway run --model-armor-template projects/…</span> keeps the guardrail you already bought and gives you the third-party-verifiable evidence its console can't. <i>They decide, you prove.</i></p>
+  </div>
+
+  <div class="grid" id="guardrail-catalog"></div>
 
   <!-- USER GUIDE -->
   <div class="guide">
@@ -445,7 +457,7 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="policies.html">Policies</a> · <a href="adapters.html">Adapters</a> · <a href="policy-builder.html">Policy builder</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic, OpenAI, and Mistral SDK adapters and the LangChain framework adapter are available; the rest are planned. Statuses on this page reflect runtime-capture support per integration.</p>
+    <p class="dis">ABOM v0.1 + v0.2 (drafts) · Apache-2.0 · inspired by CycloneDX ML-BOM. The Anthropic, OpenAI, and Mistral SDK adapters, the LangChain framework adapter, and the Model Armor guardrail adapter are available; the rest are planned. Statuses on this page reflect runtime-capture support per integration.</p>
   </div>
 </footer>
 
@@ -477,6 +489,13 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
     { name:"CrewAI",    pkg:"crewai",    ab:"CA", img:"crewai.svg" },
     { name:"LlamaIndex",pkg:"llama-index",ab:"LI", img:"llamaindex.svg" }
   ];
+  // guardrail/screening adapters: notarize another product's verdicts into
+  // the gateway's signed records (detectors[]) — never gate, policy decides.
+  var GUARDRAILS = [
+    { name:"Google Model Armor", pkg:"abom.adapters.modelarmor", ab:"MA", img:"model-armor.svg", status:"available" },
+    { name:"AWS Bedrock Guardrails", pkg:"bedrock-guardrails", ab:"BG", img:"aws-bedrock.svg" },
+    { name:"Llama Guard", pkg:"llama-guard", ab:"LG", img:"llamaguard.svg" }
+  ];
   var LABEL = { available:"Available", planned:"Planned" };
   function icon(a){
     // <img> with onerror fallback: if the logo file is missing, swap to the
@@ -497,6 +516,7 @@ register(AcmeAdapter())    <span class="c"># makes instrument() auto-detect it</
   }
   render(ADAPTERS, 'catalog');
   render(FRAMEWORKS, 'framework-catalog');
+  render(GUARDRAILS, 'guardrail-catalog');
 })();
 </script>
 

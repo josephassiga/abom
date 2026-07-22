@@ -125,7 +125,7 @@
   <div class="wrap">
     <div class="eyebrow">Pricing &amp; editions</div>
     <h1>Free to build with. Metered when it's in production.</h1>
-    <p>The <b>open-source CLI and self-hosted enforcement are free forever</b> — scan, gate, broker, witness, anchor, verify. The paid tier is the <b>hosted <span class="mono">/authorize</span> endpoint</b>: priced per authorization, it returns a signed receipt on every call and is neutral by design — an attestor a third party can rely on <i>because you didn't produce it</i>. On-prem, air-gap, and compliance attestations for regulated estates.</p>
+    <p>The <b>open-source CLI and everything self-hosted are free forever</b> — scan, gate, broker, the v0.2 <b>MCP gateway</b> with signed per-call provenance, witness, anchor, verify. The paid tier is the <b>hosted <span class="mono">/authorize</span> endpoint</b>: priced per authorization, it returns a signed receipt on every call and is neutral by design — an attestor a third party can rely on <i>because you didn't produce it</i>. On-prem, air-gap, and compliance attestations for regulated estates.</p>
   </div>
 </header>
 
@@ -138,9 +138,11 @@
       <div class="price">Free<small> · forever, self-hosted</small></div>
       <div class="who">For builders and security teams running their own agents.</div>
       <ul>
-        <li><b>The full <span class="mono">abom</span> CLI</b> — scan, gate, broker, verify</li>
+        <li><b>The full <span class="mono">abom</span> CLI</b> — scan, gate, broker, gateway, verify</li>
+        <li><b>The MCP gateway (v0.2)</b> — signed, fsync'd provenance per tool call; inspect-only by default, <span class="mono">--enforce</span> to block</li>
+        <li>Org floor policies, payload commitments, dispute claims</li>
+        <li>Guardrail adapters — seal Model Armor verdicts into records</li>
         <li><b>Self-hosted <span class="mono">/authorize</span> API</b> — unlimited calls on your own infra</li>
-        <li>Deny-by-default enforcement + the MCP broker</li>
         <li>Self-hosted witness &amp; RFC 3161 anchoring</li>
         <li>Durable Merkle transparency log</li>
         <li>The open ABOM spec &amp; policy schema</li>
@@ -199,6 +201,8 @@
     <tr><th>Capability</th><th>Open Source</th><th>Team</th><th>Enterprise</th></tr>
     <tr><td>Scan → signed manifest</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Gate / MCP broker enforcement</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>MCP gateway (v0.2) — signed provenance per call, floors, commitments</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Guardrail adapters (Model Armor → <span class="mono">detectors[]</span>)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Self-hosted <span class="mono">/authorize</span> API + witness + anchor</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Hosted <b>neutral</b> <span class="mono">/authorize</span> (metered, independent witness)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
     <tr><td>Queryable registry + SIEM / CycloneDX export</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
@@ -231,7 +235,7 @@
 <footer>
   <div class="wrap">
     <a href="/">Home</a> · <a href="spec.html">Spec</a> · <a href="pricing.html">Pricing</a> · <a href="get-started.html">Get started</a> · <a href="https://github.com/josephassiga/abom-dev">GitHub</a>
-    <p class="dis">ABOM v0.1 (draft) · the CLI is Apache-2.0 and free. Paid editions are commercial. Pricing shown as "talk to us" while we work with early design partners; ranges are set per deployment and capacity. This page is not an offer or contract.</p>
+    <p class="dis">ABOM v0.1 + v0.2 (drafts) · the CLI is Apache-2.0 and free. Paid editions are commercial. Pricing shown as "talk to us" while we work with early design partners; ranges are set per deployment and capacity. This page is not an offer or contract.</p>
   </div>
 </footer>
 
